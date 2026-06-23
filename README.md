@@ -1,4 +1,4 @@
-# AxAlgo — Live Strategy Performance
+# Wukong Algo — Live Strategy Performance
 
 Public, fully transparent performance tracker for live algorithmic trading strategies.
 Every trade is logged by the strategy itself and published here — win or loss.
