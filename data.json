@@ -1,0 +1,94 @@
+{
+  "generated": "2026-06-23T19:49:12.160Z",
+  "portfolio": {
+    "stats": {
+      "trades": 1,
+      "wins": 1,
+      "losses": 0,
+      "winRate": 100,
+      "totalPnl": 930,
+      "avgTrade": 930,
+      "avgWin": 930,
+      "avgLoss": 0,
+      "profitFactor": null,
+      "grossProfit": 930,
+      "grossLoss": 0,
+      "maxDrawdown": 0,
+      "bestTrade": 930,
+      "worstTrade": 930,
+      "firstDate": "23 Jun 2026",
+      "lastDate": "23 Jun 2026"
+    },
+    "equity": [
+      {
+        "i": 0,
+        "date": null,
+        "pnl": 0,
+        "cum": 0
+      },
+      {
+        "i": 1,
+        "date": "23 Jun 2026",
+        "pnl": 930,
+        "cum": 930
+      }
+    ]
+  },
+  "strategies": [
+    {
+      "id": "follow940",
+      "name": "Follow 9:40",
+      "type": "MNQ",
+      "tf": "5min",
+      "style": "Momentum / bias-follow",
+      "status": "live",
+      "description": "The 9:40 ET candle sets the day's directional bias; entry on two-candle confirmation, one trade per day, stop at session extreme, target at nearest Asia/London level >= 2R.",
+      "stats": {
+        "trades": 1,
+        "wins": 1,
+        "losses": 0,
+        "winRate": 100,
+        "totalPnl": 930,
+        "avgTrade": 930,
+        "avgWin": 930,
+        "avgLoss": 0,
+        "profitFactor": null,
+        "grossProfit": 930,
+        "grossLoss": 0,
+        "maxDrawdown": 0,
+        "bestTrade": 930,
+        "worstTrade": 930,
+        "firstDate": "23 Jun 2026",
+        "lastDate": "23 Jun 2026"
+      },
+      "equity": [
+        {
+          "i": 0,
+          "date": null,
+          "pnl": 0,
+          "cum": 0
+        },
+        {
+          "i": 1,
+          "date": "23 Jun 2026",
+          "pnl": 930,
+          "cum": 930
+        }
+      ],
+      "trades": [
+        {
+          "tradeId": "20260623-103000-S",
+          "date": "23 Jun 2026",
+          "time": "10:30:00",
+          "side": "SHORT",
+          "contracts": 2,
+          "entry": 29983,
+          "exit": 29750.5,
+          "pnlPts": 232.5,
+          "pnl": 930,
+          "reason": "Take profit ✅"
+        }
+      ]
+    }
+  ]
+}

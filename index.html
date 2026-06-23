@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>AxAlgo — Live Strategy Performance</title>
+<meta name="description" content="Live, fully transparent algorithmic trading performance. Every trade logged and published." />
+<style>
+  :root{
+    --bg:#0b0e13; --panel:#141a22; --panel2:#1b232e; --line:#26303d;
+    --text:#e6edf3; --muted:#8b98a8; --green:#21d07a; --red:#ff5d5d;
+    --accent:#4da3ff; --accent2:#7c5cff;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--text);
+    font:15px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
+  a{color:var(--accent);text-decoration:none}
+  .wrap{max-width:1040px;margin:0 auto;padding:0 20px}
+  header.hero{padding:54px 0 30px;border-bottom:1px solid var(--line)}
+  .brand{font-size:30px;font-weight:800;letter-spacing:-.5px}
+  .brand span{background:linear-gradient(90deg,var(--accent),var(--accent2));
+    -webkit-background-clip:text;background-clip:text;color:transparent}
+  .tag{color:var(--muted);margin-top:8px;max-width:620px}
+  .updated{color:var(--muted);font-size:12.5px;margin-top:14px}
+  .dot{display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--green);
+    margin-right:6px;box-shadow:0 0 0 0 rgba(33,208,122,.6);animation:pulse 2s infinite}
+  @keyframes pulse{0%{box-shadow:0 0 0 0 rgba(33,208,122,.5)}70%{box-shadow:0 0 0 8px rgba(33,208,122,0)}100%{box-shadow:0 0 0 0 rgba(33,208,122,0)}}
+  h2.section{font-size:13px;text-transform:uppercase;letter-spacing:1.5px;color:var(--muted);
+    margin:42px 0 16px;font-weight:700}
+  .cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:16px 18px}
+  .card .k{color:var(--muted);font-size:12px;text-transform:uppercase;letter-spacing:.5px}
+  .card .v{font-size:24px;font-weight:750;margin-top:6px}
+  .pos{color:var(--green)} .neg{color:var(--red)}
+  .panel{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:20px;margin-top:14px}
+  .chartwrap{position:relative}
+  svg.equity{width:100%;height:240px;display:block}
+  .strat-head{display:flex;flex-wrap:wrap;align-items:center;gap:10px}
+  .strat-head h3{margin:0;font-size:19px}
+  .badge{font-size:11px;font-weight:700;padding:3px 9px;border-radius:999px;
+    background:var(--panel2);border:1px solid var(--line);color:var(--muted)}
+  .badge.live{color:var(--green);border-color:rgba(33,208,122,.4)}
+  .desc{color:var(--muted);font-size:13.5px;margin:10px 0 4px;max-width:760px}
+  table{width:100%;border-collapse:collapse;margin-top:12px;font-size:13.5px}
+  th,td{text-align:right;padding:9px 10px;border-bottom:1px solid var(--line);white-space:nowrap}
+  th:first-child,td:first-child{text-align:left}
+  th{color:var(--muted);font-weight:600;font-size:11.5px;text-transform:uppercase;letter-spacing:.5px}
+  tbody tr:hover{background:var(--panel2)}
+  .pill{font-weight:700;font-size:12px;padding:2px 8px;border-radius:6px}
+  .pill.long{color:var(--green);background:rgba(33,208,122,.12)}
+  .pill.short{color:var(--red);background:rgba(255,93,93,.12)}
+  footer{margin:48px 0 60px;color:var(--muted);font-size:12.5px;border-top:1px solid var(--line);padding-top:20px}
+  .disc{background:var(--panel);border:1px solid var(--line);border-left:3px solid var(--accent2);
+    border-radius:8px;padding:14px 16px;margin-top:14px;color:var(--muted);font-size:12.5px}
+  .empty{color:var(--muted);padding:30px 0;text-align:center}
+</style>
+</head>
+<body>
+<header class="hero"><div class="wrap">
+  <div class="brand">Ax<span>Algo</span></div>
+  <div class="tag">Live algorithmic trading performance — every trade logged and published, win or loss. No cherry-picking, no edits.</div>
+  <div class="updated"><span class="dot"></span><span id="updated">Loading…</span></div>
+</div></header>
+
+<main class="wrap" id="app">
+  <div class="empty">Loading performance data…</div>
+</main>
+
+<footer class="wrap">
+  <div><strong>AxAlgo</strong> — built for transparency. Data regenerates automatically from the live trade log.</div>
+  <div class="disc">
+    <strong>Disclaimer:</strong> Trading futures involves substantial risk of loss and is not suitable for every investor.
+    Past performance is not indicative of future results. Nothing on this page is financial advice or a solicitation to trade.
+    Figures are derived from the strategy's own logged fills and may differ from any individual account.
+  </div>
+</footer>
+
+<script>
+const fmtUsd = n => (n<0?'-':'') + '$' + Math.abs(n).toLocaleString('en-US',{minimumFractionDigits:0,maximumFractionDigits:0});
+const fmtUsd2 = n => (n<0?'-':'') + '$' + Math.abs(n).toLocaleString('en-US',{minimumFractionDigits:0,maximumFractionDigits:2});
+const cls = n => n>0?'pos':(n<0?'neg':'');
+const pf = s => s.profitFactor===null ? (s.grossProfit>0?'∞':'—') : s.profitFactor.toFixed(2);
+
+function statCards(s){
+  const cards = [
+    ['Net P&L', `<span class="${cls(s.totalPnl)}">${fmtUsd(s.totalPnl)}</span>`],
+    ['Win rate', s.winRate + '%'],
+    ['Profit factor', pf(s)],
+    ['Max drawdown', `<span class="neg">${fmtUsd(-s.maxDrawdown)}</span>`],
+    ['Trades', s.trades],
+    ['Avg / trade', `<span class="${cls(s.avgTrade)}">${fmtUsd2(s.avgTrade)}</span>`],
+  ];
+  return `<div class="cards">${cards.map(c=>`<div class="card"><div class="k">${c[0]}</div><div class="v">${c[1]}</div></div>`).join('')}</div>`;
+}
+
+function equitySvg(equity){
+  const W=900,H=240,pad=28;
+  if(!equity || equity.length<2) return `<div class="empty">Equity curve appears once there are at least two trades.</div>`;
+  const xs=equity.map((_,i)=>i), ys=equity.map(p=>p.cum);
+  const minY=Math.min(0,...ys), maxY=Math.max(0,...ys);
+  const sx=i=>pad+(i/(equity.length-1))*(W-2*pad);
+  const sy=v=>H-pad-((v-minY)/((maxY-minY)||1))*(H-2*pad);
+  const line=equity.map((p,i)=>`${i?'L':'M'}${sx(i).toFixed(1)},${sy(p.cum).toFixed(1)}`).join(' ');
+  const area=`${line} L${sx(equity.length-1).toFixed(1)},${sy(minY).toFixed(1)} L${sx(0).toFixed(1)},${sy(minY).toFixed(1)} Z`;
+  const zeroY=sy(0).toFixed(1);
+  const up=ys[ys.length-1]>=0;
+  const col=up?'#21d07a':'#ff5d5d';
+  return `<svg class="equity" viewBox="0 0 ${W} ${H}" preserveAspectRatio="none">
+    <defs><linearGradient id="g" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="${col}" stop-opacity="0.28"/>
+      <stop offset="1" stop-color="${col}" stop-opacity="0"/></linearGradient></defs>
+    <line x1="${pad}" y1="${zeroY}" x2="${W-pad}" y2="${zeroY}" stroke="#26303d" stroke-dasharray="4 4"/>
+    <path d="${area}" fill="url(#g)"/>
+    <path d="${line}" fill="none" stroke="${col}" stroke-width="2.5" stroke-linejoin="round"/>
+  </svg>`;
+}
+
+function tradeRows(trades){
+  if(!trades.length) return `<div class="empty">No trades logged yet.</div>`;
+  const rows = trades.slice().reverse().map(t=>`<tr>
+    <td>${t.date}</td>
+    <td><span class="pill ${t.side.toLowerCase()}">${t.side}</span></td>
+    <td>${t.contracts}</td>
+    <td>${t.entry}</td>
+    <td>${t.exit}</td>
+    <td class="${cls(t.pnlPts)}">${t.pnlPts>0?'+':''}${t.pnlPts}</td>
+    <td class="${cls(t.pnl)}">${t.pnl>0?'+':''}${fmtUsd2(t.pnl)}</td>
+    <td>${t.reason}</td></tr>`).join('');
+  return `<table><thead><tr>
+    <th>Date</th><th>Side</th><th>Qty</th><th>Entry</th><th>Exit</th><th>Pts</th><th>P&L</th><th>Result</th>
+    </tr></thead><tbody>${rows}</tbody></table>`;
+}
+
+function strategyBlock(s){
+  return `<section>
+    <div class="strat-head">
+      <h3>${s.name}</h3>
+      <span class="badge live">● ${s.status.toUpperCase()}</span>
+      <span class="badge">${s.type}</span>
+      <span class="badge">${s.tf}</span>
+      <span class="badge">${s.style}</span>
+    </div>
+    <div class="desc">${s.description||''}</div>
+    ${statCards(s.stats)}
+    <div class="panel">${equitySvg(s.equity)}</div>
+    <div class="panel">${tradeRows(s.trades)}</div>
+  </section>`;
+}
+
+fetch('data.json?_=' + Date.now()).then(r=>r.json()).then(d=>{
+  document.getElementById('updated').textContent =
+    'Last updated ' + new Date(d.generated).toLocaleString('en-US',{dateStyle:'medium',timeStyle:'short'});
+  const app = document.getElementById('app');
+  const multi = d.strategies.length > 1;
+  app.innerHTML =
+    `<h2 class="section">${multi?'Portfolio — all strategies':'Live performance'}</h2>` +
+    statCards(d.portfolio.stats) +
+    `<div class="panel">${equitySvg(d.portfolio.equity)}</div>` +
+    `<h2 class="section">Strateg${multi?'ies':'y'}</h2>` +
+    d.strategies.map(strategyBlock).join('');
+}).catch(e=>{
+  document.getElementById('app').innerHTML = `<div class="empty">Could not load data.json — ${e}</div>`;
+});
+</script>
+</body>
+</html>

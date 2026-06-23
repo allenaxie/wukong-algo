@@ -1,0 +1,2 @@
+TradeId,Date,Time (ET),Strategy,Symbol,Side,Contracts,Entry,Exit,P&L (pts),P&L ($),Reason,BiasBarRangePts
+20260623-103000-S,23 Jun 2026,10:30:00,MNQ Follow 9:40 Live,MNQ,SHORT,2,29983.00,29750.50,232.50,930.00,Take profit ✅,20.50

@@ -1,0 +1,14 @@
+{
+  "strategies": [
+    {
+      "id": "follow940",
+      "name": "Follow 9:40",
+      "type": "MNQ",
+      "tf": "5min",
+      "style": "Momentum / bias-follow",
+      "status": "live",
+      "csv": "follow940.csv",
+      "description": "The 9:40 ET candle sets the day's directional bias; entry on two-candle confirmation, one trade per day, stop at session extreme, target at nearest Asia/London level >= 2R."
+    }
+  ]
+}
