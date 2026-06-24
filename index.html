@@ -1,166 +1,641 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Wukong Algo — Live Strategy Performance</title>
-<meta name="description" content="Live, fully transparent algorithmic trading performance. Every trade logged and published." />
+<meta name="description" content="Live, fully transparent algorithmic trading performance. Every fill the strategy takes is logged and published — win or loss.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect x='3' y='3' width='26' height='26' rx='7' fill='none' stroke='%23E8B23A' stroke-width='2.5'/%3E%3Ctext x='16' y='23' font-size='17' text-anchor='middle' fill='%23E8B23A' font-family='serif' font-weight='700'%3E悟%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Manrope:wght@400;500;600;700;800&family=Noto+Serif+SC:wght@700&family=Space+Grotesk:wght@500;600;700&display=swap">
 <style>
-  :root{
-    --bg:#0b0e13; --panel:#141a22; --panel2:#1b232e; --line:#26303d;
-    --text:#e6edf3; --muted:#8b98a8; --green:#21d07a; --red:#ff5d5d;
-    --accent:#4da3ff; --accent2:#7c5cff;
-  }
-  *{box-sizing:border-box}
-  body{margin:0;background:var(--bg);color:var(--text);
-    font:15px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
-  a{color:var(--accent);text-decoration:none}
-  .wrap{max-width:1040px;margin:0 auto;padding:0 20px}
-  header.hero{padding:54px 0 30px;border-bottom:1px solid var(--line)}
-  .brand{font-size:30px;font-weight:800;letter-spacing:-.5px}
-  .brand span{background:linear-gradient(90deg,var(--accent),var(--accent2));
-    -webkit-background-clip:text;background-clip:text;color:transparent}
-  .tag{color:var(--muted);margin-top:8px;max-width:620px}
-  .updated{color:var(--muted);font-size:12.5px;margin-top:14px}
-  .dot{display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--green);
-    margin-right:6px;box-shadow:0 0 0 0 rgba(33,208,122,.6);animation:pulse 2s infinite}
-  @keyframes pulse{0%{box-shadow:0 0 0 0 rgba(33,208,122,.5)}70%{box-shadow:0 0 0 8px rgba(33,208,122,0)}100%{box-shadow:0 0 0 0 rgba(33,208,122,0)}}
-  h2.section{font-size:13px;text-transform:uppercase;letter-spacing:1.5px;color:var(--muted);
-    margin:42px 0 16px;font-weight:700}
-  .cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px}
-  .card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:16px 18px}
-  .card .k{color:var(--muted);font-size:12px;text-transform:uppercase;letter-spacing:.5px}
-  .card .v{font-size:24px;font-weight:750;margin-top:6px}
-  .pos{color:var(--green)} .neg{color:var(--red)}
-  .panel{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:20px;margin-top:14px}
-  .chartwrap{position:relative}
-  svg.equity{width:100%;height:240px;display:block}
-  .strat-head{display:flex;flex-wrap:wrap;align-items:center;gap:10px}
-  .strat-head h3{margin:0;font-size:19px}
-  .badge{font-size:11px;font-weight:700;padding:3px 9px;border-radius:999px;
-    background:var(--panel2);border:1px solid var(--line);color:var(--muted)}
-  .badge.live{color:var(--green);border-color:rgba(33,208,122,.4)}
-  .desc{color:var(--muted);font-size:13.5px;margin:10px 0 4px;max-width:760px}
-  table{width:100%;border-collapse:collapse;margin-top:12px;font-size:13.5px}
-  th,td{text-align:right;padding:9px 10px;border-bottom:1px solid var(--line);white-space:nowrap}
-  th:first-child,td:first-child{text-align:left}
-  th{color:var(--muted);font-weight:600;font-size:11.5px;text-transform:uppercase;letter-spacing:.5px}
-  tbody tr:hover{background:var(--panel2)}
-  .pill{font-weight:700;font-size:12px;padding:2px 8px;border-radius:6px}
-  .pill.long{color:var(--green);background:rgba(33,208,122,.12)}
-  .pill.short{color:var(--red);background:rgba(255,93,93,.12)}
-  footer{margin:48px 0 60px;color:var(--muted);font-size:12.5px;border-top:1px solid var(--line);padding-top:20px}
-  .disc{background:var(--panel);border:1px solid var(--line);border-left:3px solid var(--accent2);
-    border-radius:8px;padding:14px 16px;margin-top:14px;color:var(--muted);font-size:12.5px}
-  .empty{color:var(--muted);padding:30px 0;text-align:center}
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{margin:0;background:#0a0b0f;}
+  ::selection{background:rgba(232,178,58,.3);color:#fff;}
+  @keyframes wk-fade{from{opacity:0;transform:translateY(16px);}to{opacity:1;transform:none;}}
+  @keyframes wk-glint{0%,100%{opacity:0;transform:translateX(-130%) skewX(-18deg);}20%,32%{opacity:.85;}55%{transform:translateX(240%) skewX(-18deg);}}
+  @keyframes wk-draw{from{stroke-dashoffset:1000;}to{stroke-dashoffset:0;}}
+  @keyframes wk-pulse{0%,100%{opacity:1;box-shadow:0 0 0 0 rgba(52,211,153,.55);}50%{opacity:.7;box-shadow:0 0 0 6px rgba(52,211,153,0);}}
+  @keyframes wk-float{0%,100%{transform:translateY(0) rotate(0);}50%{transform:translateY(-10px) rotate(2deg);}}
+  @keyframes wk-spin{to{transform:rotate(360deg);}}
+  .wk-reveal{animation:wk-fade .8s cubic-bezier(.2,.7,.2,1) both;}
+  .wk-navlink{color:#9aa0ad;text-decoration:none;font-size:14px;font-weight:500;transition:color .2s;}
+  .wk-navlink:hover{color:#E8B23A;}
+  .wk-cta{transition:transform .2s, box-shadow .2s;}
+  .wk-cta:hover{transform:translateY(-2px);box-shadow:0 12px 30px -10px rgba(232,178,58,.5);}
+  .wk-ghost{transition:border-color .2s,color .2s,background .2s;}
+  .wk-ghost:hover{border-color:#E8B23A;color:#E8B23A;background:rgba(232,178,58,.06);}
+  .wk-trow{transition:background .15s;}
+  .wk-trow:hover{background:rgba(232,178,58,.04);}
+  .wk-price{transition:transform .25s, border-color .25s, box-shadow .25s;}
+  .wk-price:hover{transform:translateY(-6px);border-color:#2c313d;}
+  .wk-faq summary{cursor:pointer;list-style:none;transition:color .2s;}
+  .wk-faq summary::-webkit-details-marker{display:none;}
+  .wk-faq[open] .wk-chev{transform:rotate(45deg);}
+  .wk-faq summary:hover{color:#E8B23A;}
+  .wk-link{color:#E8B23A;text-decoration:none;border-bottom:1px solid rgba(232,178,58,.3);transition:border-color .2s;}
+  .wk-link:hover{border-color:#E8B23A;}
+  .wk-input:focus{outline:none;border-color:#E8B23A;background:rgba(232,178,58,.05);}
+  body{font-family:'Manrope',sans-serif;color:#E7E9EE;}
 </style>
 </head>
 <body>
-<header class="hero"><div class="wrap">
-  <div class="brand">Wukong <span>Algo</span></div>
-  <div class="tag">Live algorithmic trading performance — every trade logged and published, win or loss. No cherry-picking, no edits.</div>
-  <div class="updated"><span class="dot"></span><span id="updated">Loading…</span></div>
-</div></header>
 
-<main class="wrap" id="app">
-  <div class="empty">Loading performance data…</div>
-</main>
 
-<footer class="wrap">
-  <div><strong>Wukong Algo</strong> — built for transparency. Data regenerates automatically from the live trade log.</div>
-  <div class="disc">
-    <strong>Disclaimer:</strong> Trading futures involves substantial risk of loss and is not suitable for every investor.
-    Past performance is not indicative of future results. Nothing on this page is financial advice or a solicitation to trade.
-    Figures are derived from the strategy's own logged fills and may differ from any individual account.
-  </div>
-</footer>
+<div style="background:#0a0b0f;font-family:'Manrope',sans-serif;color:#E7E9EE;min-height:100vh;overflow-x:hidden;position:relative;">
+
+  
+
+  <!-- ambient bg -->
+  <div style="position:fixed;inset:0;pointer-events:none;background:radial-gradient(80% 50% at 50% -8%, rgba(232,178,58,.07), transparent 60%), radial-gradient(60% 40% at 90% 10%, rgba(52,211,153,.04), transparent 60%);z-index:0;"></div>
+
+  <!-- ===================== HEADER ===================== -->
+  <header style="position:sticky;top:0;z-index:50;backdrop-filter:blur(14px);background:rgba(10,11,15,.72);border-bottom:1px solid #16181f;">
+    <div style="max-width:1200px;margin:0 auto;padding:0 28px;height:66px;display:flex;align-items:center;justify-content:space-between;gap:24px;">
+      <a href="#top" style="display:flex;align-items:center;gap:11px;text-decoration:none;">
+        <span style="position:relative;width:34px;height:34px;border:2px solid #E8B23A;border-radius:9px;display:flex;align-items:center;justify-content:center;background:radial-gradient(120% 120% at 30% 20%, rgba(232,178,58,.16), rgba(232,178,58,.02));overflow:hidden;">
+          <span style="font-family:'Noto Serif SC',serif;font-weight:700;font-size:21px;color:#F2C657;line-height:1;">悟</span>
+          <span style="position:absolute;top:0;left:0;width:60%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.5),transparent);mix-blend-mode:overlay;animation:wk-glint 6s ease-in-out 1.5s infinite;"></span>
+        </span>
+        <span style="font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:18px;letter-spacing:-.01em;color:#fff;">Wukong<span style="color:#E8B23A;">Algo</span></span>
+      </a>
+      <nav style="display:flex;align-items:center;gap:30px;">
+        <a class="wk-navlink" href="#performance">Performance</a>
+        <a class="wk-navlink" href="#about">About</a>
+        <a class="wk-navlink" href="#pricing">Pricing</a>
+        <a class="wk-navlink" href="#faq">FAQ</a>
+        <a class="wk-cta" href="#join" style="display:inline-flex;align-items:center;gap:7px;padding:9px 17px;border-radius:9px;background:linear-gradient(180deg,#F3C95A,#E8B23A);color:#1a1205;font-weight:700;font-size:13.5px;text-decoration:none;box-shadow:0 6px 18px -8px rgba(232,178,58,.6);">Join waitlist</a>
+      </nav>
+    </div>
+  </header>
+
+  <main style="position:relative;z-index:1;">
+
+    <!-- ===================== HERO ===================== -->
+    <section id="top" style="max-width:1200px;margin:0 auto;padding:74px 28px 40px;display:grid;grid-template-columns:1.05fr .95fr;gap:56px;align-items:center;">
+      <div class="wk-reveal">
+        <div style="display:inline-flex;align-items:center;gap:9px;padding:6px 13px;border:1px solid #23262f;border-radius:99px;background:rgba(255,255,255,.02);margin-bottom:24px;">
+          <span style="width:8px;height:8px;border-radius:50%;background:#34D399;animation:wk-pulse 2.2s ease-in-out infinite;"></span>
+          <span style="font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:#9aa0ad;">Live · updated every fill</span>
+        </div>
+        <h1 style="font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:54px;line-height:1.04;letter-spacing:-.025em;margin:0 0 20px;color:#fff;text-wrap:balance;">Algorithmic trading,<br>with <span style="color:#E8B23A;">nothing hidden.</span></h1>
+        <p style="font-size:17.5px;line-height:1.6;color:#9aa0ad;max-width:500px;margin:0 0 32px;">Wukong Algo logs every live fill the strategy takes — win or loss — and publishes it here in real time. No cherry-picking, no edits, no curve-fit backtests. Just the track record, as it happens.</p>
+        <div style="display:flex;gap:14px;flex-wrap:wrap;">
+          <a class="wk-cta" href="#performance" style="display:inline-flex;align-items:center;gap:8px;padding:14px 24px;border-radius:11px;background:linear-gradient(180deg,#F3C95A,#E8B23A);color:#1a1205;font-weight:700;font-size:15px;text-decoration:none;box-shadow:0 10px 28px -10px rgba(232,178,58,.55);">View live performance
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="#1a1205" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+          </a>
+          <a class="wk-ghost" href="#join" style="display:inline-flex;align-items:center;padding:14px 24px;border-radius:11px;border:1px solid #2a2e38;color:#E7E9EE;font-weight:600;font-size:15px;text-decoration:none;">Join the waitlist</a>
+        </div>
+        <div style="display:flex;gap:28px;margin-top:38px;flex-wrap:wrap;">
+          <div><div style="font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:#6b7280;margin-bottom:5px;">Verification</div><div style="font-size:14px;color:#c7ccd6;font-weight:600;">Live fills only</div></div>
+          <div style="width:1px;background:#1d2029;"></div>
+          <div><div style="font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:#6b7280;margin-bottom:5px;">Platform</div><div style="font-size:14px;color:#c7ccd6;font-weight:600;">NinjaTrader 8</div></div>
+          <div style="width:1px;background:#1d2029;"></div>
+          <div><div style="font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:#6b7280;margin-bottom:5px;">Markets</div><div style="font-size:14px;color:#c7ccd6;font-weight:600;">CME Micro Futures</div></div>
+        </div>
+      </div>
+
+      <!-- hero card -->
+      <div class="wk-reveal" style="animation-delay:.12s;position:relative;">
+        <!-- floating staff accent -->
+        <div style="position:absolute;right:-30px;top:-46px;opacity:.5;animation:wk-float 7s ease-in-out infinite;pointer-events:none;">
+          <svg viewBox="0 0 100 100" width="72" height="72" fill="none" style="transform:rotate(34deg);">
+            <defs><linearGradient id="hs-g" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#8a5c10"></stop><stop offset=".5" stop-color="#FFF1C2"></stop><stop offset="1" stop-color="#6f4a0c"></stop></linearGradient><linearGradient id="hs-d" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#15151b"></stop><stop offset=".5" stop-color="#3a3a44"></stop><stop offset="1" stop-color="#0e0e13"></stop></linearGradient></defs>
+            <rect x="46.5" y="30" width="7" height="40" rx="1.5" fill="url(#hs-d)"></rect>
+            <line x1="50" y1="31" x2="50" y2="69" stroke="#E8B23A" stroke-width=".5" opacity=".5" stroke-dasharray="1 4"></line>
+            <path d="M50 9 C 53 9,54 12,53.3 14 C 56 15.2,57 18,56.2 21 C 58 23,57.3 27.5,54.5 28.8 C 55.5 30, 54 31, 53 31.6 L53 32.2 L47 32.2 L47 31.6 C 46 31, 44.5 30, 45.5 28.8 C 42.7 27.5, 42 23, 43.8 21 C 43 18, 44 15.2, 46.7 14 C 46 12, 47 9, 50 9 Z" fill="url(#hs-g)" stroke="#7d540f" stroke-width=".4"></path>
+            <g transform="translate(0 100) scale(1 -1)"><path d="M50 9 C 53 9,54 12,53.3 14 C 56 15.2,57 18,56.2 21 C 58 23,57.3 27.5,54.5 28.8 C 55.5 30, 54 31, 53 31.6 L53 32.2 L47 32.2 L47 31.6 C 46 31, 44.5 30, 45.5 28.8 C 42.7 27.5, 42 23, 43.8 21 C 43 18, 44 15.2, 46.7 14 C 46 12, 47 9, 50 9 Z" fill="url(#hs-g)" stroke="#7d540f" stroke-width=".4"></path></g>
+          </svg>
+        </div>
+        <div style="border:1px solid #1d2029;border-radius:20px;background:linear-gradient(180deg,#111319,#0b0c11);padding:28px 28px 24px;box-shadow:0 30px 80px -40px rgba(0,0,0,.9);">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:18px;">
+            <div>
+              <div style="font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:#6b7280;margin-bottom:9px;">Net P&amp;L · since inception</div>
+              <div style="font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:44px;line-height:1;color:#34D399;letter-spacing:-.02em;" id="h-netpnl">+$59,390</div>
+            </div>
+            <div style="text-align:right;">
+              <div style="display:inline-flex;align-items:center;gap:5px;padding:5px 10px;border-radius:8px;background:rgba(52,211,153,.12);color:#34D399;font-family:'JetBrains Mono',monospace;font-weight:600;font-size:12.5px;" id="h-winbadge">▲ 54.6% win</div>
+              <div style="font-size:12px;color:#6b7280;margin-top:8px;" id="h-trades">240 trades</div>
+            </div>
+          </div>
+          <!-- sparkline -->
+          <svg viewBox="0 0 320 84" width="100%" height="84" preserveAspectRatio="none" style="display:block;">
+            <defs>
+              <linearGradient id="spark-f" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="rgba(52,211,153,.28)"></stop><stop offset="1" stop-color="rgba(52,211,153,0)"></stop></linearGradient>
+            </defs>
+            <path d="M0 70 L26 64 L52 67 L78 54 L104 58 L130 44 L156 49 L182 38 L208 41 L234 28 L260 33 L286 18 L320 8 L320 84 L0 84 Z" id="spark-area" fill="url(#spark-f)"></path>
+            <path d="M0 70 L26 64 L52 67 L78 54 L104 58 L130 44 L156 49 L182 38 L208 41 L234 28 L260 33 L286 18 L320 8" fill="none" id="spark-line" stroke="#34D399" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+            <circle id="spark-dot" cx="320" cy="8" r="3.5" fill="#34D399"></circle>
+          </svg>
+          <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:20px;">
+            <div style="border:1px solid #1b1e27;border-radius:11px;padding:12px;"><div style="font-size:11px;color:#6b7280;margin-bottom:5px;">Profit factor</div><div style="font-family:'JetBrains Mono',monospace;font-weight:600;font-size:18px;color:#fff;" id="h-pf">1.54</div></div>
+            <div style="border:1px solid #1b1e27;border-radius:11px;padding:12px;"><div style="font-size:11px;color:#6b7280;margin-bottom:5px;">Max DD</div><div style="font-family:'JetBrains Mono',monospace;font-weight:600;font-size:18px;color:#E7E9EE;" id="h-maxdd">-8.9%</div></div>
+            <div style="border:1px solid #1b1e27;border-radius:11px;padding:12px;"><div style="font-size:11px;color:#6b7280;margin-bottom:5px;">Payoff</div><div style="font-family:'JetBrains Mono',monospace;font-weight:600;font-size:18px;color:#fff;" id="h-payoff">1.42</div></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- marquee strip -->
+    <div style="border-top:1px solid #14161d;border-bottom:1px solid #14161d;background:rgba(255,255,255,.012);margin-top:30px;">
+      <div style="max-width:1200px;margin:0 auto;padding:16px 28px;display:flex;align-items:center;gap:40px;flex-wrap:wrap;font-family:'JetBrains Mono',monospace;font-size:12.5px;color:#7b818d;">
+        <span style="color:#E8B23A;letter-spacing:.16em;text-transform:uppercase;">Principles —</span>
+        <span>◇ No cherry-picking</span>
+        <span>◇ Live fills only</span>
+        <span>◇ Risk before reward</span>
+        <span>◇ Every loss published</span>
+        <span>◇ Systematic, never discretionary</span>
+      </div>
+    </div>
+
+    <!-- ===================== PERFORMANCE ===================== -->
+    <section id="performance" style="max-width:1200px;margin:0 auto;padding:84px 28px;scroll-margin-top:80px;">
+      <div style="display:flex;align-items:flex-end;justify-content:space-between;gap:24px;margin-bottom:34px;flex-wrap:wrap;">
+        <div>
+          <div style="display:flex;align-items:center;gap:11px;margin-bottom:13px;"><span style="width:26px;height:1px;background:linear-gradient(90deg,#E8B23A,transparent);"></span><span style="font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:.28em;text-transform:uppercase;color:#E8B23A;">Live performance</span></div>
+          <h2 style="font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:36px;line-height:1.08;letter-spacing:-.02em;margin:0;color:#fff;">The full track record</h2>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px;padding:8px 13px;border:1px solid #1d2029;border-radius:10px;font-family:'JetBrains Mono',monospace;font-size:12px;color:#9aa0ad;"><span style="width:7px;height:7px;border-radius:50%;background:#34D399;animation:wk-pulse 2.2s ease-in-out infinite;"></span><span id="last-sync">Last sync 2 min ago</span></div>
+      </div>
+
+      <!-- stats grid -->
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:18px;">
+        <div style="border:1px solid #1b1e27;border-radius:15px;background:linear-gradient(180deg,#111319,#0c0d12);padding:20px;"><div style="font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:#6b7280;margin-bottom:11px;">Net P&amp;L</div><div style="font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:28px;color:#34D399;" id="s-netpnl">+$59,390</div></div>
+        <div style="border:1px solid #1b1e27;border-radius:15px;background:linear-gradient(180deg,#111319,#0c0d12);padding:20px;"><div style="font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:#6b7280;margin-bottom:11px;">Win rate</div><div style="font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:28px;color:#fff;" id="s-winrate">54.6%</div></div>
+        <div style="border:1px solid #1b1e27;border-radius:15px;background:linear-gradient(180deg,#111319,#0c0d12);padding:20px;"><div style="font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:#6b7280;margin-bottom:11px;">Profit factor</div><div style="font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:28px;color:#fff;" id="s-pf">1.54</div></div>
+        <div style="border:1px solid #1b1e27;border-radius:15px;background:linear-gradient(180deg,#111319,#0c0d12);padding:20px;"><div style="font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:#6b7280;margin-bottom:11px;">Total trades</div><div style="font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:28px;color:#fff;" id="s-trades">240</div></div>
+      </div>
+
+      <!-- chart + side stats -->
+      <div style="display:grid;grid-template-columns:1fr 270px;gap:14px;">
+        <div style="border:1px solid #1b1e27;border-radius:18px;background:linear-gradient(180deg,#111319,#0b0c11);padding:24px 22px 16px;">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+            <div style="font-weight:600;font-size:15px;color:#E7E9EE;">Cumulative net P&amp;L</div>
+            <div style="font-family:'JetBrains Mono',monospace;font-size:12px;color:#6b7280;" id="eq-range">Aug 2025 — Jun 2026</div>
+          </div>
+          <div style="position:relative;">
+            <!-- gridlines + labels -->
+            <svg viewBox="0 0 1000 300" width="100%" height="300" preserveAspectRatio="none" style="display:block;">
+              <defs>
+                <linearGradient id="eq-fill" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="rgba(232,178,58,.20)"></stop><stop offset=".7" stop-color="rgba(232,178,58,.03)"></stop><stop offset="1" stop-color="rgba(232,178,58,0)"></stop></linearGradient>
+                <linearGradient id="eq-line" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#C8901F"></stop><stop offset=".6" stop-color="#E8B23A"></stop><stop offset="1" stop-color="#34D399"></stop></linearGradient>
+              </defs>
+              <line x1="0" y1="290" x2="1000" y2="290" stroke="#1b1e27" stroke-width="1"></line>
+              <line x1="0" y1="196" x2="1000" y2="196" stroke="#15171e" stroke-width="1"></line>
+              <line x1="0" y1="103" x2="1000" y2="103" stroke="#15171e" stroke-width="1"></line>
+              <line x1="0" y1="14" x2="1000" y2="14" stroke="#15171e" stroke-width="1"></line>
+              <path d="M0.0 290.0 L4.2 283.7 L8.3 278.9 L12.5 280.8 L16.7 275.2 L20.8 267.0 L25.0 263.8 L29.2 254.2 L33.3 248.3 L37.5 243.6 L41.7 248.5 L45.8 239.3 L50.0 232.5 L54.2 237.4 L58.3 230.2 L62.5 227.4 L66.7 217.9 L70.8 210.7 L75.0 201.9 L79.2 194.9 L83.3 191.9 L87.5 183.1 L91.7 188.6 L95.8 192.7 L100.0 185.6 L104.2 192.8 L108.3 199.9 L112.5 207.2 L116.7 200.6 L120.8 205.6 L125.0 211.5 L129.2 206.7 L133.3 201.6 L137.5 207.1 L141.7 214.5 L145.8 219.4 L150.0 213.0 L154.2 203.4 L158.3 205.4 L162.5 196.4 L166.7 202.3 L170.8 204.7 L175.0 208.7 L179.2 215.7 L183.3 219.2 L187.5 212.2 L191.7 216.3 L195.8 206.8 L200.0 201.9 L204.2 194.4 L208.3 187.2 L212.5 192.9 L216.7 185.1 L220.8 176.4 L225.0 174.1 L229.2 177.6 L233.3 182.9 L237.5 177.0 L241.7 179.9 L245.8 173.6 L250.0 167.8 L254.2 161.3 L258.3 166.0 L262.5 169.5 L266.7 175.7 L270.8 178.5 L275.0 184.5 L279.2 190.5 L283.3 196.4 L287.5 199.1 L291.7 203.2 L295.8 197.5 L300.0 191.9 L304.2 197.9 L308.3 193.5 L312.5 188.7 L316.7 195.2 L320.8 187.7 L325.0 180.6 L329.2 174.3 L333.3 167.9 L337.5 164.7 L341.7 167.8 L345.8 172.3 L350.0 168.8 L354.2 171.2 L358.3 164.1 L362.5 159.0 L366.7 164.8 L370.8 155.2 L375.0 149.1 L379.2 145.4 L383.3 142.2 L387.5 137.9 L391.7 142.9 L395.8 136.4 L400.0 142.7 L404.2 137.5 L408.3 131.8 L412.5 123.4 L416.7 118.5 L420.8 109.6 L425.0 116.8 L429.2 119.7 L433.3 125.4 L437.5 132.1 L441.7 126.9 L445.8 120.2 L450.0 123.9 L454.2 120.6 L458.3 114.3 L462.5 119.0 L466.7 114.6 L470.8 105.1 L475.0 102.4 L479.2 104.9 L483.3 111.5 L487.5 114.5 L491.7 120.0 L495.8 125.9 L500.0 128.4 L504.2 119.5 L508.3 112.8 L512.5 107.2 L516.7 110.0 L520.8 106.8 L525.0 112.2 L529.2 106.9 L533.3 113.4 L537.5 106.6 L541.7 100.4 L545.8 93.3 L550.0 95.8 L554.2 92.8 L558.3 97.2 L562.5 100.9 L566.7 93.9 L570.8 98.7 L575.0 91.4 L579.2 86.2 L583.3 83.2 L587.5 89.0 L591.7 96.1 L595.8 99.0 L600.0 93.8 L604.2 96.4 L608.3 101.6 L612.5 95.4 L616.7 87.3 L620.8 90.9 L625.0 81.3 L629.2 83.4 L633.3 88.8 L637.5 92.6 L641.7 95.2 L645.8 98.5 L650.0 104.7 L654.2 107.8 L658.3 112.0 L662.5 118.1 L666.7 109.3 L670.8 116.8 L675.0 113.4 L679.2 106.7 L683.3 101.4 L687.5 96.7 L691.7 93.6 L695.8 88.6 L700.0 81.1 L704.2 72.4 L708.3 79.5 L712.5 86.7 L716.7 89.1 L720.8 84.4 L725.0 88.7 L729.2 85.0 L733.3 79.9 L737.5 74.3 L741.7 80.8 L745.8 85.4 L750.0 82.2 L754.2 77.7 L758.3 74.7 L762.5 81.3 L766.7 88.5 L770.8 86.0 L775.0 80.9 L779.2 73.3 L783.3 78.3 L787.5 70.0 L791.7 65.1 L795.8 70.5 L800.0 74.3 L804.2 79.3 L808.3 72.4 L812.5 64.4 L816.7 68.0 L820.8 74.1 L825.0 67.5 L829.2 64.4 L833.3 56.5 L837.5 59.4 L841.7 57.2 L845.8 53.9 L850.0 46.3 L854.2 43.6 L858.3 36.9 L862.5 39.6 L866.7 45.6 L870.8 50.0 L875.0 55.8 L879.2 60.7 L883.3 64.4 L887.5 59.3 L891.7 50.4 L895.8 46.7 L900.0 48.9 L904.2 55.3 L908.3 48.5 L912.5 45.3 L916.7 37.6 L920.8 30.7 L925.0 33.7 L929.2 38.3 L933.3 44.2 L937.5 34.7 L941.7 41.8 L945.8 32.9 L950.0 36.5 L954.2 42.2 L958.3 44.7 L962.5 37.9 L966.7 34.2 L970.8 25.2 L975.0 28.7 L979.2 23.5 L983.3 16.8 L987.5 12.0 L991.7 18.0 L995.8 19.9 L1000.0 13.0 L1000 300 L0 300 Z" id="eq-area" fill="url(#eq-fill)"></path>
+              <path id="eq-line" pathLength="1000" d="M0.0 290.0 L4.2 283.7 L8.3 278.9 L12.5 280.8 L16.7 275.2 L20.8 267.0 L25.0 263.8 L29.2 254.2 L33.3 248.3 L37.5 243.6 L41.7 248.5 L45.8 239.3 L50.0 232.5 L54.2 237.4 L58.3 230.2 L62.5 227.4 L66.7 217.9 L70.8 210.7 L75.0 201.9 L79.2 194.9 L83.3 191.9 L87.5 183.1 L91.7 188.6 L95.8 192.7 L100.0 185.6 L104.2 192.8 L108.3 199.9 L112.5 207.2 L116.7 200.6 L120.8 205.6 L125.0 211.5 L129.2 206.7 L133.3 201.6 L137.5 207.1 L141.7 214.5 L145.8 219.4 L150.0 213.0 L154.2 203.4 L158.3 205.4 L162.5 196.4 L166.7 202.3 L170.8 204.7 L175.0 208.7 L179.2 215.7 L183.3 219.2 L187.5 212.2 L191.7 216.3 L195.8 206.8 L200.0 201.9 L204.2 194.4 L208.3 187.2 L212.5 192.9 L216.7 185.1 L220.8 176.4 L225.0 174.1 L229.2 177.6 L233.3 182.9 L237.5 177.0 L241.7 179.9 L245.8 173.6 L250.0 167.8 L254.2 161.3 L258.3 166.0 L262.5 169.5 L266.7 175.7 L270.8 178.5 L275.0 184.5 L279.2 190.5 L283.3 196.4 L287.5 199.1 L291.7 203.2 L295.8 197.5 L300.0 191.9 L304.2 197.9 L308.3 193.5 L312.5 188.7 L316.7 195.2 L320.8 187.7 L325.0 180.6 L329.2 174.3 L333.3 167.9 L337.5 164.7 L341.7 167.8 L345.8 172.3 L350.0 168.8 L354.2 171.2 L358.3 164.1 L362.5 159.0 L366.7 164.8 L370.8 155.2 L375.0 149.1 L379.2 145.4 L383.3 142.2 L387.5 137.9 L391.7 142.9 L395.8 136.4 L400.0 142.7 L404.2 137.5 L408.3 131.8 L412.5 123.4 L416.7 118.5 L420.8 109.6 L425.0 116.8 L429.2 119.7 L433.3 125.4 L437.5 132.1 L441.7 126.9 L445.8 120.2 L450.0 123.9 L454.2 120.6 L458.3 114.3 L462.5 119.0 L466.7 114.6 L470.8 105.1 L475.0 102.4 L479.2 104.9 L483.3 111.5 L487.5 114.5 L491.7 120.0 L495.8 125.9 L500.0 128.4 L504.2 119.5 L508.3 112.8 L512.5 107.2 L516.7 110.0 L520.8 106.8 L525.0 112.2 L529.2 106.9 L533.3 113.4 L537.5 106.6 L541.7 100.4 L545.8 93.3 L550.0 95.8 L554.2 92.8 L558.3 97.2 L562.5 100.9 L566.7 93.9 L570.8 98.7 L575.0 91.4 L579.2 86.2 L583.3 83.2 L587.5 89.0 L591.7 96.1 L595.8 99.0 L600.0 93.8 L604.2 96.4 L608.3 101.6 L612.5 95.4 L616.7 87.3 L620.8 90.9 L625.0 81.3 L629.2 83.4 L633.3 88.8 L637.5 92.6 L641.7 95.2 L645.8 98.5 L650.0 104.7 L654.2 107.8 L658.3 112.0 L662.5 118.1 L666.7 109.3 L670.8 116.8 L675.0 113.4 L679.2 106.7 L683.3 101.4 L687.5 96.7 L691.7 93.6 L695.8 88.6 L700.0 81.1 L704.2 72.4 L708.3 79.5 L712.5 86.7 L716.7 89.1 L720.8 84.4 L725.0 88.7 L729.2 85.0 L733.3 79.9 L737.5 74.3 L741.7 80.8 L745.8 85.4 L750.0 82.2 L754.2 77.7 L758.3 74.7 L762.5 81.3 L766.7 88.5 L770.8 86.0 L775.0 80.9 L779.2 73.3 L783.3 78.3 L787.5 70.0 L791.7 65.1 L795.8 70.5 L800.0 74.3 L804.2 79.3 L808.3 72.4 L812.5 64.4 L816.7 68.0 L820.8 74.1 L825.0 67.5 L829.2 64.4 L833.3 56.5 L837.5 59.4 L841.7 57.2 L845.8 53.9 L850.0 46.3 L854.2 43.6 L858.3 36.9 L862.5 39.6 L866.7 45.6 L870.8 50.0 L875.0 55.8 L879.2 60.7 L883.3 64.4 L887.5 59.3 L891.7 50.4 L895.8 46.7 L900.0 48.9 L904.2 55.3 L908.3 48.5 L912.5 45.3 L916.7 37.6 L920.8 30.7 L925.0 33.7 L929.2 38.3 L933.3 44.2 L937.5 34.7 L941.7 41.8 L945.8 32.9 L950.0 36.5 L954.2 42.2 L958.3 44.7 L962.5 37.9 L966.7 34.2 L970.8 25.2 L975.0 28.7 L979.2 23.5 L983.3 16.8 L987.5 12.0 L991.7 18.0 L995.8 19.9 L1000.0 13.0" fill="none" stroke="url(#eq-line)" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="1000" style="animation:wk-draw 2.6s ease-out .2s both;"></path>
+            </svg>
+            <!-- y labels -->
+            <div style="position:absolute;top:0;left:0;height:300px;width:100%;pointer-events:none;font-family:'JetBrains Mono',monospace;font-size:10.5px;color:#5a606b;">
+              <span style="position:absolute;left:2px;top:7px;" id="eq-y0">$60k</span>
+              <span style="position:absolute;left:2px;top:96px;" id="eq-y1">$40k</span>
+              <span style="position:absolute;left:2px;top:189px;" id="eq-y2">$20k</span>
+              <span style="position:absolute;left:2px;top:280px;" id="eq-y3">$0</span>
+            </div>
+          </div>
+          <div style="display:flex;justify-content:space-between;font-family:'JetBrains Mono',monospace;font-size:10.5px;color:#5a606b;margin-top:6px;padding:0 4px;" id="eq-months">
+            <span>Aug</span><span>Oct</span><span>Dec</span><span>Feb</span><span>Apr</span><span>Jun</span>
+          </div>
+        </div>
+
+        <!-- side stats -->
+        <div style="display:flex;flex-direction:column;gap:14px;">
+          <div style="border:1px solid #1b1e27;border-radius:18px;background:linear-gradient(180deg,#111319,#0c0d12);padding:18px;flex:1;display:flex;flex-direction:column;justify-content:center;gap:16px;">
+            <div><div style="font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:#6b7280;margin-bottom:6px;">Max drawdown</div><div style="font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:22px;color:#E7E9EE;" id="ss-maxdd">-8.9%</div></div>
+            <div style="height:1px;background:#1b1e27;"></div>
+            <div><div style="font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:#6b7280;margin-bottom:6px;">Payoff ratio</div><div style="font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:22px;color:#E7E9EE;" id="ss-payoff">1.42</div></div>
+            <div style="height:1px;background:#1b1e27;"></div>
+            <div><div style="font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:#6b7280;margin-bottom:6px;">Avg / trade</div><div style="font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:22px;color:#E7E9EE;" id="ss-avg">7m 24s</div></div>
+            <div style="height:1px;background:#1b1e27;"></div>
+            <div><div style="font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:#6b7280;margin-bottom:6px;">Best trade</div><div style="font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:22px;color:#E7E9EE;" id="ss-best">1.8</div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- recent trades -->
+      <div style="border:1px solid #1b1e27;border-radius:18px;background:linear-gradient(180deg,#111319,#0b0c11);margin-top:14px;overflow:hidden;">
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:20px 22px 14px;">
+          <div style="font-weight:600;font-size:15px;color:#E7E9EE;">Recent trades</div>
+          <div style="font-family:'JetBrains Mono',monospace;font-size:12px;color:#6b7280;">strategy: <span id="strat-name" style="color:#E8B23A;">Follow940</span></div>
+        </div>
+        <div style="overflow-x:auto;">
+        <table style="width:100%;border-collapse:collapse;font-size:13.5px;min-width:680px;">
+          <thead>
+            <tr style="font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:#5a606b;">
+              <th style="text-align:left;padding:10px 22px;font-weight:500;">Date / Time (ET)</th>
+              <th style="text-align:left;padding:10px 12px;font-weight:500;">Symbol</th>
+              <th style="text-align:left;padding:10px 12px;font-weight:500;">Side</th>
+              <th style="text-align:right;padding:10px 12px;font-weight:500;">Qty</th>
+              <th style="text-align:right;padding:10px 12px;font-weight:500;">Entry</th>
+              <th style="text-align:right;padding:10px 12px;font-weight:500;">Exit</th>
+              <th style="text-align:right;padding:10px 12px;font-weight:500;">Pts</th>
+              <th style="text-align:right;padding:10px 22px;font-weight:500;">P&amp;L</th>
+            </tr>
+          </thead>
+          <tbody id="wk-trades" style="font-family:'JetBrains Mono',monospace;color:#c7ccd6;"></tbody>
+        </table>
+        </div>
+        <div style="padding:14px 22px;border-top:1px solid #15171e;display:flex;justify-content:space-between;align-items:center;">
+          <span style="font-size:12.5px;color:#6b7280;" id="trade-count">Showing 8 of 240 logged trades</span>
+          <span style="font-family:'JetBrains Mono',monospace;font-size:12px;color:#5a606b;">Full log regenerates from live fills</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== ABOUT ===================== -->
+    <section id="about" style="border-top:1px solid #14161d;background:rgba(255,255,255,.012);scroll-margin-top:66px;">
+      <div style="max-width:1200px;margin:0 auto;padding:84px 28px;">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:center;">
+          <div>
+            <div style="display:flex;align-items:center;gap:11px;margin-bottom:14px;"><span style="width:26px;height:1px;background:linear-gradient(90deg,#E8B23A,transparent);"></span><span style="font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:.28em;text-transform:uppercase;color:#E8B23A;">The philosophy</span></div>
+            <h2 style="font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:36px;line-height:1.1;letter-spacing:-.02em;margin:0 0 22px;color:#fff;">Discipline of the Monkey King.</h2>
+            <p style="font-size:16px;line-height:1.7;color:#9aa0ad;margin:0 0 18px;">Sun Wukong was at his most dangerous not when he was wild, but when he was disciplined — the golden band around his head turned raw power into control. Wukong Algo is built on the same idea: a strategy is only worth trusting when it's <span style="color:#E7E9EE;">bound by rules and held accountable</span>.</p>
+            <p style="font-size:16px;line-height:1.7;color:#9aa0ad;margin:0 0 18px;">Every position is taken by code — no overrides, no gut calls, no "this time is different." The algorithm reads the market, sizes the risk, and executes. Then it writes down exactly what it did, and we publish it here. The wins and the losses get the same ink.</p>
+            <p style="font-size:16px;line-height:1.7;color:#9aa0ad;margin:0;">Most track records are marketing. This one is a receipt.</p>
+          </div>
+          <div style="display:flex;justify-content:center;align-items:center;position:relative;">
+            <div style="position:absolute;width:280px;height:280px;border-radius:50%;background:radial-gradient(circle,rgba(232,178,58,.10),transparent 65%);"></div>
+            <svg viewBox="0 0 100 100" width="240" height="240" fill="none" style="position:relative;animation:wk-float 8s ease-in-out infinite;">
+              <defs><linearGradient id="ab-cg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FCE9A8"></stop><stop offset=".5" stop-color="#E8B23A"></stop><stop offset="1" stop-color="#915F11"></stop></linearGradient></defs>
+              <path d="M37.99 41.61 A30.5 30.5 0 1 0 53.99 41.61" stroke="#5e3f0a" stroke-width="7.5" stroke-linecap="round" opacity=".5"></path>
+              <path d="M37.99 41.61 A30.5 30.5 0 1 0 53.99 41.61" stroke="url(#ab-cg)" stroke-width="5.5" stroke-linecap="round"></path>
+              <path d="M37.99 41.61 A30.5 30.5 0 1 0 53.99 41.61" stroke="#FFF7DD" stroke-width="1" stroke-linecap="round" stroke-dasharray="1.5 9" opacity=".55"></path>
+              <g fill="#C8901F" stroke="#FBE6A6" stroke-width=".5"><rect x="19.5" y="56" width="6" height="7" rx="1.5" transform="rotate(-58 22.5 59.5)"></rect><rect x="74.5" y="56" width="6" height="7" rx="1.5" transform="rotate(58 77.5 59.5)"></rect></g>
+              <path d="M42.00 33.00 L41.85 32.88 L41.76 32.71 L41.74 32.49 L41.81 32.26 L41.97 32.05 L42.21 31.88 L42.52 31.78 L42.89 31.77 L43.28 31.86 L43.66 32.08 L44.00 32.41 L44.27 32.85 L44.44 33.38 L44.48 33.97 L44.36 34.59 L44.09 35.21 L43.65 35.77 L43.07 36.25 L42.35 36.59 L41.54 36.77 L40.66 36.76 L39.77 36.54 L38.92 36.10 L38.16 35.46 L37.54 34.62 L37.10 33.64 L36.89 32.54 L36.93 31.37 L37.25 30.21 L37.83 29.11 L38.67 28.14 L39.74 27.35 L41.00 26.81 L42.38 26.55 L43.83 26.61 L45.27 26.99 L46.63 27.71 L47.83 28.74 L48.79 30.03 L49.46 31.55 L49.79 33.22 L49.74 34.96 L49.29 36.68 L48.46 38.31 L47.26 39.74 L45.75 40.90 L43.98 41.71 L42.03 42.12 L40.00 42.09 L37.99 41.61" stroke="url(#ab-cg)" stroke-width="4" stroke-linecap="round"></path>
+              <path d="M58.00 33.00 L58.19 33.04 L58.38 33.00 L58.56 32.87 L58.69 32.67 L58.75 32.42 L58.72 32.12 L58.60 31.81 L58.37 31.53 L58.05 31.29 L57.64 31.13 L57.16 31.08 L56.65 31.16 L56.14 31.37 L55.66 31.73 L55.26 32.21 L54.97 32.82 L54.81 33.52 L54.82 34.27 L55.02 35.04 L55.41 35.78 L55.98 36.44 L56.72 36.98 L57.60 37.35 L58.59 37.52 L59.62 37.46 L60.66 37.16 L61.64 36.61 L62.50 35.83 L63.19 34.85 L63.66 33.69 L63.86 32.43 L63.78 31.10 L63.39 29.79 L62.69 28.56 L61.72 27.49 L60.50 26.63 L59.08 26.05 L57.52 25.80 L55.91 25.89 L54.32 26.35 L52.83 27.17 L51.53 28.33 L50.49 29.78 L49.78 31.46 L49.46 33.30 L49.54 35.20 L50.06 37.08 L50.99 38.84 L52.32 40.38 L53.99 41.61" stroke="url(#ab-cg)" stroke-width="4" stroke-linecap="round"></path>
+              <circle cx="42.4" cy="33.4" r="1.5" fill="#915F11"></circle><circle cx="57.6" cy="33.4" r="1.5" fill="#915F11"></circle>
+            </svg>
+          </div>
+        </div>
+
+        <!-- how it works -->
+        <div style="margin-top:64px;">
+          <div style="font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:.2em;text-transform:uppercase;color:#6b7280;margin-bottom:24px;">How the track record is built</div>
+          <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;">
+            <div style="border:1px solid #1b1e27;border-radius:16px;background:linear-gradient(180deg,#111319,#0c0d12);padding:24px;">
+              <div style="font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:15px;color:#E8B23A;margin-bottom:12px;">01</div>
+              <div style="font-weight:600;font-size:16px;color:#fff;margin-bottom:8px;">The algo executes live</div>
+              <p style="font-size:14px;line-height:1.6;color:#9aa0ad;margin:0;">A NinjaTrader strategy trades real CME micro futures. Only live fills are recorded — no simulated or backtested orders ever enter the log.</p>
+            </div>
+            <div style="border:1px solid #1b1e27;border-radius:16px;background:linear-gradient(180deg,#111319,#0c0d12);padding:24px;">
+              <div style="font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:15px;color:#E8B23A;margin-bottom:12px;">02</div>
+              <div style="font-weight:600;font-size:16px;color:#fff;margin-bottom:8px;">Every fill is logged</div>
+              <p style="font-size:14px;line-height:1.6;color:#9aa0ad;margin:0;">The strategy writes each trade — entry, exit, size, P&amp;L, reason — to an append-only file the moment it closes. Nothing can be quietly deleted.</p>
+            </div>
+            <div style="border:1px solid #1b1e27;border-radius:16px;background:linear-gradient(180deg,#111319,#0c0d12);padding:24px;">
+              <div style="font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:15px;color:#E8B23A;margin-bottom:12px;">03</div>
+              <div style="font-weight:600;font-size:16px;color:#fff;margin-bottom:8px;">Published, untouched</div>
+              <p style="font-size:14px;line-height:1.6;color:#9aa0ad;margin:0;">Stats and equity curves are computed straight from that log and pushed here automatically. What the algo did is exactly what you see.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== PRICING ===================== -->
+    <section id="pricing" style="max-width:1200px;margin:0 auto;padding:84px 28px;scroll-margin-top:66px;">
+      <div style="text-align:center;margin-bottom:46px;">
+        <div style="display:flex;align-items:center;justify-content:center;gap:11px;margin-bottom:14px;"><span style="width:26px;height:1px;background:linear-gradient(90deg,transparent,#E8B23A);"></span><span style="font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:.28em;text-transform:uppercase;color:#E8B23A;">Pricing</span><span style="width:26px;height:1px;background:linear-gradient(90deg,#E8B23A,transparent);"></span></div>
+        <h2 style="font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:36px;line-height:1.1;letter-spacing:-.02em;margin:0 0 12px;color:#fff;">Follow along, or follow the trades</h2>
+        <p style="font-size:16px;color:#9aa0ad;margin:0;max-width:520px;margin:0 auto;">The performance page is free forever. Paid tiers unlock the live signals and automation — launching soon.</p>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:18px;align-items:stretch;">
+        <!-- free -->
+        <div class="wk-price" style="border:1px solid #1b1e27;border-radius:20px;background:linear-gradient(180deg,#111319,#0b0c11);padding:30px 26px;display:flex;flex-direction:column;">
+          <div style="font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:#9aa0ad;margin-bottom:16px;">Transparency</div>
+          <div style="display:flex;align-items:baseline;gap:6px;margin-bottom:6px;"><span style="font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:42px;color:#fff;">$0</span><span style="color:#6b7280;font-size:14px;">/ forever</span></div>
+          <p style="font-size:13.5px;color:#9aa0ad;margin:0 0 22px;line-height:1.5;">Watch the strategy work, in full.</p>
+          <div style="display:flex;flex-direction:column;gap:12px;flex:1;">
+            <div style="display:flex;gap:10px;align-items:flex-start;font-size:14px;color:#c7ccd6;"><span style="color:#34D399;margin-top:1px;">✓</span> Live equity curve &amp; full stats</div>
+            <div style="display:flex;gap:10px;align-items:flex-start;font-size:14px;color:#c7ccd6;"><span style="color:#34D399;margin-top:1px;">✓</span> Complete trade log</div>
+            <div style="display:flex;gap:10px;align-items:flex-start;font-size:14px;color:#c7ccd6;"><span style="color:#34D399;margin-top:1px;">✓</span> Monthly performance report</div>
+            <div style="display:flex;gap:10px;align-items:flex-start;font-size:14px;color:#c7ccd6;"><span style="color:#34D399;margin-top:1px;">✓</span> Drawdown &amp; risk metrics</div>
+          </div>
+          <a class="wk-ghost" href="#performance" style="margin-top:26px;display:flex;justify-content:center;padding:12px;border-radius:11px;border:1px solid #2a2e38;color:#E7E9EE;font-weight:600;font-size:14px;text-decoration:none;">View performance</a>
+        </div>
+        <!-- pro / popular -->
+        <div class="wk-price" style="border:1px solid #E8B23A;border-radius:20px;background:linear-gradient(180deg,#16140d,#0d0c0a);padding:30px 26px;display:flex;flex-direction:column;position:relative;box-shadow:0 24px 70px -34px rgba(232,178,58,.45);">
+          <div style="position:absolute;top:-12px;left:50%;transform:translateX(-50%);background:linear-gradient(180deg,#F3C95A,#E8B23A);color:#1a1205;font-family:'JetBrains Mono',monospace;font-weight:700;font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;padding:5px 12px;border-radius:99px;">Most popular</div>
+          <div style="font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:#E8B23A;margin-bottom:16px;">Signals</div>
+          <div style="display:flex;align-items:baseline;gap:6px;margin-bottom:6px;"><span style="font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:42px;color:#fff;">$49</span><span style="color:#6b7280;font-size:14px;">/ month</span></div>
+          <p style="font-size:13.5px;color:#9aa0ad;margin:0 0 22px;line-height:1.5;">Get every entry and exit in real time.</p>
+          <div style="display:flex;flex-direction:column;gap:12px;flex:1;">
+            <div style="display:flex;gap:10px;align-items:flex-start;font-size:14px;color:#E7E9EE;"><span style="color:#E8B23A;margin-top:1px;">✓</span> Everything in Transparency</div>
+            <div style="display:flex;gap:10px;align-items:flex-start;font-size:14px;color:#E7E9EE;"><span style="color:#E8B23A;margin-top:1px;">✓</span> Real-time trade alerts (Discord &amp; Telegram)</div>
+            <div style="display:flex;gap:10px;align-items:flex-start;font-size:14px;color:#E7E9EE;"><span style="color:#E8B23A;margin-top:1px;">✓</span> Entry, exit &amp; position-size guidance</div>
+            <div style="display:flex;gap:10px;align-items:flex-start;font-size:14px;color:#E7E9EE;"><span style="color:#E8B23A;margin-top:1px;">✓</span> Private members community</div>
+          </div>
+          <a class="wk-cta" href="#join" style="margin-top:26px;display:flex;justify-content:center;padding:12px;border-radius:11px;background:linear-gradient(180deg,#F3C95A,#E8B23A);color:#1a1205;font-weight:700;font-size:14px;text-decoration:none;">Join the waitlist</a>
+        </div>
+        <!-- elite -->
+        <div class="wk-price" style="border:1px solid #1b1e27;border-radius:20px;background:linear-gradient(180deg,#111319,#0b0c11);padding:30px 26px;display:flex;flex-direction:column;">
+          <div style="font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:#9aa0ad;margin-bottom:16px;">Automation</div>
+          <div style="display:flex;align-items:baseline;gap:6px;margin-bottom:6px;"><span style="font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:42px;color:#fff;">$199</span><span style="color:#6b7280;font-size:14px;">/ month</span></div>
+          <p style="font-size:13.5px;color:#9aa0ad;margin:0 0 22px;line-height:1.5;">Let the algo trade your account for you.</p>
+          <div style="display:flex;flex-direction:column;gap:12px;flex:1;">
+            <div style="display:flex;gap:10px;align-items:flex-start;font-size:14px;color:#c7ccd6;"><span style="color:#34D399;margin-top:1px;">✓</span> Everything in Signals</div>
+            <div style="display:flex;gap:10px;align-items:flex-start;font-size:14px;color:#c7ccd6;"><span style="color:#34D399;margin-top:1px;">✓</span> Auto-copy to your NinjaTrader account</div>
+            <div style="display:flex;gap:10px;align-items:flex-start;font-size:14px;color:#c7ccd6;"><span style="color:#34D399;margin-top:1px;">✓</span> 1:1 setup &amp; onboarding</div>
+            <div style="display:flex;gap:10px;align-items:flex-start;font-size:14px;color:#c7ccd6;"><span style="color:#34D399;margin-top:1px;">✓</span> Priority support</div>
+          </div>
+          <a class="wk-ghost" href="#join" style="margin-top:26px;display:flex;justify-content:center;padding:12px;border-radius:11px;border:1px solid #2a2e38;color:#E7E9EE;font-weight:600;font-size:14px;text-decoration:none;">Join the waitlist</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== FAQ ===================== -->
+    <section id="faq" style="border-top:1px solid #14161d;background:rgba(255,255,255,.012);scroll-margin-top:66px;">
+      <div style="max-width:820px;margin:0 auto;padding:84px 28px;">
+        <div style="text-align:center;margin-bottom:44px;">
+          <div style="display:flex;align-items:center;justify-content:center;gap:11px;margin-bottom:14px;"><span style="width:26px;height:1px;background:linear-gradient(90deg,transparent,#E8B23A);"></span><span style="font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:.28em;text-transform:uppercase;color:#E8B23A;">FAQ</span><span style="width:26px;height:1px;background:linear-gradient(90deg,#E8B23A,transparent);"></span></div>
+          <h2 style="font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:34px;letter-spacing:-.02em;margin:0;color:#fff;">Questions, answered</h2>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:12px;">
+          <details class="wk-faq" style="border:1px solid #1b1e27;border-radius:14px;background:linear-gradient(180deg,#111319,#0c0d12);padding:0 20px;">
+            <summary style="display:flex;justify-content:space-between;align-items:center;gap:16px;padding:18px 0;font-weight:600;font-size:16px;color:#E7E9EE;">What exactly is Wukong Algo?<span class="wk-chev" style="color:#E8B23A;font-size:20px;transition:transform .2s;flex:none;">+</span></summary>
+            <p style="margin:0 0 18px;font-size:14.5px;line-height:1.65;color:#9aa0ad;">It's a live, fully transparent track record for an algorithmic futures-trading strategy. The algo trades real money on CME micro futures, logs every fill, and publishes the results here automatically — so you can judge it on evidence, not promises.</p>
+          </details>
+          <details class="wk-faq" style="border:1px solid #1b1e27;border-radius:14px;background:linear-gradient(180deg,#111319,#0c0d12);padding:0 20px;">
+            <summary style="display:flex;justify-content:space-between;align-items:center;gap:16px;padding:18px 0;font-weight:600;font-size:16px;color:#E7E9EE;">Is this financial advice?<span class="wk-chev" style="color:#E8B23A;font-size:20px;transition:transform .2s;flex:none;">+</span></summary>
+            <p style="margin:0 0 18px;font-size:14.5px;line-height:1.65;color:#9aa0ad;">No. Nothing here is financial advice or a solicitation to trade. It's a record of what one strategy did. Trading futures carries substantial risk of loss and isn't suitable for everyone — past performance is never a guarantee of future results.</p>
+          </details>
+          <details class="wk-faq" style="border:1px solid #1b1e27;border-radius:14px;background:linear-gradient(180deg,#111319,#0c0d12);padding:0 20px;">
+            <summary style="display:flex;justify-content:space-between;align-items:center;gap:16px;padding:18px 0;font-weight:600;font-size:16px;color:#E7E9EE;">How do I know the numbers aren't cherry-picked?<span class="wk-chev" style="color:#E8B23A;font-size:20px;transition:transform .2s;flex:none;">+</span></summary>
+            <p style="margin:0 0 18px;font-size:14.5px;line-height:1.65;color:#9aa0ad;">Because every trade is here — including the losers. The strategy logs fills to an append-only record as they happen, and the site is generated directly from that record. We don't get to choose which trades to show; the algo already chose them all.</p>
+          </details>
+          <details class="wk-faq" style="border:1px solid #1b1e27;border-radius:14px;background:linear-gradient(180deg,#111319,#0c0d12);padding:0 20px;">
+            <summary style="display:flex;justify-content:space-between;align-items:center;gap:16px;padding:18px 0;font-weight:600;font-size:16px;color:#E7E9EE;">What markets and platform does it trade?<span class="wk-chev" style="color:#E8B23A;font-size:20px;transition:transform .2s;flex:none;">+</span></summary>
+            <p style="margin:0 0 18px;font-size:14.5px;line-height:1.65;color:#9aa0ad;">The strategy runs on NinjaTrader 8 and trades CME micro futures — primarily Micro E-mini Nasdaq (MNQ) and Micro E-mini S&amp;P (MES). Micro contracts keep position sizing flexible and risk controlled.</p>
+          </details>
+          <details class="wk-faq" style="border:1px solid #1b1e27;border-radius:14px;background:linear-gradient(180deg,#111319,#0c0d12);padding:0 20px;">
+            <summary style="display:flex;justify-content:space-between;align-items:center;gap:16px;padding:18px 0;font-weight:600;font-size:16px;color:#E7E9EE;">Can I follow or copy the trades?<span class="wk-chev" style="color:#E8B23A;font-size:20px;transition:transform .2s;flex:none;">+</span></summary>
+            <p style="margin:0 0 18px;font-size:14.5px;line-height:1.65;color:#9aa0ad;">Soon. Live signals and auto-copy are launching as paid tiers — join the waitlist and you'll be first to know when they open, along with early-member pricing.</p>
+          </details>
+          <details class="wk-faq" style="border:1px solid #1b1e27;border-radius:14px;background:linear-gradient(180deg,#111319,#0c0d12);padding:0 20px;">
+            <summary style="display:flex;justify-content:space-between;align-items:center;gap:16px;padding:18px 0;font-weight:600;font-size:16px;color:#E7E9EE;">Why "Wukong"?<span class="wk-chev" style="color:#E8B23A;font-size:20px;transition:transform .2s;flex:none;">+</span></summary>
+            <p style="margin:0 0 18px;font-size:14.5px;line-height:1.65;color:#9aa0ad;">Sun Wukong — the Monkey King — is the patron of disciplined power: brilliant, adaptable, and most effective when bound by rules. That's the spirit of a good trading system. 悟 ("wù"), the first character of his name, means awakening.</p>
+          </details>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== JOIN / WAITLIST ===================== -->
+    <section id="join" style="max-width:1200px;margin:0 auto;padding:90px 28px;scroll-margin-top:66px;">
+      <div style="position:relative;border:1px solid #2a2510;border-radius:24px;background:radial-gradient(120% 140% at 50% 0%, rgba(232,178,58,.10), rgba(13,12,10,0) 60%), linear-gradient(180deg,#13120d,#0b0c11);padding:60px 40px;text-align:center;overflow:hidden;">
+        <div style="position:absolute;top:-40px;left:50%;transform:translateX(-50%);width:120px;height:120px;border-radius:50%;background:radial-gradient(circle,rgba(232,178,58,.18),transparent 70%);"></div>
+        <div style="position:relative;width:56px;height:56px;margin:0 auto 24px;border:2px solid #E8B23A;border-radius:14px;display:flex;align-items:center;justify-content:center;background:radial-gradient(120% 120% at 30% 20%, rgba(232,178,58,.16), rgba(232,178,58,.02));overflow:hidden;">
+          <span style="font-family:'Noto Serif SC',serif;font-weight:700;font-size:34px;color:#F2C657;line-height:1;">悟</span>
+          <span style="position:absolute;top:0;left:0;width:60%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.5),transparent);mix-blend-mode:overlay;animation:wk-glint 6s ease-in-out 1.5s infinite;"></span>
+        </div>
+        <h2 style="font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:36px;line-height:1.1;letter-spacing:-.02em;margin:0 0 14px;color:#fff;">Be first through the gate</h2>
+        <p style="font-size:16.5px;line-height:1.6;color:#9aa0ad;max-width:500px;margin:0 auto 32px;">Live signals and auto-copy are coming. Join the waitlist for launch access, early-member pricing, and the occasional note on how the strategy is evolving.</p>
+        <div style="max-width:480px;margin:0 auto;">
+          <div id="wk-joined" style="display:none;align-items:center;justify-content:center;gap:12px;padding:18px 24px;border:1px solid #1f5e44;border-radius:14px;background:rgba(52,211,153,.08);"><span style="width:30px;height:30px;border-radius:50%;background:#34D399;display:flex;align-items:center;justify-content:center;flex:none;"><svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7" stroke="#0a0b0f" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></path></svg></span><span style="text-align:left;"><span style="display:block;font-weight:700;color:#fff;font-size:15px;">You're on the list.</span><span style="display:block;font-size:13.5px;color:#9aa0ad;">We'll email you the moment the gate opens.</span></span></div><form id="wk-form" style="display:flex;gap:10px;flex-wrap:wrap;"><input id="wk-email" class="wk-input" type="email" placeholder="you@email.com" required style="flex:1;min-width:220px;padding:15px 18px;border-radius:12px;border:1px solid #2a2e38;background:#0c0d12;color:#fff;font-size:15px;font-family:'Manrope',sans-serif;transition:border-color .2s,background .2s;"><button class="wk-cta" type="submit" style="padding:15px 26px;border:none;border-radius:12px;background:linear-gradient(180deg,#F3C95A,#E8B23A);color:#1a1205;font-weight:700;font-size:15px;cursor:pointer;font-family:'Manrope',sans-serif;">Join waitlist</button></form>
+          <p style="font-size:12.5px;color:#5a606b;margin:16px 0 0;">No spam. Unsubscribe anytime. We'll never sell your address.</p>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ===================== FOOTER ===================== -->
+  <footer style="position:relative;z-index:1;border-top:1px solid #14161d;background:#08090c;">
+    <div style="max-width:1200px;margin:0 auto;padding:48px 28px 28px;">
+      <div style="display:grid;grid-template-columns:1.4fr 1fr 1fr;gap:40px;">
+        <div>
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px;">
+            <span style="width:30px;height:30px;border:2px solid #E8B23A;border-radius:8px;display:flex;align-items:center;justify-content:center;background:rgba(232,178,58,.06);"><span style="font-family:'Noto Serif SC',serif;font-weight:700;font-size:18px;color:#F2C657;">悟</span></span>
+            <span style="font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:16px;color:#fff;">Wukong<span style="color:#E8B23A;">Algo</span></span>
+          </div>
+          <p style="font-size:13.5px;line-height:1.6;color:#7b818d;max-width:300px;margin:0;">Live, fully transparent algorithmic trading performance. Every trade logged and published — win or loss.</p>
+        </div>
+        <div>
+          <div style="font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:#5a606b;margin-bottom:16px;">Explore</div>
+          <div style="display:flex;flex-direction:column;gap:11px;">
+            <a class="wk-navlink" href="#performance">Performance</a>
+            <a class="wk-navlink" href="#about">About</a>
+            <a class="wk-navlink" href="#pricing">Pricing</a>
+            <a class="wk-navlink" href="#faq">FAQ</a>
+          </div>
+        </div>
+        <div>
+          <div style="font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:#5a606b;margin-bottom:16px;">Connect</div>
+          <div style="display:flex;flex-direction:column;gap:11px;">
+            <a class="wk-navlink" href="#join">Join waitlist</a>
+            <a class="wk-navlink" href="https://github.com/allenaxie/wukong-algo" target="_blank">GitHub</a>
+            <span style="color:#7b818d;font-size:14px;">Discord — soon</span>
+          </div>
+        </div>
+      </div>
+      <div style="margin-top:40px;padding-top:22px;border-top:1px solid #14161d;">
+        <p style="font-size:11.5px;line-height:1.6;color:#5a606b;margin:0 0 14px;"><strong style="color:#7b818d;">Disclaimer:</strong> Trading futures involves substantial risk of loss and is not suitable for every investor. Past performance is not indicative of future results. Nothing on this page is financial advice or a solicitation to trade. Figures are derived from the strategy's own logged fills and may differ from any individual account.</p>
+        <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;">
+          <span style="font-size:12.5px;color:#5a606b;">© 2026 Wukong Algo. Built for transparency.</span>
+          <span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#3f444e;">悟空 · the disciplined edge</span>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+</div>
 
 <script>
-const fmtUsd = n => (n<0?'-':'') + '$' + Math.abs(n).toLocaleString('en-US',{minimumFractionDigits:0,maximumFractionDigits:0});
-const fmtUsd2 = n => (n<0?'-':'') + '$' + Math.abs(n).toLocaleString('en-US',{minimumFractionDigits:0,maximumFractionDigits:2});
-const cls = n => n>0?'pos':(n<0?'neg':'');
-const pf = s => s.profitFactor===null ? (s.grossProfit>0?'∞':'—') : s.profitFactor.toFixed(2);
+/* Wukong Algo — renders the live design from data.json (built by build.js).
+   Data contract: { generated, portfolio:{stats,equity}, strategies:[{...,trades}] } */
+(function () {
+  "use strict";
 
-function statCards(s){
-  const cards = [
-    ['Net P&L', `<span class="${cls(s.totalPnl)}">${fmtUsd(s.totalPnl)}</span>`],
-    ['Win rate', s.winRate + '%'],
-    ['Profit factor', pf(s)],
-    ['Max drawdown', `<span class="neg">${fmtUsd(-s.maxDrawdown)}</span>`],
-    ['Trades', s.trades],
-    ['Avg / trade', `<span class="${cls(s.avgTrade)}">${fmtUsd2(s.avgTrade)}</span>`],
-  ];
-  return `<div class="cards">${cards.map(c=>`<div class="card"><div class="k">${c[0]}</div><div class="v">${c[1]}</div></div>`).join('')}</div>`;
-}
+  var GREEN = "#34D399", RED = "#F87171";
 
-function equitySvg(equity){
-  const W=900,H=240,pad=28;
-  if(!equity || equity.length<2) return `<div class="empty">Equity curve appears once there are at least two trades.</div>`;
-  const xs=equity.map((_,i)=>i), ys=equity.map(p=>p.cum);
-  const minY=Math.min(0,...ys), maxY=Math.max(0,...ys);
-  const sx=i=>pad+(i/(equity.length-1))*(W-2*pad);
-  const sy=v=>H-pad-((v-minY)/((maxY-minY)||1))*(H-2*pad);
-  const line=equity.map((p,i)=>`${i?'L':'M'}${sx(i).toFixed(1)},${sy(p.cum).toFixed(1)}`).join(' ');
-  const area=`${line} L${sx(equity.length-1).toFixed(1)},${sy(minY).toFixed(1)} L${sx(0).toFixed(1)},${sy(minY).toFixed(1)} Z`;
-  const zeroY=sy(0).toFixed(1);
-  const up=ys[ys.length-1]>=0;
-  const col=up?'#21d07a':'#ff5d5d';
-  return `<svg class="equity" viewBox="0 0 ${W} ${H}" preserveAspectRatio="none">
-    <defs><linearGradient id="g" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0" stop-color="${col}" stop-opacity="0.28"/>
-      <stop offset="1" stop-color="${col}" stop-opacity="0"/></linearGradient></defs>
-    <line x1="${pad}" y1="${zeroY}" x2="${W-pad}" y2="${zeroY}" stroke="#26303d" stroke-dasharray="4 4"/>
-    <path d="${area}" fill="url(#g)"/>
-    <path d="${line}" fill="none" stroke="${col}" stroke-width="2.5" stroke-linejoin="round"/>
-  </svg>`;
-}
+  function abs(n) { return Math.abs(n); }
+  function money0(n) { return "$" + Math.round(abs(n)).toLocaleString("en-US"); }
+  function money2(n) { return "$" + abs(n).toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }
+  function signMoney0(n) { return (n < 0 ? "-" : "+") + money0(n); }
+  function signMoney2(n) { return (n < 0 ? "-" : "+") + money2(n); }
+  function price(n) { return Number(n).toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }
+  function pts(n) { return (n < 0 ? "-" : "+") + abs(n).toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }
 
-function tradeRows(trades){
-  if(!trades.length) return `<div class="empty">No trades logged yet.</div>`;
-  const rows = trades.slice().reverse().map(t=>`<tr>
-    <td>${t.date}</td>
-    <td><span class="pill ${t.side.toLowerCase()}">${t.side}</span></td>
-    <td>${t.contracts}</td>
-    <td>${t.entry}</td>
-    <td>${t.exit}</td>
-    <td class="${cls(t.pnlPts)}">${t.pnlPts>0?'+':''}${t.pnlPts}</td>
-    <td class="${cls(t.pnl)}">${t.pnl>0?'+':''}${fmtUsd2(t.pnl)}</td>
-    <td>${t.reason}</td></tr>`).join('');
-  return `<table><thead><tr>
-    <th>Date</th><th>Side</th><th>Qty</th><th>Entry</th><th>Exit</th><th>Pts</th><th>P&L</th><th>Result</th>
-    </tr></thead><tbody>${rows}</tbody></table>`;
-}
+  function pf(s) {
+    if (s.profitFactor === null || s.profitFactor === undefined) return s.grossProfit > 0 ? "∞" : "—";
+    return s.profitFactor.toFixed(2);
+  }
+  function payoff(s) {
+    var al = abs(s.avgLoss);
+    if (!al) return s.avgWin > 0 ? "∞" : "—";
+    return (abs(s.avgWin) / al).toFixed(2);
+  }
+  function axisFmt(v) {
+    var a = abs(v);
+    if (a >= 1000) return "$" + (v / 1000).toFixed(a >= 10000 ? 0 : 1) + "k";
+    return "$" + Math.round(v);
+  }
+  function relTime(iso) {
+    var s = (Date.now() - new Date(iso).getTime()) / 1000;
+    if (s < 90) return "just now";
+    var m = Math.round(s / 60); if (m < 60) return m + " min ago";
+    var h = Math.round(m / 60); if (h < 24) return h + "h ago";
+    return Math.round(h / 24) + "d ago";
+  }
 
-function strategyBlock(s){
-  return `<section>
-    <div class="strat-head">
-      <h3>${s.name}</h3>
-      <span class="badge live">● ${s.status.toUpperCase()}</span>
-      <span class="badge">${s.type}</span>
-      <span class="badge">${s.tf}</span>
-      <span class="badge">${s.style}</span>
-    </div>
-    <div class="desc">${s.description||''}</div>
-    ${statCards(s.stats)}
-    <div class="panel">${equitySvg(s.equity)}</div>
-    <div class="panel">${tradeRows(s.trades)}</div>
-  </section>`;
-}
+  function set(id, text, color) {
+    var el = document.getElementById(id);
+    if (!el) return;
+    el.textContent = text;
+    if (color) el.style.color = color;
+  }
 
-fetch('data.json?_=' + Date.now()).then(r=>r.json()).then(d=>{
-  document.getElementById('updated').textContent =
-    'Last updated ' + new Date(d.generated).toLocaleString('en-US',{dateStyle:'medium',timeStyle:'short'});
-  const app = document.getElementById('app');
-  const multi = d.strategies.length > 1;
-  app.innerHTML =
-    `<h2 class="section">${multi?'Portfolio — all strategies':'Live performance'}</h2>` +
-    statCards(d.portfolio.stats) +
-    `<div class="panel">${equitySvg(d.portfolio.equity)}</div>` +
-    `<h2 class="section">Strateg${multi?'ies':'y'}</h2>` +
-    d.strategies.map(strategyBlock).join('');
-}).catch(e=>{
-  document.getElementById('app').innerHTML = `<div class="empty">Could not load data.json — ${e}</div>`;
-});
+  // Build an SVG polyline path from equity cum values, mapped into a box.
+  function linePath(cums, x0, x1, yTop, yBottom) {
+    if (cums.length < 2) cums = cums.length ? [0, cums[0]] : [0, 0];
+    var vmin = Math.min.apply(null, [0].concat(cums));
+    var vmax = Math.max.apply(null, [0].concat(cums));
+    var span = (vmax - vmin) || 1;
+    var n = cums.length;
+    var X = function (i) { return x0 + (n === 1 ? 0 : i / (n - 1)) * (x1 - x0); };
+    var Y = function (v) { return yBottom - ((v - vmin) / span) * (yBottom - yTop); };
+    var d = cums.map(function (v, i) { return (i ? "L" : "M") + X(i).toFixed(1) + " " + Y(v).toFixed(1); }).join(" ");
+    return { d: d, vmin: vmin, vmax: vmax, span: span, lastX: X(n - 1), lastY: Y(cums[n - 1]) };
+  }
+
+  function monthLabels(equity) {
+    var dated = equity.filter(function (p) { return p.date; });
+    var months = dated.map(function (p) { return String(p.date).split(" ")[1] || ""; });
+    var dedup = months.filter(function (m, i) { return i === 0 || m !== months[i - 1]; });
+    if (dedup.length > 6) {
+      var out = [];
+      for (var k = 0; k < 6; k++) out.push(dedup[Math.round(k * (dedup.length - 1) / 5)]);
+      dedup = out;
+    }
+    return dedup;
+  }
+
+  function tradeRow(t, symbol) {
+    var sideWord = t.side.charAt(0).toUpperCase() + t.side.slice(1).toLowerCase();
+    var sideColor = /^s/i.test(t.side) ? RED : GREEN; // Short red, Long green
+    var dt = String(t.date).split(" "); // "23 Jun 2026"
+    var when = (dt[1] || "") + " " + (dt[0] || "") + " · " + String(t.time || "").slice(0, 5);
+    var ptsColor = t.pnlPts < 0 ? RED : GREEN;
+    var pnlColor = t.pnl < 0 ? RED : GREEN;
+    return '' +
+      '<tr class="wk-trow" style="border-top:1px solid #15171e;">' +
+      '<td style="padding:13px 22px;color:#9aa0ad;">' + when + '</td>' +
+      '<td style="padding:13px 12px;">' + symbol + '</td>' +
+      '<td style="padding:13px 12px;"><span style="color:' + sideColor + ';">' + sideWord + '</span></td>' +
+      '<td style="padding:13px 12px;text-align:right;">' + t.contracts + '</td>' +
+      '<td style="padding:13px 12px;text-align:right;">' + price(t.entry) + '</td>' +
+      '<td style="padding:13px 12px;text-align:right;">' + price(t.exit) + '</td>' +
+      '<td style="padding:13px 12px;text-align:right;color:' + ptsColor + ';">' + pts(t.pnlPts) + '</td>' +
+      '<td style="padding:13px 22px;text-align:right;color:' + pnlColor + ';font-weight:600;">' + signMoney2(t.pnl) + '</td>' +
+      '</tr>';
+  }
+
+  function render(d) {
+    var s = d.portfolio.stats;
+    var eq = d.portfolio.equity || [];
+    var pnlColor = s.totalPnl < 0 ? RED : GREEN;
+
+    // Hero card
+    set("h-netpnl", signMoney0(s.totalPnl), pnlColor);
+    set("h-winbadge", (s.totalPnl < 0 ? "▼ " : "▲ ") + s.winRate + "% win");
+    set("h-trades", s.trades + " trade" + (s.trades === 1 ? "" : "s"));
+    set("h-pf", pf(s));
+    set("h-maxdd", "-" + money0(s.maxDrawdown));
+    set("h-payoff", payoff(s));
+
+    // Performance stat cards
+    set("s-netpnl", signMoney0(s.totalPnl), pnlColor);
+    set("s-winrate", s.winRate + "%");
+    set("s-pf", pf(s));
+    set("s-trades", String(s.trades));
+
+    // Side stats
+    set("ss-maxdd", "-" + money0(s.maxDrawdown));
+    set("ss-payoff", payoff(s));
+    set("ss-avg", signMoney2(s.avgTrade));
+    set("ss-best", signMoney2(s.bestTrade));
+
+    // Sync time + range + strategy label
+    set("last-sync", "Last sync " + relTime(d.generated));
+    set("eq-range", (s.firstDate || "") + " — " + (s.lastDate || ""));
+    var stratLabel = d.strategies.length === 1 ? (d.strategies[0].name || d.strategies[0].id) : "Portfolio";
+    set("strat-name", stratLabel);
+
+    // Equity curve (line + fill), viewBox 0 0 1000 300, plot y 14..290
+    var cums = eq.map(function (p) { return p.cum; });
+    var lp = linePath(cums, 0, 1000, 14, 290);
+    var eqLine = document.getElementById("eq-line");
+    var eqArea = document.getElementById("eq-area");
+    if (eqLine) eqLine.setAttribute("d", lp.d);
+    if (eqArea) eqArea.setAttribute("d", lp.d + " L1000.0 300 L0.0 300 Z");
+
+    // Y-axis labels: top=max, then 2/3, 1/3, bottom=min
+    set("eq-y0", axisFmt(lp.vmax));
+    set("eq-y1", axisFmt(lp.vmin + (2 / 3) * lp.span));
+    set("eq-y2", axisFmt(lp.vmin + (1 / 3) * lp.span));
+    set("eq-y3", axisFmt(lp.vmin));
+
+    // X-axis month labels
+    var months = monthLabels(eq);
+    var mEl = document.getElementById("eq-months");
+    if (mEl) mEl.innerHTML = months.map(function (m) { return "<span>" + m + "</span>"; }).join("");
+
+    // Sparkline (hero), viewBox 0 0 320 84, plot y 8..70
+    var sp = linePath(cums, 0, 320, 8, 70);
+    var spLine = document.getElementById("spark-line");
+    var spArea = document.getElementById("spark-area");
+    var spDot = document.getElementById("spark-dot");
+    if (spLine) spLine.setAttribute("d", sp.d);
+    if (spArea) spArea.setAttribute("d", sp.d + " L320.0 84 L0.0 84 Z");
+    if (spDot) { spDot.setAttribute("cx", sp.lastX.toFixed(1)); spDot.setAttribute("cy", sp.lastY.toFixed(1)); }
+
+    // Recent trades — flatten across strategies, newest first
+    var flat = [];
+    d.strategies.forEach(function (st) {
+      (st.trades || []).forEach(function (t) {
+        flat.push({ t: t, symbol: st.type || "", key: new Date(t.date + " " + (t.time || "00:00:00")).getTime() });
+      });
+    });
+    flat.sort(function (a, b) { return b.key - a.key; });
+    var shown = flat.slice(0, 8);
+    var tbody = document.getElementById("wk-trades");
+    if (tbody) tbody.innerHTML = shown.map(function (r) { return tradeRow(r.t, r.symbol); }).join("");
+    set("trade-count", "Showing " + shown.length + " of " + s.trades + " logged trade" + (s.trades === 1 ? "" : "s"));
+  }
+
+  // Waitlist form (cosmetic — no backend, matches the original design behavior)
+  function wireWaitlist() {
+    var form = document.getElementById("wk-form");
+    var done = document.getElementById("wk-joined");
+    if (!form || !done) return;
+    form.addEventListener("submit", function (e) {
+      e.preventDefault();
+      var email = document.getElementById("wk-email");
+      if (email && email.value.trim()) {
+        form.style.display = "none";
+        done.style.display = "flex";
+      }
+    });
+  }
+
+  function boot() {
+    wireWaitlist();
+    fetch("data.json?_=" + Date.now())
+      .then(function (r) { if (!r.ok) throw new Error("HTTP " + r.status); return r.json(); })
+      .then(render)
+      .catch(function (err) {
+        console.error("[wukong] failed to load data.json:", err);
+        set("last-sync", "data unavailable");
+      });
+  }
+
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", boot);
+  else boot();
+})();
+
 </script>
 </body>
 </html>
