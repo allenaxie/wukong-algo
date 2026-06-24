@@ -11,8 +11,8 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Manrope:wght@400;500;600;700;800&family=Noto+Serif+SC:wght@700&family=Space+Grotesk:wght@500;600;700&display=swap">
 <style>
   *{box-sizing:border-box;}
-  html{scroll-behavior:smooth;will-change:scroll-position;}
-  body{margin:0;background:#0a0b0f;}
+  html{scroll-behavior:smooth;}
+  body{margin:0;background:#0a0b0f;overflow-x:hidden;}
   ::selection{background:rgba(232,178,58,.3);color:#fff;}
   @keyframes wk-fade{from{opacity:0;transform:translateY(16px);}to{opacity:1;transform:none;}}
   @keyframes wk-glint{0%,100%{opacity:0;transform:translateX(-130%) skewX(-18deg);}20%,32%{opacity:.85;}55%{transform:translateX(240%) skewX(-18deg);}}
@@ -44,7 +44,7 @@
 <body>
 
 
-<div style="background:#0a0b0f;font-family:'Manrope',sans-serif;color:#E7E9EE;min-height:100vh;overflow-x:hidden;position:relative;">
+<div style="background:#0a0b0f;font-family:'Manrope',sans-serif;color:#E7E9EE;min-height:100vh;position:relative;">
 
   
 
@@ -52,12 +52,12 @@
   <div style="position:fixed;inset:0;pointer-events:none;background:radial-gradient(80% 50% at 50% -8%, rgba(232,178,58,.07), transparent 60%), radial-gradient(60% 40% at 90% 10%, rgba(52,211,153,.04), transparent 60%);z-index:0;will-change:transform;transform:translateZ(0);"></div>
 
   <!-- ===================== HEADER ===================== -->
-  <header style="position:sticky;top:0;z-index:50;backdrop-filter:blur(14px);background:rgba(10,11,15,.72);border-bottom:1px solid #16181f;">
+  <header style="position:sticky;top:0;z-index:50;background:rgba(10,11,15,.96);border-bottom:1px solid #16181f;will-change:transform;">
     <div style="max-width:1200px;margin:0 auto;padding:0 28px;height:66px;display:flex;align-items:center;justify-content:space-between;gap:24px;">
       <a href="#top" style="display:flex;align-items:center;gap:11px;text-decoration:none;">
         <span style="position:relative;width:34px;height:34px;border:2px solid #E8B23A;border-radius:9px;display:flex;align-items:center;justify-content:center;background:radial-gradient(120% 120% at 30% 20%, rgba(232,178,58,.16), rgba(232,178,58,.02));overflow:hidden;">
           <span style="font-family:'Noto Serif SC',serif;font-weight:700;font-size:21px;color:#F2C657;line-height:1;">悟</span>
-          <span style="position:absolute;top:0;left:0;width:60%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.5),transparent);mix-blend-mode:overlay;animation:wk-glint 6s ease-in-out 1.5s infinite;"></span>
+          <span style="position:absolute;top:0;left:0;width:60%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.35),transparent);animation:wk-glint 6s ease-in-out 1.5s infinite;will-change:transform,opacity;"></span>
         </span>
         <span style="font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:18px;letter-spacing:-.01em;color:#fff;">Wukong<span style="color:#E8B23A;">Algo</span></span>
       </a>
@@ -389,7 +389,7 @@
         <div style="position:absolute;top:-40px;left:50%;transform:translateX(-50%);width:120px;height:120px;border-radius:50%;background:radial-gradient(circle,rgba(232,178,58,.18),transparent 70%);"></div>
         <div style="position:relative;width:56px;height:56px;margin:0 auto 24px;border:2px solid #E8B23A;border-radius:14px;display:flex;align-items:center;justify-content:center;background:radial-gradient(120% 120% at 30% 20%, rgba(232,178,58,.16), rgba(232,178,58,.02));overflow:hidden;">
           <span style="font-family:'Noto Serif SC',serif;font-weight:700;font-size:34px;color:#F2C657;line-height:1;">悟</span>
-          <span style="position:absolute;top:0;left:0;width:60%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.5),transparent);mix-blend-mode:overlay;animation:wk-glint 6s ease-in-out 1.5s infinite;"></span>
+          <span style="position:absolute;top:0;left:0;width:60%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.35),transparent);animation:wk-glint 6s ease-in-out 1.5s infinite;will-change:transform,opacity;"></span>
         </div>
         <h2 style="font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:36px;line-height:1.1;letter-spacing:-.02em;margin:0 0 14px;color:#fff;">Be first through the gate</h2>
         <p style="font-size:16.5px;line-height:1.6;color:#9aa0ad;max-width:500px;margin:0 auto 32px;">Live signals are coming. Join the waitlist for launch access, early-member pricing, and updates as we add new strategies.</p>
