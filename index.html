@@ -11,13 +11,13 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Manrope:wght@400;500;600;700;800&family=Noto+Serif+SC:wght@700&family=Space+Grotesk:wght@500;600;700&display=swap">
 <style>
   *{box-sizing:border-box;}
-  html{scroll-behavior:smooth;}
+  html{scroll-behavior:smooth;will-change:scroll-position;}
   body{margin:0;background:#0a0b0f;}
   ::selection{background:rgba(232,178,58,.3);color:#fff;}
   @keyframes wk-fade{from{opacity:0;transform:translateY(16px);}to{opacity:1;transform:none;}}
   @keyframes wk-glint{0%,100%{opacity:0;transform:translateX(-130%) skewX(-18deg);}20%,32%{opacity:.85;}55%{transform:translateX(240%) skewX(-18deg);}}
   @keyframes wk-draw{from{stroke-dashoffset:1000;}to{stroke-dashoffset:0;}}
-  @keyframes wk-pulse{0%,100%{opacity:1;box-shadow:0 0 0 0 rgba(52,211,153,.55);}50%{opacity:.7;box-shadow:0 0 0 6px rgba(52,211,153,0);}}
+  @keyframes wk-pulse{0%,100%{opacity:1;transform:scale(1);}50%{opacity:.4;transform:scale(1.55);}}
   @keyframes wk-float{0%,100%{transform:translateY(0) rotate(0);}50%{transform:translateY(-10px) rotate(2deg);}}
   @keyframes wk-spin{to{transform:rotate(360deg);}}
   .wk-reveal{animation:wk-fade .8s cubic-bezier(.2,.7,.2,1) both;}
@@ -49,7 +49,7 @@
   
 
   <!-- ambient bg -->
-  <div style="position:fixed;inset:0;pointer-events:none;background:radial-gradient(80% 50% at 50% -8%, rgba(232,178,58,.07), transparent 60%), radial-gradient(60% 40% at 90% 10%, rgba(52,211,153,.04), transparent 60%);z-index:0;"></div>
+  <div style="position:fixed;inset:0;pointer-events:none;background:radial-gradient(80% 50% at 50% -8%, rgba(232,178,58,.07), transparent 60%), radial-gradient(60% 40% at 90% 10%, rgba(52,211,153,.04), transparent 60%);z-index:0;will-change:transform;transform:translateZ(0);"></div>
 
   <!-- ===================== HEADER ===================== -->
   <header style="position:sticky;top:0;z-index:50;backdrop-filter:blur(14px);background:rgba(10,11,15,.72);border-bottom:1px solid #16181f;">
@@ -77,7 +77,7 @@
     <section id="top" style="max-width:1200px;margin:0 auto;padding:74px 28px 40px;display:grid;grid-template-columns:1.05fr .95fr;gap:56px;align-items:center;">
       <div class="wk-reveal">
         <div style="display:inline-flex;align-items:center;gap:9px;padding:6px 13px;border:1px solid #23262f;border-radius:99px;background:rgba(255,255,255,.02);margin-bottom:24px;">
-          <span style="width:8px;height:8px;border-radius:50%;background:#34D399;animation:wk-pulse 2.2s ease-in-out infinite;"></span>
+          <span style="width:8px;height:8px;border-radius:50%;background:#34D399;animation:wk-pulse 2.2s ease-in-out infinite;will-change:transform,opacity;display:inline-block;"></span>
           <span style="font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:#9aa0ad;">Live · updated every fill</span>
         </div>
         <h1 style="font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:54px;line-height:1.04;letter-spacing:-.025em;margin:0 0 20px;color:#fff;text-wrap:balance;">Algorithmic trading,<br>with <span style="color:#E8B23A;">nothing hidden.</span></h1>
@@ -100,7 +100,7 @@
       <!-- hero card -->
       <div class="wk-reveal" style="animation-delay:.12s;position:relative;">
         <!-- floating staff accent -->
-        <div style="position:absolute;right:-30px;top:-46px;opacity:.5;animation:wk-float 7s ease-in-out infinite;pointer-events:none;">
+        <div style="position:absolute;right:-30px;top:-46px;opacity:.5;animation:wk-float 7s ease-in-out infinite;pointer-events:none;will-change:transform;">
           <svg viewBox="0 0 100 100" width="72" height="72" fill="none" style="transform:rotate(34deg);">
             <defs><linearGradient id="hs-g" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#8a5c10"></stop><stop offset=".5" stop-color="#FFF1C2"></stop><stop offset="1" stop-color="#6f4a0c"></stop></linearGradient><linearGradient id="hs-d" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#15151b"></stop><stop offset=".5" stop-color="#3a3a44"></stop><stop offset="1" stop-color="#0e0e13"></stop></linearGradient></defs>
             <rect x="46.5" y="30" width="7" height="40" rx="1.5" fill="url(#hs-d)"></rect>
@@ -157,7 +157,7 @@
           <div style="display:flex;align-items:center;gap:11px;margin-bottom:13px;"><span style="width:26px;height:1px;background:linear-gradient(90deg,#E8B23A,transparent);"></span><span style="font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:.28em;text-transform:uppercase;color:#E8B23A;">Live performance</span></div>
           <h2 style="font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:36px;line-height:1.08;letter-spacing:-.02em;margin:0;color:#fff;">The full track record</h2>
         </div>
-        <div style="display:flex;align-items:center;gap:8px;padding:8px 13px;border:1px solid #1d2029;border-radius:10px;font-family:'JetBrains Mono',monospace;font-size:12px;color:#9aa0ad;"><span style="width:7px;height:7px;border-radius:50%;background:#34D399;animation:wk-pulse 2.2s ease-in-out infinite;"></span><span id="last-sync">Last sync 2 min ago</span></div>
+        <div style="display:flex;align-items:center;gap:8px;padding:8px 13px;border:1px solid #1d2029;border-radius:10px;font-family:'JetBrains Mono',monospace;font-size:12px;color:#9aa0ad;"><span style="width:7px;height:7px;border-radius:50%;background:#34D399;animation:wk-pulse 2.2s ease-in-out infinite;will-change:transform,opacity;display:inline-block;"></span><span id="last-sync">Last sync 2 min ago</span></div>
       </div>
 
       <!-- stats grid -->
@@ -259,7 +259,7 @@
           </div>
           <div style="display:flex;justify-content:center;align-items:center;position:relative;">
             <div style="position:absolute;width:280px;height:280px;border-radius:50%;background:radial-gradient(circle,rgba(232,178,58,.10),transparent 65%);"></div>
-            <svg viewBox="0 0 100 100" width="240" height="240" fill="none" style="position:relative;animation:wk-float 8s ease-in-out infinite;">
+            <svg viewBox="0 0 100 100" width="240" height="240" fill="none" style="position:relative;animation:wk-float 8s ease-in-out infinite;will-change:transform;">
               <defs><linearGradient id="ab-cg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FCE9A8"></stop><stop offset=".5" stop-color="#E8B23A"></stop><stop offset="1" stop-color="#915F11"></stop></linearGradient></defs>
               <path d="M37.99 41.61 A30.5 30.5 0 1 0 53.99 41.61" stroke="#5e3f0a" stroke-width="7.5" stroke-linecap="round" opacity=".5"></path>
               <path d="M37.99 41.61 A30.5 30.5 0 1 0 53.99 41.61" stroke="url(#ab-cg)" stroke-width="5.5" stroke-linecap="round"></path>
@@ -301,7 +301,7 @@
       <div style="text-align:center;margin-bottom:46px;">
         <div style="display:flex;align-items:center;justify-content:center;gap:11px;margin-bottom:14px;"><span style="width:26px;height:1px;background:linear-gradient(90deg,transparent,#E8B23A);"></span><span style="font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:.28em;text-transform:uppercase;color:#E8B23A;">Pricing</span><span style="width:26px;height:1px;background:linear-gradient(90deg,#E8B23A,transparent);"></span></div>
         <h2 style="font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:36px;line-height:1.1;letter-spacing:-.02em;margin:0 0 12px;color:#fff;">Follow along, or follow the trades</h2>
-        <p style="font-size:16px;color:#9aa0ad;margin:0;max-width:520px;margin:0 auto;">The performance page is free forever. Paid tiers unlock the live signals and automation — launching soon.</p>
+        <p style="font-size:16px;color:#9aa0ad;margin:0;max-width:520px;margin:0 auto;">The performance page is free forever. Paid tiers unlock live signals across our growing suite of strategies — launching soon.</p>
       </div>
       <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:18px;align-items:stretch;">
         <!-- free -->
@@ -331,16 +331,16 @@
           </div>
           <a class="wk-cta" href="#join" style="margin-top:26px;display:flex;justify-content:center;padding:12px;border-radius:11px;background:linear-gradient(180deg,#F3C95A,#E8B23A);color:#1a1205;font-weight:700;font-size:14px;text-decoration:none;">Join the waitlist</a>
         </div>
-        <!-- elite -->
+        <!-- lifetime -->
         <div class="wk-price" style="border:1px solid #1b1e27;border-radius:20px;background:linear-gradient(180deg,#111319,#0b0c11);padding:30px 26px;display:flex;flex-direction:column;">
-          <div style="font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:#9aa0ad;margin-bottom:16px;">Automation</div>
-          <div style="display:flex;align-items:baseline;gap:6px;margin-bottom:6px;"><span style="font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:42px;color:#fff;">$199</span><span style="color:#6b7280;font-size:14px;">/ month</span></div>
-          <p style="font-size:13.5px;color:#9aa0ad;margin:0 0 22px;line-height:1.5;">Let the algo trade your account for you.</p>
+          <div style="font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:#9aa0ad;margin-bottom:16px;">Lifetime</div>
+          <div style="display:flex;align-items:baseline;gap:6px;margin-bottom:6px;"><span style="font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:42px;color:#fff;">$497</span><span style="color:#6b7280;font-size:14px;">one-time</span></div>
+          <p style="font-size:13.5px;color:#9aa0ad;margin:0 0 22px;line-height:1.5;">Lock in every signal, forever. Founding member pricing.</p>
           <div style="display:flex;flex-direction:column;gap:12px;flex:1;">
             <div style="display:flex;gap:10px;align-items:flex-start;font-size:14px;color:#c7ccd6;"><span style="color:#34D399;margin-top:1px;">✓</span> Everything in Signals</div>
-            <div style="display:flex;gap:10px;align-items:flex-start;font-size:14px;color:#c7ccd6;"><span style="color:#34D399;margin-top:1px;">✓</span> Auto-copy to your NinjaTrader account</div>
-            <div style="display:flex;gap:10px;align-items:flex-start;font-size:14px;color:#c7ccd6;"><span style="color:#34D399;margin-top:1px;">✓</span> 1:1 setup &amp; onboarding</div>
-            <div style="display:flex;gap:10px;align-items:flex-start;font-size:14px;color:#c7ccd6;"><span style="color:#34D399;margin-top:1px;">✓</span> Priority support</div>
+            <div style="display:flex;gap:10px;align-items:flex-start;font-size:14px;color:#c7ccd6;"><span style="color:#34D399;margin-top:1px;">✓</span> All current &amp; future strategies</div>
+            <div style="display:flex;gap:10px;align-items:flex-start;font-size:14px;color:#c7ccd6;"><span style="color:#34D399;margin-top:1px;">✓</span> Never pay again</div>
+            <div style="display:flex;gap:10px;align-items:flex-start;font-size:14px;color:#c7ccd6;"><span style="color:#34D399;margin-top:1px;">✓</span> Founding member status</div>
           </div>
           <a class="wk-ghost" href="#join" style="margin-top:26px;display:flex;justify-content:center;padding:12px;border-radius:11px;border:1px solid #2a2e38;color:#E7E9EE;font-weight:600;font-size:14px;text-decoration:none;">Join the waitlist</a>
         </div>
@@ -357,7 +357,7 @@
         <div style="display:flex;flex-direction:column;gap:12px;">
           <details class="wk-faq" style="border:1px solid #1b1e27;border-radius:14px;background:linear-gradient(180deg,#111319,#0c0d12);padding:0 20px;">
             <summary style="display:flex;justify-content:space-between;align-items:center;gap:16px;padding:18px 0;font-weight:600;font-size:16px;color:#E7E9EE;">What exactly is Wukong Algo?<span class="wk-chev" style="color:#E8B23A;font-size:20px;transition:transform .2s;flex:none;">+</span></summary>
-            <p style="margin:0 0 18px;font-size:14.5px;line-height:1.65;color:#9aa0ad;">It's a live, fully transparent track record for an algorithmic futures-trading strategy. The algo trades real money on CME micro futures, logs every fill, and publishes the results here automatically — so you can judge it on evidence, not promises.</p>
+            <p style="margin:0 0 18px;font-size:14.5px;line-height:1.65;color:#9aa0ad;">It's a live, fully transparent track record for algorithmic futures-trading strategies. The algos trade real money on CME micro futures, log every fill, and publish the results here automatically — so you can judge them on evidence, not promises.</p>
           </details>
           <details class="wk-faq" style="border:1px solid #1b1e27;border-radius:14px;background:linear-gradient(180deg,#111319,#0c0d12);padding:0 20px;">
             <summary style="display:flex;justify-content:space-between;align-items:center;gap:16px;padding:18px 0;font-weight:600;font-size:16px;color:#E7E9EE;">Is this financial advice?<span class="wk-chev" style="color:#E8B23A;font-size:20px;transition:transform .2s;flex:none;">+</span></summary>
@@ -369,11 +369,11 @@
           </details>
           <details class="wk-faq" style="border:1px solid #1b1e27;border-radius:14px;background:linear-gradient(180deg,#111319,#0c0d12);padding:0 20px;">
             <summary style="display:flex;justify-content:space-between;align-items:center;gap:16px;padding:18px 0;font-weight:600;font-size:16px;color:#E7E9EE;">What markets and platform does it trade?<span class="wk-chev" style="color:#E8B23A;font-size:20px;transition:transform .2s;flex:none;">+</span></summary>
-            <p style="margin:0 0 18px;font-size:14.5px;line-height:1.65;color:#9aa0ad;">The strategy runs on NinjaTrader 8 and trades CME micro futures — primarily Micro E-mini Nasdaq (MNQ) and Micro E-mini S&amp;P (MES). Micro contracts keep position sizing flexible and risk controlled.</p>
+            <p style="margin:0 0 18px;font-size:14.5px;line-height:1.65;color:#9aa0ad;">Our strategies run on NinjaTrader 8 and trade CME micro futures — primarily Micro E-mini Nasdaq (MNQ) and Micro E-mini S&amp;P (MES). Micro contracts keep position sizing flexible and risk controlled.</p>
           </details>
           <details class="wk-faq" style="border:1px solid #1b1e27;border-radius:14px;background:linear-gradient(180deg,#111319,#0c0d12);padding:0 20px;">
-            <summary style="display:flex;justify-content:space-between;align-items:center;gap:16px;padding:18px 0;font-weight:600;font-size:16px;color:#E7E9EE;">Can I follow or copy the trades?<span class="wk-chev" style="color:#E8B23A;font-size:20px;transition:transform .2s;flex:none;">+</span></summary>
-            <p style="margin:0 0 18px;font-size:14.5px;line-height:1.65;color:#9aa0ad;">Soon. Live signals and auto-copy are launching as paid tiers — join the waitlist and you'll be first to know when they open, along with early-member pricing.</p>
+            <summary style="display:flex;justify-content:space-between;align-items:center;gap:16px;padding:18px 0;font-weight:600;font-size:16px;color:#E7E9EE;">Can I receive live trade signals?<span class="wk-chev" style="color:#E8B23A;font-size:20px;transition:transform .2s;flex:none;">+</span></summary>
+            <p style="margin:0 0 18px;font-size:14.5px;line-height:1.65;color:#9aa0ad;">Soon. Live signals are launching as a paid tier — join the waitlist and you'll be first to know when they open, along with early-member pricing.</p>
           </details>
           <details class="wk-faq" style="border:1px solid #1b1e27;border-radius:14px;background:linear-gradient(180deg,#111319,#0c0d12);padding:0 20px;">
             <summary style="display:flex;justify-content:space-between;align-items:center;gap:16px;padding:18px 0;font-weight:600;font-size:16px;color:#E7E9EE;">Why "Wukong"?<span class="wk-chev" style="color:#E8B23A;font-size:20px;transition:transform .2s;flex:none;">+</span></summary>
@@ -392,7 +392,7 @@
           <span style="position:absolute;top:0;left:0;width:60%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.5),transparent);mix-blend-mode:overlay;animation:wk-glint 6s ease-in-out 1.5s infinite;"></span>
         </div>
         <h2 style="font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:36px;line-height:1.1;letter-spacing:-.02em;margin:0 0 14px;color:#fff;">Be first through the gate</h2>
-        <p style="font-size:16.5px;line-height:1.6;color:#9aa0ad;max-width:500px;margin:0 auto 32px;">Live signals and auto-copy are coming. Join the waitlist for launch access, early-member pricing, and the occasional note on how the strategy is evolving.</p>
+        <p style="font-size:16.5px;line-height:1.6;color:#9aa0ad;max-width:500px;margin:0 auto 32px;">Live signals are coming. Join the waitlist for launch access, early-member pricing, and updates as we add new strategies.</p>
         <div style="max-width:480px;margin:0 auto;">
           <div id="wk-joined" style="display:none;align-items:center;justify-content:center;gap:12px;padding:18px 24px;border:1px solid #1f5e44;border-radius:14px;background:rgba(52,211,153,.08);"><span style="width:30px;height:30px;border-radius:50%;background:#34D399;display:flex;align-items:center;justify-content:center;flex:none;"><svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7" stroke="#0a0b0f" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></path></svg></span><span style="text-align:left;"><span style="display:block;font-weight:700;color:#fff;font-size:15px;">You're on the list.</span><span style="display:block;font-size:13.5px;color:#9aa0ad;">We'll email you the moment the gate opens.</span></span></div><form id="wk-form" style="display:flex;gap:10px;flex-wrap:wrap;"><input id="wk-email" class="wk-input" type="email" placeholder="you@email.com" required style="flex:1;min-width:220px;padding:15px 18px;border-radius:12px;border:1px solid #2a2e38;background:#0c0d12;color:#fff;font-size:15px;font-family:'Manrope',sans-serif;transition:border-color .2s,background .2s;"><button class="wk-cta" type="submit" style="padding:15px 26px;border:none;border-radius:12px;background:linear-gradient(180deg,#F3C95A,#E8B23A);color:#1a1205;font-weight:700;font-size:15px;cursor:pointer;font-family:'Manrope',sans-serif;">Join waitlist</button></form>
           <p style="font-size:12.5px;color:#5a606b;margin:16px 0 0;">No spam. Unsubscribe anytime. We'll never sell your address.</p>
