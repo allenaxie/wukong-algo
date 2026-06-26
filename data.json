@@ -1,5 +1,5 @@
 {
-  "generated": "2026-06-26T04:52:55.990Z",
+  "generated": "2026-06-26T05:09:21.468Z",
   "portfolio": {
     "stats": {
       "trades": 1,
@@ -103,11 +103,11 @@
       "backtest": {
         "perContract": true,
         "period": "2019 – 2026",
-        "profitPerMonth": 451.82,
+        "profitPerMonth": 225.91,
         "profitFactor": 1.32,
         "winRate": 40.71,
-        "maxDrawdown": -4537,
-        "netProfit": 38485.8,
+        "maxDrawdown": -2268.5,
+        "netProfit": 19242.9,
         "trades": 953,
         "winLossRatio": 1.93,
         "detail": [
@@ -117,11 +117,11 @@
           },
           {
             "label": "Net profit",
-            "value": "$38,485.80"
+            "value": "$19,242.90"
           },
           {
             "label": "Profit / month",
-            "value": "$451.82"
+            "value": "$225.91"
           },
           {
             "label": "Win rate",
@@ -133,7 +133,7 @@
           },
           {
             "label": "Avg. trade",
-            "value": "$40.38"
+            "value": "$20.19"
           },
           {
             "label": "Avg win / avg loss",
@@ -141,15 +141,15 @@
           },
           {
             "label": "Avg. winning trade",
-            "value": "$404.71"
+            "value": "$202.36"
           },
           {
             "label": "Avg. losing trade",
-            "value": "-$209.81"
+            "value": "-$104.91"
           },
           {
             "label": "Max drawdown",
-            "value": "-$4,537.00"
+            "value": "-$2,268.50"
           },
           {
             "label": "Sharpe ratio",
@@ -169,11 +169,11 @@
           },
           {
             "label": "Largest win",
-            "value": "$1,896.60"
+            "value": "$948.30"
           },
           {
             "label": "Largest loss",
-            "value": "-$504.40"
+            "value": "-$252.20"
           },
           {
             "label": "Avg trades / day",
@@ -181,15 +181,15 @@
           },
           {
             "label": "Avg MAE",
-            "value": "$169.04"
+            "value": "$84.52"
           },
           {
             "label": "Avg MFE",
-            "value": "$272.42"
+            "value": "$136.21"
           },
           {
             "label": "Avg ETD",
-            "value": "$232.04"
+            "value": "$116.02"
           }
         ]
       }

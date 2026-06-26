@@ -121,15 +121,17 @@ function numFromSummary(v) {
   return isNaN(n) ? null : (neg ? -n : n);
 }
 
-// Pretty-print money cells for the detail table: "$34706.00" -> "$34,706.00",
-// "($22769.00)" -> "-$22,769.00". Non-money cells pass through untouched.
-function fmtCell(v) {
+// Pretty-print money cells for the detail table, normalized to one contract:
+// "$34706.00" /2 -> "$17,353.00", "($22769.00)" /2 -> "-$11,384.50". Non-money
+// cells (%, ratios, counts, min/days) pass through untouched.
+function fmtCell(v, contracts) {
+  const c = contracts || 1;
   const s = String(v == null ? '' : v).trim();
   if (/^\(?-?\$/.test(s)) {
     const neg = /^\(/.test(s) || /^-/.test(s);
     const n = parseFloat(s.replace(/[^0-9.]/g, ''));
     if (!isNaN(n)) {
-      return (neg ? '-$' : '$') + n.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+      return (neg ? '-$' : '$') + (n / c).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
     }
   }
   return s;
@@ -148,8 +150,12 @@ function parseSummary(file) {
   return map;
 }
 
-function buildBacktest(map) {
+// All dollar figures are normalized to ONE contract so strategies backtested
+// at different sizes (Follow940 @ 2, others @ 1) are directly comparable.
+function buildBacktest(map, contracts) {
+  const c = contracts || 1;
   const g = k => (map[k] !== undefined ? map[k] : null);
+  const perC = k => { const n = numFromSummary(g(k)); return n == null ? null : round(n / c); };
   const startY = String(g('Start date') || '').split('/').pop();
   const endY = String(g('End date') || '').split('/').pop();
 
@@ -178,18 +184,18 @@ function buildBacktest(map) {
   ];
   const detail = detailKeys
     .filter(([k]) => g(k) != null && g(k) !== '')
-    .map(([k, label]) => ({ label, value: fmtCell(map[k]) }));
+    .map(([k, label]) => ({ label, value: fmtCell(map[k], c) }));
 
   return {
     perContract: true,
     period: (startY && endY) ? (startY + ' – ' + endY) : null,
-    profitPerMonth: numFromSummary(g('Profit per month')),
-    profitFactor: numFromSummary(g('Profit factor')),
-    winRate: numFromSummary(g('Percent profitable')),
-    maxDrawdown: numFromSummary(g('Max. drawdown')),
-    netProfit: numFromSummary(g('Total net profit')),
-    trades: numFromSummary(g('Total # of trades')),
-    winLossRatio: numFromSummary(g('Ratio avg. win / avg. loss')),
+    profitPerMonth: perC('Profit per month'), // $ — normalized to 1 contract
+    profitFactor: numFromSummary(g('Profit factor')),       // ratio — size-invariant
+    winRate: numFromSummary(g('Percent profitable')),       // % — size-invariant
+    maxDrawdown: perC('Max. drawdown'),       // $ — normalized to 1 contract
+    netProfit: perC('Total net profit'),      // $ — normalized to 1 contract
+    trades: numFromSummary(g('Total # of trades')),         // count — size-invariant
+    winLossRatio: numFromSummary(g('Ratio avg. win / avg. loss')), // ratio — size-invariant
     detail,
   };
 }
@@ -233,7 +239,7 @@ function main() {
     if (s.backtest) {
       const btPath = path.resolve(ROOT, s.backtest);
       if (fs.existsSync(btPath)) {
-        const backtest = buildBacktest(parseSummary(btPath));
+        const backtest = buildBacktest(parseSummary(btPath), s.backtestContracts);
         lineup.push({
           id: s.id, name: s.name, type: s.type, tf: s.tf,
           style: s.style, status: s.status || 'backtest', description: s.description || '',
