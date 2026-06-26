@@ -63,6 +63,7 @@
       </a>
       <nav style="display:flex;align-items:center;gap:30px;">
         <a class="wk-navlink" href="#performance">Performance</a>
+        <a class="wk-navlink" href="#lineup">Strategies</a>
         <a class="wk-navlink" href="#about">About</a>
         <a class="wk-navlink" href="#pricing">Pricing</a>
         <a class="wk-navlink" href="#faq">FAQ</a>
@@ -246,6 +247,15 @@
       </div>
     </section>
 
+    <!-- ===================== STRATEGY LINEUP ===================== -->
+    <section id="lineup" style="max-width:1200px;margin:0 auto;padding:84px 28px;scroll-margin-top:80px;">
+      <div style="display:flex;align-items:center;gap:11px;margin-bottom:14px;"><span style="width:26px;height:1px;background:linear-gradient(90deg,#E8B23A,transparent);"></span><span style="font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:.28em;text-transform:uppercase;color:#E8B23A;">The lineup</span></div>
+      <h2 style="font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:34px;line-height:1.1;letter-spacing:-.02em;margin:0 0 14px;color:#fff;">Strategies in the pipeline.</h2>
+      <p style="font-size:16px;line-height:1.7;color:#9aa0ad;max-width:620px;margin:0 0 36px;">Every strategy earns its way to live trading through the same gate — a multi-year backtest, then live-sim forward testing. Here's what's trading now and what's next, each shown with the backtest that got it through.</p>
+      <div id="wk-lineup" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(330px,1fr));gap:22px;"></div>
+      <p style="font-family:'JetBrains Mono',monospace;font-size:11.5px;line-height:1.6;color:#5a606b;margin:26px 0 0;">Figures above are backtest results over the periods shown, per single contract — not live trading results. Only live fills appear in the <a href="#performance" style="color:#9aa0ad;">performance tracker</a>.</p>
+    </section>
+
     <!-- ===================== ABOUT ===================== -->
     <section id="about" style="border-top:1px solid #14161d;background:rgba(255,255,255,.012);scroll-margin-top:66px;">
       <div style="max-width:1200px;margin:0 auto;padding:84px 28px;">
@@ -417,6 +427,7 @@
           <div style="font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:#5a606b;margin-bottom:16px;">Explore</div>
           <div style="display:flex;flex-direction:column;gap:11px;">
             <a class="wk-navlink" href="#performance">Performance</a>
+            <a class="wk-navlink" href="#lineup">Strategies</a>
             <a class="wk-navlink" href="#about">About</a>
             <a class="wk-navlink" href="#pricing">Pricing</a>
             <a class="wk-navlink" href="#faq">FAQ</a>
@@ -533,6 +544,83 @@
       '</tr>';
   }
 
+  // ---- Strategy lineup (backtest cards + accordion) ----------------------
+  function statusBadge(status) {
+    var map = {
+      "live":         { t: "Live",         c: GREEN,     bg: "rgba(52,211,153,.12)" },
+      "forward-test": { t: "Forward test", c: "#E8B23A", bg: "rgba(232,178,58,.12)" },
+      "backtest":     { t: "Backtest",     c: "#9aa0ad", bg: "rgba(154,160,173,.12)" }
+    };
+    var v = map[status] || map["backtest"];
+    var pulse = status === "live" ? "animation:wk-pulse 2.2s ease-in-out infinite;" : "";
+    return '<span style="display:inline-flex;align-items:center;gap:6px;padding:5px 10px;border-radius:8px;background:' + v.bg + ';color:' + v.c + ';font-family:\'JetBrains Mono\',monospace;font-weight:600;font-size:11px;letter-spacing:.04em;">' +
+      '<span style="width:6px;height:6px;border-radius:50%;background:' + v.c + ';display:inline-block;' + pulse + '"></span>' + v.t + '</span>';
+  }
+
+  function miniStat(label, val) {
+    return '<div style="border:1px solid #1b1e27;border-radius:11px;padding:11px 10px;">' +
+      '<div style="font-size:10px;color:#6b7280;margin-bottom:5px;">' + label + '</div>' +
+      '<div style="font-family:\'JetBrains Mono\',monospace;font-weight:600;font-size:15px;color:#E7E9EE;">' + val + '</div></div>';
+  }
+
+  function lineupCard(st) {
+    var b = st.backtest || {};
+    var pm = b.profitPerMonth;
+    var rows = (b.detail || []).map(function (r) {
+      return '<div style="display:flex;justify-content:space-between;gap:12px;padding:9px 0;border-top:1px solid #15171e;font-size:12.5px;">' +
+        '<span style="color:#6b7280;">' + r.label + '</span>' +
+        '<span style="font-family:\'JetBrains Mono\',monospace;color:#c7ccd6;">' + r.value + '</span></div>';
+    }).join("");
+    if (b.period) {
+      rows += '<div style="display:flex;justify-content:space-between;gap:12px;padding:9px 0;border-top:1px solid #15171e;font-size:12.5px;">' +
+        '<span style="color:#6b7280;">Backtest period</span>' +
+        '<span style="font-family:\'JetBrains Mono\',monospace;color:#c7ccd6;">' + b.period + '</span></div>';
+    }
+
+    return '' +
+    '<div style="border:1px solid #1b1e27;border-radius:16px;background:linear-gradient(180deg,#111319,#0c0d12);padding:22px;display:flex;flex-direction:column;">' +
+      '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:15px;">' +
+        statusBadge(st.status) +
+        '<span style="font-family:\'JetBrains Mono\',monospace;font-size:11.5px;color:#6b7280;">' + (st.type || '') + ' · ' + (st.tf || '') + '</span>' +
+      '</div>' +
+      '<div style="font-family:\'Space Grotesk\',sans-serif;font-weight:700;font-size:21px;color:#fff;letter-spacing:-.01em;">' + (st.name || st.id) + '</div>' +
+      '<div style="font-size:12.5px;color:#6b7280;margin:3px 0 18px;">' + (st.style || '') + '</div>' +
+
+      '<div style="font-family:\'JetBrains Mono\',monospace;font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:#6b7280;margin-bottom:6px;">Backtest · profit / month' + (b.period ? ' · ' + b.period : '') + '</div>' +
+      '<div style="display:flex;align-items:baseline;gap:7px;margin-bottom:16px;">' +
+        '<span style="font-family:\'Space Grotesk\',sans-serif;font-weight:700;font-size:34px;line-height:1;color:#E8B23A;">' + (pm == null ? '—' : signMoney0(pm)) + '</span>' +
+        '<span style="font-size:12px;color:#6b7280;">/ mo · per contract</span>' +
+      '</div>' +
+
+      '<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:18px;">' +
+        miniStat("Profit factor", b.profitFactor == null ? '—' : b.profitFactor.toFixed(2)) +
+        miniStat("Win rate", b.winRate == null ? '—' : b.winRate.toFixed(1) + '%') +
+        miniStat("Max DD", b.maxDrawdown == null ? '—' : '-' + money0(b.maxDrawdown)) +
+      '</div>' +
+
+      '<button type="button" class="wk-acc-btn" style="margin-top:auto;display:flex;align-items:center;justify-content:space-between;width:100%;padding:11px 14px;border:1px solid #23262f;border-radius:11px;background:rgba(255,255,255,.02);color:#c7ccd6;font-family:\'Manrope\',sans-serif;font-size:13px;font-weight:600;cursor:pointer;">' +
+        '<span>View full backtest</span>' +
+        '<svg class="wk-acc-chev" width="14" height="14" viewBox="0 0 24 24" fill="none" style="transition:transform .2s;flex:none;"><path d="M6 9l6 6 6-6" stroke="#9aa0ad" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg>' +
+      '</button>' +
+      '<div class="wk-acc-body" style="display:none;margin-top:2px;">' + rows + '</div>' +
+    '</div>';
+  }
+
+  function renderLineup(d) {
+    var host = document.getElementById("wk-lineup");
+    if (!host || !d.lineup) return;
+    host.innerHTML = d.lineup.map(lineupCard).join("");
+    Array.prototype.forEach.call(host.querySelectorAll(".wk-acc-btn"), function (btn) {
+      btn.addEventListener("click", function () {
+        var body = btn.parentNode.querySelector(".wk-acc-body");
+        var chev = btn.querySelector(".wk-acc-chev");
+        var open = body.style.display !== "none";
+        body.style.display = open ? "none" : "block";
+        if (chev) chev.style.transform = open ? "" : "rotate(180deg)";
+      });
+    });
+  }
+
   function render(d) {
     var s = d.portfolio.stats;
     var eq = d.portfolio.equity || [];
@@ -604,6 +692,8 @@
     var tbody = document.getElementById("wk-trades");
     if (tbody) tbody.innerHTML = shown.map(function (r) { return tradeRow(r.t, r.symbol); }).join("");
     set("trade-count", "Showing " + shown.length + " of " + s.trades + " logged trade" + (s.trades === 1 ? "" : "s"));
+
+    renderLineup(d);
   }
 
   // Waitlist form (cosmetic — no backend, matches the original design behavior)
