@@ -217,6 +217,16 @@
         </div>
       </div>
 
+      <!-- by-strategy comparison strip (shown only when 2+ live strategies) -->
+      <div id="wk-bystrat-wrap" style="display:none;margin-top:14px;">
+        <div style="display:flex;align-items:center;gap:12px;margin-bottom:12px;">
+          <span style="font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:#6b7280;">By strategy</span>
+          <span style="flex:1;height:1px;background:#15171e;"></span>
+          <span style="font-size:11.5px;color:#5a606b;">click a card to filter the chart &amp; log above</span>
+        </div>
+        <div id="wk-bystrat" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;"></div>
+      </div>
+
       <!-- recent trades -->
       <div style="border:1px solid #1b1e27;border-radius:18px;background:linear-gradient(180deg,#111319,#0b0c11);margin-top:14px;overflow:hidden;">
         <div style="display:flex;justify-content:space-between;align-items:center;padding:20px 22px 14px;">
@@ -461,6 +471,7 @@
   "use strict";
 
   var GREEN = "#34D399", RED = "#F87171";
+  var PERF_VIEWS = [], PERF_ACTIVE = 0; // performance-section view switcher
 
   function abs(n) { return Math.abs(n); }
   function money0(n) { return "$" + Math.round(abs(n)).toLocaleString("en-US"); }
@@ -621,36 +632,36 @@
     });
   }
 
-  function render(d) {
-    var s = d.portfolio.stats;
-    var eq = d.portfolio.equity || [];
+  // Newest-first trade rows ({t, symbol}) across one or more strategies.
+  function tradeRowsFor(strategies) {
+    var flat = [];
+    strategies.forEach(function (st) {
+      (st.trades || []).forEach(function (t) {
+        flat.push({ t: t, symbol: st.type || "", key: new Date(t.date + " " + (t.time || "00:00:00")).getTime() });
+      });
+    });
+    return flat.sort(function (a, b) { return b.key - a.key; });
+  }
+
+  // Render the Performance section (stat cards, equity curve, side stats,
+  // recent-trades log) for a single view: { name, stats, equity, tradeRows }.
+  function renderPerf(view) {
+    var s = view.stats;
+    var eq = view.equity || [];
     var pnlColor = s.totalPnl < 0 ? RED : GREEN;
 
-    // Hero card
-    set("h-netpnl", signMoney0(s.totalPnl), pnlColor);
-    set("h-winbadge", (s.totalPnl < 0 ? "▼ " : "▲ ") + s.winRate + "% win");
-    set("h-trades", s.trades + " trade" + (s.trades === 1 ? "" : "s"));
-    set("h-pf", pf(s));
-    set("h-maxdd", "-" + money0(s.maxDrawdown));
-    set("h-payoff", payoff(s));
-
-    // Performance stat cards
     set("s-netpnl", signMoney0(s.totalPnl), pnlColor);
     set("s-winrate", s.winRate + "%");
     set("s-pf", pf(s));
     set("s-trades", String(s.trades));
 
-    // Side stats
     set("ss-maxdd", "-" + money0(s.maxDrawdown));
     set("ss-payoff", payoff(s));
     set("ss-avg", signMoney2(s.avgTrade));
     set("ss-best", signMoney2(s.bestTrade));
 
-    // Sync time + range + strategy label
-    set("last-sync", "Last sync " + relTime(d.generated));
     set("eq-range", (s.firstDate || "") + " — " + (s.lastDate || ""));
-    var stratLabel = d.strategies.length === 1 ? (d.strategies[0].name || d.strategies[0].id) : "Portfolio";
-    set("strat-name", stratLabel);
+    set("strat-name", view.name);
 
     // Equity curve (line + fill), viewBox 0 0 1000 300, plot y 14..290
     var cums = eq.map(function (p) { return p.cum; });
@@ -659,19 +670,80 @@
     var eqArea = document.getElementById("eq-area");
     if (eqLine) eqLine.setAttribute("d", lp.d);
     if (eqArea) eqArea.setAttribute("d", lp.d + " L1000.0 300 L0.0 300 Z");
-
-    // Y-axis labels: top=max, then 2/3, 1/3, bottom=min
     set("eq-y0", axisFmt(lp.vmax));
     set("eq-y1", axisFmt(lp.vmin + (2 / 3) * lp.span));
     set("eq-y2", axisFmt(lp.vmin + (1 / 3) * lp.span));
     set("eq-y3", axisFmt(lp.vmin));
-
-    // X-axis month labels
     var months = monthLabels(eq);
     var mEl = document.getElementById("eq-months");
     if (mEl) mEl.innerHTML = months.map(function (m) { return "<span>" + m + "</span>"; }).join("");
 
-    // Sparkline (hero), viewBox 0 0 320 84, plot y 8..70
+    // Recent trades for this view, newest first
+    var shown = (view.tradeRows || []).slice(0, 8);
+    var tbody = document.getElementById("wk-trades");
+    if (tbody) tbody.innerHTML = shown.map(function (r) { return tradeRow(r.t, r.symbol); }).join("");
+    set("trade-count", "Showing " + shown.length + " of " + s.trades + " logged trade" + (s.trades === 1 ? "" : "s"));
+  }
+
+  // One compact card in the "By strategy" comparison strip.
+  function bystratCard(view, idx, active) {
+    var s = view.stats;
+    var pnlColor = s.totalPnl < 0 ? RED : GREEN;
+    var cums = (view.equity || []).map(function (p) { return p.cum; });
+    var sp = linePath(cums, 1, 119, 4, 30);
+    var border = active ? "#E8B23A" : "#1b1e27";
+    var bg = active ? "linear-gradient(180deg,#16140d,#0c0d12)" : "linear-gradient(180deg,#111319,#0c0d12)";
+    var tag = view.isPortfolio
+      ? '<span style="font-family:\'JetBrains Mono\',monospace;font-size:9.5px;letter-spacing:.12em;text-transform:uppercase;color:#6b7280;">All</span>'
+      : '<span style="font-family:\'JetBrains Mono\',monospace;font-size:10px;color:#6b7280;">' + (view.type || '') + '</span>';
+    return '<button type="button" class="wk-bystrat-card" data-idx="' + idx + '" style="text-align:left;border:1px solid ' + border + ';border-radius:14px;background:' + bg + ';padding:15px 16px;cursor:pointer;display:flex;flex-direction:column;gap:10px;min-width:0;transition:border-color .15s;">' +
+      '<div style="display:flex;justify-content:space-between;align-items:center;gap:8px;">' +
+        '<span style="font-family:\'Space Grotesk\',sans-serif;font-weight:700;font-size:14.5px;color:' + (active ? '#fff' : '#E7E9EE') + ';white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">' + view.name + '</span>' + tag +
+      '</div>' +
+      '<div style="display:flex;align-items:flex-end;justify-content:space-between;gap:8px;">' +
+        '<div><div style="font-family:\'Space Grotesk\',sans-serif;font-weight:700;font-size:20px;line-height:1;color:' + pnlColor + ';">' + signMoney0(s.totalPnl) + '</div>' +
+        '<div style="font-size:11px;color:#6b7280;margin-top:5px;">' + s.winRate + '% · ' + s.trades + ' trade' + (s.trades === 1 ? '' : 's') + '</div></div>' +
+        '<svg width="120" height="34" viewBox="0 0 120 34" preserveAspectRatio="none" style="flex:none;opacity:.9;"><path d="' + sp.d + '" fill="none" stroke="' + pnlColor + '" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path></svg>' +
+      '</div>' +
+    '</button>';
+  }
+
+  // Render the comparison strip and wire click-to-filter. Hidden for a single
+  // live strategy (Portfolio would just duplicate it).
+  function renderBystrat() {
+    var wrap = document.getElementById("wk-bystrat-wrap");
+    var host = document.getElementById("wk-bystrat");
+    if (!wrap || !host) return;
+    if (PERF_VIEWS.length <= 2) { wrap.style.display = "none"; return; }
+    wrap.style.display = "block";
+    host.innerHTML = PERF_VIEWS.map(function (v, i) { return bystratCard(v, i, i === PERF_ACTIVE); }).join("");
+    Array.prototype.forEach.call(host.querySelectorAll(".wk-bystrat-card"), function (btn) {
+      btn.addEventListener("click", function () {
+        var idx = +btn.getAttribute("data-idx");
+        if (idx === PERF_ACTIVE) return;
+        PERF_ACTIVE = idx;
+        renderPerf(PERF_VIEWS[idx]);
+        renderBystrat();
+      });
+    });
+  }
+
+  function render(d) {
+    var s = d.portfolio.stats;
+    var eq = d.portfolio.equity || [];
+    var pnlColor = s.totalPnl < 0 ? RED : GREEN;
+
+    // Hero card (always the portfolio aggregate)
+    set("h-netpnl", signMoney0(s.totalPnl), pnlColor);
+    set("h-winbadge", (s.totalPnl < 0 ? "▼ " : "▲ ") + s.winRate + "% win");
+    set("h-trades", s.trades + " trade" + (s.trades === 1 ? "" : "s"));
+    set("h-pf", pf(s));
+    set("h-maxdd", "-" + money0(s.maxDrawdown));
+    set("h-payoff", payoff(s));
+    set("last-sync", "Last sync " + relTime(d.generated));
+
+    // Hero sparkline, viewBox 0 0 320 84, plot y 8..70
+    var cums = eq.map(function (p) { return p.cum; });
     var sp = linePath(cums, 0, 320, 8, 70);
     var spLine = document.getElementById("spark-line");
     var spArea = document.getElementById("spark-area");
@@ -680,18 +752,25 @@
     if (spArea) spArea.setAttribute("d", sp.d + " L320.0 84 L0.0 84 Z");
     if (spDot) { spDot.setAttribute("cx", sp.lastX.toFixed(1)); spDot.setAttribute("cy", sp.lastY.toFixed(1)); }
 
-    // Recent trades — flatten across strategies, newest first
-    var flat = [];
-    d.strategies.forEach(function (st) {
-      (st.trades || []).forEach(function (t) {
-        flat.push({ t: t, symbol: st.type || "", key: new Date(t.date + " " + (t.time || "00:00:00")).getTime() });
-      });
+    // Build performance views: [Portfolio, ...each live strategy].
+    var portfolioView = {
+      name: d.strategies.length === 1 ? (d.strategies[0].name || d.strategies[0].id) : "Portfolio",
+      isPortfolio: true,
+      stats: d.portfolio.stats,
+      equity: d.portfolio.equity,
+      tradeRows: tradeRowsFor(d.strategies),
+    };
+    var stratViews = d.strategies.map(function (st) {
+      return {
+        name: st.name || st.id, type: st.type,
+        stats: st.stats, equity: st.equity,
+        tradeRows: tradeRowsFor([st]),
+      };
     });
-    flat.sort(function (a, b) { return b.key - a.key; });
-    var shown = flat.slice(0, 8);
-    var tbody = document.getElementById("wk-trades");
-    if (tbody) tbody.innerHTML = shown.map(function (r) { return tradeRow(r.t, r.symbol); }).join("");
-    set("trade-count", "Showing " + shown.length + " of " + s.trades + " logged trade" + (s.trades === 1 ? "" : "s"));
+    PERF_VIEWS = [portfolioView].concat(stratViews);
+    PERF_ACTIVE = 0;
+    renderPerf(PERF_VIEWS[0]);
+    renderBystrat();
 
     renderLineup(d);
   }
