@@ -13,7 +13,7 @@ Status-badged cards (`live` / `forward-test` / `backtest`) per strategy, each wi
 
 ## Metric standards
 - **Headline metric = profit/month**, never net (net isn't comparable across different date ranges).
-- **Normalize every dollar figure to ONE contract** via each strategy's `backtestContracts` (Follow940 backtest runs at 2 contracts, others at 1). Ratios / percentages / counts (PF, win rate, Sharpe…) are size-invariant — leave them. Verify a strategy's contract size from its `trades.csv` Qty column when adding it.
+- **Normalize every dollar figure to ONE contract** via each strategy's `backtestContracts`. As of 2026-06-27 all three active builds (Follow940, CCORB, MBT) export at **1 contract** — Follow940 dropped from 2→1 in its v1.22.1 active build, so its `backtestContracts` is now `1` (a stale `2` halves its displayed figures). Ratios / percentages / counts (PF, win rate, Sharpe…) are size-invariant — leave them. **Always verify a strategy's contract size from its `trades.csv` Qty column** when adding or re-pointing a backtest.
 - **No version numbers shown publicly** (kept internal in the changelogs).
 
 ## Live tracker (multi-strategy)
