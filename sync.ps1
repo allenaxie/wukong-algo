@@ -16,6 +16,7 @@ Set-Location $repo
 # Map each strategy's live NinjaTrader CSV -> its file under data\.
 $sources = @{
   "C:\Users\Administrator\Documents\NinjaTrader 8\Follow940Live\follow940-live-trades.csv" = "data\follow940.csv"
+  "C:\Users\Administrator\Documents\NinjaTrader 8\CCORBStrategyActive\ccorb-active-trades.csv" = "data\ccorb.csv"
 }
 foreach ($src in $sources.Keys) {
   if (Test-Path $src) {
