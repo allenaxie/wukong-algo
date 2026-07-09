@@ -9,6 +9,7 @@
       "status": "live",
       "csv": "follow940.csv",
       "backtest": "../trading-strategies/research/Follow940/active/active_summary.csv",
+      "backtestTrades": "../trading-strategies/research/Follow940/active/trades.csv",
       "backtestContracts": 1,
       "description": "The 9:40 ET candle sets the day's directional bias; entry on two-candle confirmation, one trade per day, stop at session extreme, target at nearest Asia/London level >= 2R."
     },
@@ -21,6 +22,7 @@
       "status": "live",
       "csv": "ccorb.csv",
       "backtest": "../trading-strategies/research/CCORB/v1.8.0/active_summary.csv",
+      "backtestTrades": "../trading-strategies/research/CCORB/v1.8.0/trades.csv",
       "backtestContracts": 1,
       "description": "Confirmed-close 5-minute opening-range breakout on MNQ. Structural stop at the opposite range extreme, breakeven shift at +0.5R, and winners ride a far target into the session close."
     },
@@ -32,6 +34,7 @@
       "style": "Trend breakout",
       "status": "forward-test",
       "backtest": "../trading-strategies/research/MBTTrendPilot/v0.3.0/ATR100_D13_MB53_summary.csv",
+      "backtestTrades": "../trading-strategies/research/MBTTrendPilot/v0.3.0/ATR100_D13_MB53_trades.csv",
       "backtestContracts": 1,
       "description": "Long-only Donchian breakout on Micro Bitcoin futures, gated by a daily EMA trend filter and an ATR volatility floor, with an ATR trailing stop and a time-based exit."
     }

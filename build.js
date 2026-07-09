@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /*
- * AxAlgo site build — reads each strategy's live-trade CSV and emits data.json.
+ * Wukong Algo site build — reads each strategy's live-trade CSV and emits data.json.
  *
  * Pipeline:  NinjaTrader live CSV  ->  data/<id>.csv  ->  build.js  ->  data.json
  *
@@ -137,6 +137,41 @@ function fmtCell(v, contracts) {
   return s;
 }
 
+// Average drawdown from a NinjaTrader trades export ("Cum. net profit" column).
+// NinjaTrader's summary reports Max. drawdown but not average drawdown, so we
+// derive it from the closed-trade equity curve. "Average drawdown" here = the
+// mean depth of each distinct peak-to-trough drawdown episode (a new equity high
+// starts a fresh episode). Returned normalized to ONE contract, matching every
+// other dollar figure on the site. Returns null if the file/column is missing.
+function avgDrawdownFromTrades(file, contracts) {
+  if (!file || !fs.existsSync(file)) return null;
+  const raw = fs.readFileSync(file, 'utf8').replace(/^﻿/, '');
+  const lines = raw.split(/\r?\n/).filter(l => l.trim() !== '');
+  if (lines.length < 2) return null;
+  const header = lines[0].split(',').map(h => h.trim());
+  const ci = header.findIndex(h => /^cum/i.test(h)); // "Cum. net profit"
+  if (ci < 0) return null;
+
+  let peak = 0, epMax = 0;
+  const episodes = [];
+  for (let i = 1; i < lines.length; i++) {
+    const cells = lines[i].split(',');
+    if (cells.length <= ci) continue;
+    const cum = numFromSummary(cells[ci]); // handles "$1,234.50" / "($1,234.50)"
+    if (cum == null) continue;
+    if (cum > peak) {                 // new equity high — close any open episode
+      peak = cum;
+      if (epMax > 0) { episodes.push(epMax); epMax = 0; }
+    } else {
+      epMax = Math.max(epMax, peak - cum);
+    }
+  }
+  if (epMax > 0) episodes.push(epMax);
+  if (episodes.length === 0) return 0;
+  const mean = episodes.reduce((s, d) => s + d, 0) / episodes.length;
+  return round(mean / (contracts || 1));
+}
+
 function parseSummary(file) {
   const raw = fs.readFileSync(file, 'utf8').replace(/^﻿/, '');
   const map = {};
@@ -152,7 +187,7 @@ function parseSummary(file) {
 
 // All dollar figures are normalized to ONE contract so strategies backtested
 // at different sizes (Follow940 @ 2, others @ 1) are directly comparable.
-function buildBacktest(map, contracts) {
+function buildBacktest(map, contracts, avgDrawdown) {
   const c = contracts || 1;
   const g = k => (map[k] !== undefined ? map[k] : null);
   const perC = k => { const n = numFromSummary(g(k)); return n == null ? null : round(n / c); };
@@ -186,6 +221,13 @@ function buildBacktest(map, contracts) {
     .filter(([k]) => g(k) != null && g(k) !== '')
     .map(([k, label]) => ({ label, value: fmtCell(map[k], c) }));
 
+  // Insert derived "Avg drawdown" right after "Max drawdown" (not in the NT summary).
+  if (avgDrawdown != null) {
+    const at = detail.findIndex(r => r.label === 'Max drawdown');
+    const row = { label: 'Avg drawdown', value: '-' + fmtCell('$' + avgDrawdown, 1) };
+    detail.splice(at >= 0 ? at + 1 : detail.length, 0, row);
+  }
+
   return {
     perContract: true,
     period: (startY && endY) ? (startY + ' – ' + endY) : null,
@@ -193,6 +235,7 @@ function buildBacktest(map, contracts) {
     profitFactor: numFromSummary(g('Profit factor')),       // ratio — size-invariant
     winRate: numFromSummary(g('Percent profitable')),       // % — size-invariant
     maxDrawdown: perC('Max. drawdown'),       // $ — normalized to 1 contract
+    avgDrawdown: avgDrawdown == null ? null : round(avgDrawdown), // $ — normalized to 1 contract
     netProfit: perC('Total net profit'),      // $ — normalized to 1 contract
     trades: numFromSummary(g('Total # of trades')),         // count — size-invariant
     winLossRatio: numFromSummary(g('Ratio avg. win / avg. loss')), // ratio — size-invariant
@@ -239,7 +282,9 @@ function main() {
     if (s.backtest) {
       const btPath = path.resolve(ROOT, s.backtest);
       if (fs.existsSync(btPath)) {
-        const backtest = buildBacktest(parseSummary(btPath), s.backtestContracts);
+        const btTradesPath = s.backtestTrades ? path.resolve(ROOT, s.backtestTrades) : null;
+        const avgDd = avgDrawdownFromTrades(btTradesPath, s.backtestContracts);
+        const backtest = buildBacktest(parseSummary(btPath), s.backtestContracts, avgDd);
         lineup.push({
           id: s.id, name: s.name, type: s.type, tf: s.tf,
           style: s.style, status: s.status || 'backtest', description: s.description || '',
