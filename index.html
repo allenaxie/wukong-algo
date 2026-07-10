@@ -240,6 +240,7 @@
           <thead>
             <tr style="font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:#5a606b;">
               <th style="text-align:left;padding:10px 22px;font-weight:500;">Date / Time (ET)</th>
+              <th style="text-align:left;padding:10px 12px;font-weight:500;">Strategy</th>
               <th style="text-align:left;padding:10px 12px;font-weight:500;">Symbol</th>
               <th style="text-align:left;padding:10px 12px;font-weight:500;">Side</th>
               <th style="text-align:right;padding:10px 12px;font-weight:500;">Qty</th>
@@ -537,7 +538,7 @@
     return dedup;
   }
 
-  function tradeRow(t, symbol) {
+  function tradeRow(t, symbol, strategy) {
     var sideWord = t.side.charAt(0).toUpperCase() + t.side.slice(1).toLowerCase();
     var sideColor = /^s/i.test(t.side) ? RED : GREEN; // Short red, Long green
     var dt = String(t.date).split(" "); // "23 Jun 2026"
@@ -547,6 +548,7 @@
     return '' +
       '<tr class="wk-trow" style="border-top:1px solid #15171e;">' +
       '<td style="padding:13px 22px;color:#9aa0ad;">' + when + '</td>' +
+      '<td style="padding:13px 12px;color:#E7E9EE;">' + (strategy || "—") + '</td>' +
       '<td style="padding:13px 12px;">' + symbol + '</td>' +
       '<td style="padding:13px 12px;"><span style="color:' + sideColor + ';">' + sideWord + '</span></td>' +
       '<td style="padding:13px 12px;text-align:right;">' + t.contracts + '</td>' +
@@ -639,7 +641,7 @@
     var flat = [];
     strategies.forEach(function (st) {
       (st.trades || []).forEach(function (t) {
-        flat.push({ t: t, symbol: st.type || "", key: new Date(t.date + " " + (t.time || "00:00:00")).getTime() });
+        flat.push({ t: t, symbol: st.type || "", strategy: st.name || "", key: new Date(t.date + " " + (t.time || "00:00:00")).getTime() });
       });
     });
     return flat.sort(function (a, b) { return b.key - a.key; });
@@ -683,7 +685,7 @@
     // Recent trades for this view, newest first
     var shown = (view.tradeRows || []).slice(0, 8);
     var tbody = document.getElementById("wk-trades");
-    if (tbody) tbody.innerHTML = shown.map(function (r) { return tradeRow(r.t, r.symbol); }).join("");
+    if (tbody) tbody.innerHTML = shown.map(function (r) { return tradeRow(r.t, r.symbol, r.strategy); }).join("");
     set("trade-count", "Showing " + shown.length + " of " + s.trades + " logged trade" + (s.trades === 1 ? "" : "s"));
   }
 
