@@ -1,23 +1,23 @@
 {
-  "generated": "2026-07-10T06:47:52.284Z",
+  "generated": "2026-07-10T20:00:01.973Z",
   "portfolio": {
     "stats": {
-      "trades": 3,
-      "wins": 1,
+      "trades": 4,
+      "wins": 2,
       "losses": 2,
-      "winRate": 33.3,
-      "totalPnl": 797,
-      "avgTrade": 265.67,
-      "avgWin": 930,
+      "winRate": 50,
+      "totalPnl": 924,
+      "avgTrade": 231,
+      "avgWin": 528.5,
       "avgLoss": -66.5,
-      "profitFactor": 6.99,
-      "grossProfit": 930,
+      "profitFactor": 7.95,
+      "grossProfit": 1057,
       "grossLoss": 133,
       "maxDrawdown": 133,
       "bestTrade": 930,
       "worstTrade": -132.5,
       "firstDate": "23 Jun 2026",
-      "lastDate": "09 Jul 2026"
+      "lastDate": "10 Jul 2026"
     },
     "equity": [
       {
@@ -43,6 +43,12 @@
         "date": "09 Jul 2026",
         "pnl": -0.5,
         "cum": 797
+      },
+      {
+        "i": 4,
+        "date": "10 Jul 2026",
+        "pnl": 127,
+        "cum": 924
       }
     ]
   },
@@ -111,22 +117,22 @@
       "status": "live",
       "description": "Confirmed-close 5-minute opening-range breakout on MNQ. Structural stop at the opposite range extreme, breakeven shift at +0.5R, and winners ride a far target into the session close.",
       "stats": {
-        "trades": 2,
-        "wins": 0,
+        "trades": 3,
+        "wins": 1,
         "losses": 2,
-        "winRate": 0,
-        "totalPnl": -133,
-        "avgTrade": -66.5,
-        "avgWin": 0,
+        "winRate": 33.3,
+        "totalPnl": -6,
+        "avgTrade": -2,
+        "avgWin": 127,
         "avgLoss": -66.5,
-        "profitFactor": 0,
-        "grossProfit": 0,
+        "profitFactor": 0.95,
+        "grossProfit": 127,
         "grossLoss": 133,
         "maxDrawdown": 133,
-        "bestTrade": -0.5,
+        "bestTrade": 127,
         "worstTrade": -132.5,
         "firstDate": "06 Jul 2026",
-        "lastDate": "09 Jul 2026"
+        "lastDate": "10 Jul 2026"
       },
       "equity": [
         {
@@ -146,6 +152,12 @@
           "date": "09 Jul 2026",
           "pnl": -0.5,
           "cum": -133
+        },
+        {
+          "i": 3,
+          "date": "10 Jul 2026",
+          "pnl": 127,
+          "cum": -6
         }
       ],
       "trades": [
@@ -171,6 +183,18 @@
           "exit": 29918.5,
           "pnlPts": -0.25,
           "pnl": -0.5,
+          "reason": "Force EOD ⏰"
+        },
+        {
+          "tradeId": "20260710-113000-L",
+          "date": "10 Jul 2026",
+          "time": "11:30:00",
+          "side": "LONG",
+          "contracts": 1,
+          "entry": 29980.25,
+          "exit": 30043.75,
+          "pnlPts": 63.5,
+          "pnl": 127,
           "reason": "Force EOD ⏰"
         }
       ]
