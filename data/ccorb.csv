@@ -1,2 +1,3 @@
 TradeId,Date,Time (ET),Strategy,Symbol,Side,Contracts,Entry,Exit,P&L (pts),P&L ($),Reason,ORRangePts
 20260706-101500-L,06 Jul 2026,10:15:00,CCORB,MNQ,LONG,1,30023.25,29957.00,-66.25,-132.50,Force EOD ⏰,0.00
+20260709-130500-L,09 Jul 2026,13:05:00,CCORB,MNQ,LONG,1,29918.75,29918.50,-0.25,-0.50,Force EOD ⏰,0.00
