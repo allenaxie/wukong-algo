@@ -1,5 +1,5 @@
 {
-  "generated": "2026-07-10T20:00:01.973Z",
+  "generated": "2026-07-13T15:00:01.237Z",
   "portfolio": {
     "stats": {
       "trades": 4,
@@ -518,6 +518,113 @@
           {
             "label": "Avg ETD",
             "value": "$98.59"
+          }
+        ]
+      }
+    },
+    {
+      "id": "ccorbmgc",
+      "name": "CCORB Gold",
+      "type": "MGC",
+      "tf": "5min",
+      "style": "Opening-range breakout",
+      "status": "forward-test",
+      "description": "Long-only opening-range breakout on Micro Gold. A conviction filter requires a real displacement candle on the break; winners ride an ATR trailing stop into the session close. The portfolio's first non-equity book, uncorrelated to the Nasdaq strategies.",
+      "backtest": {
+        "perContract": true,
+        "period": "2019 – 2026",
+        "profitPerMonth": 61.86,
+        "profitFactor": 1.46,
+        "winRate": 36.6,
+        "maxDrawdown": -640.8,
+        "avgDrawdown": 151.31,
+        "netProfit": 5555,
+        "trades": 530,
+        "winLossRatio": 2.53,
+        "detail": [
+          {
+            "label": "Profit factor",
+            "value": "1.46"
+          },
+          {
+            "label": "Net profit",
+            "value": "$5,555.00"
+          },
+          {
+            "label": "Profit / month",
+            "value": "$61.86"
+          },
+          {
+            "label": "Win rate",
+            "value": "36.60%"
+          },
+          {
+            "label": "Total trades",
+            "value": "530"
+          },
+          {
+            "label": "Avg. trade",
+            "value": "$10.48"
+          },
+          {
+            "label": "Avg win / avg loss",
+            "value": "2.53"
+          },
+          {
+            "label": "Avg. winning trade",
+            "value": "$90.44"
+          },
+          {
+            "label": "Avg. losing trade",
+            "value": "-$35.69"
+          },
+          {
+            "label": "Max drawdown",
+            "value": "-$640.80"
+          },
+          {
+            "label": "Avg drawdown",
+            "value": "-$151.31"
+          },
+          {
+            "label": "Sharpe ratio",
+            "value": "0.34"
+          },
+          {
+            "label": "Sortino ratio",
+            "value": "0.65"
+          },
+          {
+            "label": "Max consec. winners",
+            "value": "7"
+          },
+          {
+            "label": "Max consec. losers",
+            "value": "10"
+          },
+          {
+            "label": "Largest win",
+            "value": "$540.60"
+          },
+          {
+            "label": "Largest loss",
+            "value": "-$195.40"
+          },
+          {
+            "label": "Avg trades / day",
+            "value": "0.28"
+          },
+          {
+            "label": "Avg MAE",
+            "value": "$44.61"
+          },
+          {
+            "label": "Avg MFE",
+            "value": "$73.35"
+          },
+          {
+            "label": "Avg ETD",
+            "value": "$62.87"
           }
         ]
       }
