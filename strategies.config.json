@@ -37,6 +37,18 @@
       "backtestTrades": "../trading-strategies/research/MBTTrendPilot/v0.3.0/ATR100_D13_MB53_trades.csv",
       "backtestContracts": 1,
       "description": "Long-only Donchian breakout on Micro Bitcoin futures, gated by a daily EMA trend filter and an ATR volatility floor, with an ATR trailing stop and a time-based exit."
+    },
+    {
+      "id": "ccorbmgc",
+      "name": "CCORB Gold",
+      "type": "MGC",
+      "tf": "5min",
+      "style": "Opening-range breakout",
+      "status": "forward-test",
+      "backtest": "../trading-strategies/research/CCORB-MGC/active/active_summary.csv",
+      "backtestTrades": "../trading-strategies/research/CCORB-MGC/active/trades.csv",
+      "backtestContracts": 1,
+      "description": "Long-only opening-range breakout on Micro Gold. A conviction filter requires a real displacement candle on the break; winners ride an ATR trailing stop into the session close. The portfolio's first non-equity book, uncorrelated to the Nasdaq strategies."
     }
   ]
 }
