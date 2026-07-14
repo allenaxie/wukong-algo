@@ -1,21 +1,21 @@
 {
-  "generated": "2026-07-13T15:00:01.237Z",
+  "generated": "2026-07-14T04:35:40.591Z",
   "portfolio": {
     "stats": {
       "trades": 4,
       "wins": 2,
       "losses": 2,
       "winRate": 50,
-      "totalPnl": 924,
-      "avgTrade": 231,
-      "avgWin": 528.5,
-      "avgLoss": -66.5,
-      "profitFactor": 7.95,
-      "grossProfit": 1057,
-      "grossLoss": 133,
-      "maxDrawdown": 133,
-      "bestTrade": 930,
-      "worstTrade": -132.5,
+      "totalPnl": 914.6,
+      "avgTrade": 228.65,
+      "avgWin": 525.68,
+      "avgLoss": -68.38,
+      "profitFactor": 7.69,
+      "grossProfit": 1051.36,
+      "grossLoss": 136.76,
+      "maxDrawdown": 136.76,
+      "bestTrade": 926.24,
+      "worstTrade": -134.38,
       "firstDate": "23 Jun 2026",
       "lastDate": "10 Jul 2026"
     },
@@ -29,26 +29,26 @@
       {
         "i": 1,
         "date": "23 Jun 2026",
-        "pnl": 930,
-        "cum": 930
+        "pnl": 926.24,
+        "cum": 926.24
       },
       {
         "i": 2,
         "date": "06 Jul 2026",
-        "pnl": -132.5,
-        "cum": 797.5
+        "pnl": -134.38,
+        "cum": 791.86
       },
       {
         "i": 3,
         "date": "09 Jul 2026",
-        "pnl": -0.5,
-        "cum": 797
+        "pnl": -2.38,
+        "cum": 789.48
       },
       {
         "i": 4,
         "date": "10 Jul 2026",
-        "pnl": 127,
-        "cum": 924
+        "pnl": 125.12,
+        "cum": 914.6
       }
     ]
   },
@@ -66,16 +66,16 @@
         "wins": 1,
         "losses": 0,
         "winRate": 100,
-        "totalPnl": 930,
-        "avgTrade": 930,
-        "avgWin": 930,
+        "totalPnl": 926.24,
+        "avgTrade": 926.24,
+        "avgWin": 926.24,
         "avgLoss": 0,
         "profitFactor": null,
-        "grossProfit": 930,
+        "grossProfit": 926.24,
         "grossLoss": 0,
         "maxDrawdown": 0,
-        "bestTrade": 930,
-        "worstTrade": 930,
+        "bestTrade": 926.24,
+        "worstTrade": 926.24,
         "firstDate": "23 Jun 2026",
         "lastDate": "23 Jun 2026"
       },
@@ -89,8 +89,8 @@
         {
           "i": 1,
           "date": "23 Jun 2026",
-          "pnl": 930,
-          "cum": 930
+          "pnl": 926.24,
+          "cum": 926.24
         }
       ],
       "trades": [
@@ -103,7 +103,7 @@
           "entry": 29983,
           "exit": 29750.5,
           "pnlPts": 232.5,
-          "pnl": 930,
+          "pnl": 926.24,
           "reason": "Take profit ✅"
         }
       ]
@@ -121,16 +121,16 @@
         "wins": 1,
         "losses": 2,
         "winRate": 33.3,
-        "totalPnl": -6,
-        "avgTrade": -2,
-        "avgWin": 127,
-        "avgLoss": -66.5,
-        "profitFactor": 0.95,
-        "grossProfit": 127,
-        "grossLoss": 133,
-        "maxDrawdown": 133,
-        "bestTrade": 127,
-        "worstTrade": -132.5,
+        "totalPnl": -11.64,
+        "avgTrade": -3.88,
+        "avgWin": 125.12,
+        "avgLoss": -68.38,
+        "profitFactor": 0.91,
+        "grossProfit": 125.12,
+        "grossLoss": 136.76,
+        "maxDrawdown": 136.76,
+        "bestTrade": 125.12,
+        "worstTrade": -134.38,
         "firstDate": "06 Jul 2026",
         "lastDate": "10 Jul 2026"
       },
@@ -144,20 +144,20 @@
         {
           "i": 1,
           "date": "06 Jul 2026",
-          "pnl": -132.5,
-          "cum": -132.5
+          "pnl": -134.38,
+          "cum": -134.38
         },
         {
           "i": 2,
           "date": "09 Jul 2026",
-          "pnl": -0.5,
-          "cum": -133
+          "pnl": -2.38,
+          "cum": -136.76
         },
         {
           "i": 3,
           "date": "10 Jul 2026",
-          "pnl": 127,
-          "cum": -6
+          "pnl": 125.12,
+          "cum": -11.64
         }
       ],
       "trades": [
@@ -170,7 +170,7 @@
           "entry": 30023.25,
           "exit": 29957,
           "pnlPts": -66.25,
-          "pnl": -132.5,
+          "pnl": -134.38,
           "reason": "Force EOD ⏰"
         },
         {
@@ -182,7 +182,7 @@
           "entry": 29918.75,
           "exit": 29918.5,
           "pnlPts": -0.25,
-          "pnl": -0.5,
+          "pnl": -2.38,
           "reason": "Force EOD ⏰"
         },
         {
@@ -194,7 +194,7 @@
           "entry": 29980.25,
           "exit": 30043.75,
           "pnlPts": 63.5,
-          "pnl": 127,
+          "pnl": 125.12,
           "reason": "Force EOD ⏰"
         }
       ]
