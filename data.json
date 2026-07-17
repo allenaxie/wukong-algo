@@ -1,26 +1,26 @@
 {
-  "generated": "2026-07-17T13:00:02.403Z",
+  "generated": "2026-07-17T15:00:01.353Z",
   "portfolio": {
     "stats": {
-      "trades": 6,
+      "trades": 7,
       "wins": 2,
-      "losses": 4,
-      "winRate": 33.3,
-      "totalPnl": 907.08,
+      "losses": 5,
+      "winRate": 28.6,
+      "totalPnl": 905.2,
       "daysLive": 24,
       "monthsLive": 0.79,
-      "profitPerMonth": 907.08,
-      "avgTrade": 151.18,
+      "profitPerMonth": 905.2,
+      "avgTrade": 129.31,
       "avgWin": 525.68,
-      "avgLoss": -36.07,
-      "profitFactor": 7.29,
+      "avgLoss": -29.23,
+      "profitFactor": 7.19,
       "grossProfit": 1051.36,
-      "grossLoss": 144.28,
+      "grossLoss": 146.16,
       "maxDrawdown": 136.76,
       "bestTrade": 926.24,
       "worstTrade": -134.38,
       "firstDate": "23 Jun 2026",
-      "lastDate": "15 Jul 2026"
+      "lastDate": "17 Jul 2026"
     },
     "equity": [
       {
@@ -64,6 +64,12 @@
         "date": "15 Jul 2026",
         "pnl": -3.76,
         "cum": 907.08
+      },
+      {
+        "i": 7,
+        "date": "17 Jul 2026",
+        "pnl": -1.88,
+        "cum": 905.2
       }
     ]
   },
@@ -153,25 +159,25 @@
       "status": "live",
       "description": "Confirmed-close 5-minute opening-range breakout on MNQ. Structural stop at the opposite range extreme, breakeven shift at +0.5R, and winners ride a far target into the session close.",
       "stats": {
-        "trades": 4,
+        "trades": 5,
         "wins": 1,
-        "losses": 3,
-        "winRate": 25,
-        "totalPnl": -15.4,
+        "losses": 4,
+        "winRate": 20,
+        "totalPnl": -17.28,
         "daysLive": 11,
         "monthsLive": 0.37,
-        "profitPerMonth": -15.4,
-        "avgTrade": -3.85,
+        "profitPerMonth": -17.28,
+        "avgTrade": -3.46,
         "avgWin": 125.12,
-        "avgLoss": -46.84,
-        "profitFactor": 0.89,
+        "avgLoss": -35.6,
+        "profitFactor": 0.88,
         "grossProfit": 125.12,
-        "grossLoss": 140.52,
+        "grossLoss": 142.4,
         "maxDrawdown": 136.76,
         "bestTrade": 125.12,
         "worstTrade": -134.38,
         "firstDate": "06 Jul 2026",
-        "lastDate": "15 Jul 2026"
+        "lastDate": "17 Jul 2026"
       },
       "equity": [
         {
@@ -203,6 +209,12 @@
           "date": "15 Jul 2026",
           "pnl": -3.76,
           "cum": -15.4
+        },
+        {
+          "i": 5,
+          "date": "17 Jul 2026",
+          "pnl": -1.88,
+          "cum": -17.28
         }
       ],
       "trades": [
@@ -252,6 +264,18 @@
           "exit": 29673,
           "pnlPts": 0,
           "pnl": -3.76,
+          "reason": "Take profit ✅"
+        },
+        {
+          "tradeId": "20260717-100500-L",
+          "date": "17 Jul 2026",
+          "time": "10:05:00",
+          "side": "LONG",
+          "contracts": 1,
+          "entry": 28717.75,
+          "exit": 28717.75,
+          "pnlPts": 0,
+          "pnl": -1.88,
           "reason": "Take profit ✅"
         }
       ]
