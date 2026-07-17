@@ -1,6 +1,6 @@
-# axalgo (Wukong Algo website) — working protocol
+# wukong-algo (Wukong Algo website) — working protocol
 
-Public, fully-transparent performance site. Local folder `~/axalgo`; repo `allenaxie/wukong-algo`; served via **GitHub Pages (main / root)** at https://allenaxie.github.io/wukong-algo/. `README.md` has the fuller narrative; **this file is the operational standard — follow it.**
+Public, fully-transparent performance site. Local folder `~/wukong-algo`; repo `allenaxie/wukong-algo`; served via **GitHub Pages (main / root)** at https://allenaxie.github.io/wukong-algo/. `README.md` has the fuller narrative; **this file is the operational standard — follow it.**
 
 ## Pipeline
 NinjaTrader live CSV → `data/<id>.csv` → `build.js` → `data.json` → `index.html` (single self-contained static page that fetches `data.json`). Register strategies in `strategies.config.json`. `sync.ps1` copies live CSVs, rebuilds, commits, and pushes — gated on `data/` changes so it doesn't push no-op rebuilds.
@@ -13,6 +13,7 @@ Status-badged cards (`live` / `forward-test` / `backtest`) per strategy, each wi
 
 ## Metric standards
 - **Headline metric = profit/month**, never net (net isn't comparable across different date ranges).
+- **Live profit/month divides by months elapsed since the first fill, floored at 1** (`computeStats` in `build.js`). Inside month one a raw `net ÷ 0.72 months` would *exceed* net P&L and publish a projection as if it were a measurement — the floor makes the tile read as plain net until the record is genuinely a month old, then it diverges on its own. The window runs first-fill→**now**, not first-fill→last-fill, so a strategy that stops trading decays instead of freezing. Never remove the floor to make the number look bigger.
 - **Normalize every dollar figure to ONE contract** via each strategy's `backtestContracts`. As of 2026-06-27 all three active builds (Follow940, CCORB, MBT) export at **1 contract** — Follow940 dropped from 2→1 in its v1.22.1 active build, so its `backtestContracts` is now `1` (a stale `2` halves its displayed figures). Ratios / percentages / counts (PF, win rate, Sharpe…) are size-invariant — leave them. **Always verify a strategy's contract size from its `trades.csv` Qty column** when adding or re-pointing a backtest.
 - **No version numbers shown publicly** (kept internal in the changelogs).
 

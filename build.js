@@ -63,7 +63,10 @@ function parseCsv(file) {
 
 function round(n, p = 2) { const f = 10 ** p; return Math.round(n * f) / f; }
 
-function computeStats(trades) {
+const MS_PER_DAY = 86400000;
+const MS_PER_MONTH = 30.44 * MS_PER_DAY; // avg calendar month
+
+function computeStats(trades, now = Date.now()) {
   const wins = trades.filter(t => t.pnl > 0);
   const losses = trades.filter(t => t.pnl < 0);
   const grossProfit = wins.reduce((s, t) => s + t.pnl, 0);
@@ -80,6 +83,14 @@ function computeStats(trades) {
     equity.push({ i: i + 1, date: t.date, pnl: round(t.pnl), cum: round(cum) });
   });
 
+  // Live record length, measured from the first fill to now (not to the last
+  // fill) — a strategy that stops trading should see its rate decay, not freeze.
+  const elapsedMs = trades.length ? Math.max(0, now - trades[0]._when.getTime()) : 0;
+  const monthsElapsed = elapsedMs / MS_PER_MONTH;
+  // Divisor floored at 1: inside the first month, profit/month reads as plain
+  // net P&L rather than extrapolating a partial month into a monthly rate.
+  const monthsDivisor = Math.max(1, monthsElapsed);
+
   return {
     stats: {
       trades: trades.length,
@@ -87,6 +98,9 @@ function computeStats(trades) {
       losses: losses.length,
       winRate: trades.length ? round((wins.length / trades.length) * 100, 1) : 0,
       totalPnl: round(totalPnl),
+      daysLive: trades.length ? Math.floor(elapsedMs / MS_PER_DAY) : 0,
+      monthsLive: round(monthsElapsed),
+      profitPerMonth: trades.length ? round(totalPnl / monthsDivisor) : 0,
       avgTrade: trades.length ? round(totalPnl / trades.length) : 0,
       avgWin: wins.length ? round(grossProfit / wins.length) : 0,
       avgLoss: losses.length ? round(-grossLoss / losses.length) : 0,
