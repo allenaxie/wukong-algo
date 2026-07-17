@@ -11,3 +11,6 @@ desktop.ini
 # Local archives — never publish contaminated/raw backups
 *.CONTAMINATED*.bak
 *.bak
+
+# Local planning notes — this repo is public; internal planning stays on the VPS.
+WAITLIST_SETUP.md
