@@ -1,24 +1,24 @@
 {
-  "generated": "2026-07-21T15:00:02.435Z",
+  "generated": "2026-07-21T18:00:03.275Z",
   "portfolio": {
     "stats": {
       "trades": 9,
       "wins": 2,
       "losses": 7,
       "winRate": 22.2,
-      "totalPnl": 901.44,
+      "totalPnl": 566.44,
       "daysLive": 28,
       "monthsLive": 0.93,
-      "profitPerMonth": 901.44,
-      "avgTrade": 100.16,
+      "profitPerMonth": 566.44,
+      "avgTrade": 62.94,
       "avgWin": 525.68,
-      "avgLoss": -21.42,
-      "profitFactor": 7.01,
+      "avgLoss": -69.27,
+      "profitFactor": 2.17,
       "grossProfit": 1051.36,
-      "grossLoss": 149.92,
-      "maxDrawdown": 136.76,
+      "grossLoss": 484.92,
+      "maxDrawdown": 359.8,
       "bestTrade": 926.24,
-      "worstTrade": -134.38,
+      "worstTrade": -338.38,
       "firstDate": "23 Jun 2026",
       "lastDate": "21 Jul 2026"
     },
@@ -62,26 +62,26 @@
       {
         "i": 6,
         "date": "15 Jul 2026",
-        "pnl": -3.76,
-        "cum": 907.08
+        "pnl": -3.26,
+        "cum": 907.58
       },
       {
         "i": 7,
         "date": "17 Jul 2026",
-        "pnl": -1.88,
-        "cum": 905.2
+        "pnl": -1.38,
+        "cum": 906.2
       },
       {
         "i": 8,
         "date": "20 Jul 2026",
-        "pnl": -1.88,
-        "cum": 903.32
+        "pnl": -1.38,
+        "cum": 904.82
       },
       {
         "i": 9,
         "date": "21 Jul 2026",
-        "pnl": -1.88,
-        "cum": 901.44
+        "pnl": -338.38,
+        "cum": 566.44
       }
     ]
   },
@@ -175,19 +175,19 @@
         "wins": 1,
         "losses": 6,
         "winRate": 14.3,
-        "totalPnl": -21.04,
+        "totalPnl": -356.04,
         "daysLive": 15,
         "monthsLive": 0.5,
-        "profitPerMonth": -21.04,
-        "avgTrade": -3.01,
+        "profitPerMonth": -356.04,
+        "avgTrade": -50.86,
         "avgWin": 125.12,
-        "avgLoss": -24.36,
-        "profitFactor": 0.86,
+        "avgLoss": -80.19,
+        "profitFactor": 0.26,
         "grossProfit": 125.12,
-        "grossLoss": 146.16,
-        "maxDrawdown": 136.76,
+        "grossLoss": 481.16,
+        "maxDrawdown": 356.04,
         "bestTrade": 125.12,
-        "worstTrade": -134.38,
+        "worstTrade": -338.38,
         "firstDate": "06 Jul 2026",
         "lastDate": "21 Jul 2026"
       },
@@ -219,26 +219,26 @@
         {
           "i": 4,
           "date": "15 Jul 2026",
-          "pnl": -3.76,
-          "cum": -15.4
+          "pnl": -3.26,
+          "cum": -14.9
         },
         {
           "i": 5,
           "date": "17 Jul 2026",
-          "pnl": -1.88,
-          "cum": -17.28
+          "pnl": -1.38,
+          "cum": -16.28
         },
         {
           "i": 6,
           "date": "20 Jul 2026",
-          "pnl": -1.88,
-          "cum": -19.16
+          "pnl": -1.38,
+          "cum": -17.66
         },
         {
           "i": 7,
           "date": "21 Jul 2026",
-          "pnl": -1.88,
-          "cum": -21.04
+          "pnl": -338.38,
+          "cum": -356.04
         }
       ],
       "trades": [
@@ -284,11 +284,11 @@
           "time": "10:25:00",
           "side": "SHORT",
           "contracts": 2,
-          "entry": 29673,
-          "exit": 29673,
-          "pnlPts": 0,
-          "pnl": -3.76,
-          "reason": "Take profit ✅"
+          "entry": 29673.88,
+          "exit": 29673.75,
+          "pnlPts": 0.13,
+          "pnl": -3.26,
+          "reason": "Stop loss 🛑"
         },
         {
           "tradeId": "20260717-100500-L",
@@ -296,11 +296,11 @@
           "time": "10:05:00",
           "side": "LONG",
           "contracts": 1,
-          "entry": 28717.75,
-          "exit": 28717.75,
-          "pnlPts": 0,
-          "pnl": -1.88,
-          "reason": "Take profit ✅"
+          "entry": 28720.75,
+          "exit": 28721,
+          "pnlPts": 0.25,
+          "pnl": -1.38,
+          "reason": "Stop loss 🛑"
         },
         {
           "tradeId": "20260720-100000-S",
@@ -308,11 +308,11 @@
           "time": "10:00:00",
           "side": "SHORT",
           "contracts": 1,
-          "entry": 28996.25,
-          "exit": 28996.25,
-          "pnlPts": 0,
-          "pnl": -1.88,
-          "reason": "Take profit ✅"
+          "entry": 28993.5,
+          "exit": 28993.25,
+          "pnlPts": 0.25,
+          "pnl": -1.38,
+          "reason": "Stop loss 🛑"
         },
         {
           "tradeId": "20260721-101000-S",
@@ -320,11 +320,11 @@
           "time": "10:10:00",
           "side": "SHORT",
           "contracts": 1,
-          "entry": 29079.75,
-          "exit": 29079.75,
-          "pnlPts": 0,
-          "pnl": -1.88,
-          "reason": "Take profit ✅"
+          "entry": 29080.75,
+          "exit": 29249,
+          "pnlPts": -168.25,
+          "pnl": -338.38,
+          "reason": "Stop loss 🛑"
         }
       ]
     }
