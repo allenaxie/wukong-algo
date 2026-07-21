@@ -253,12 +253,12 @@
           <tbody id="wk-trades" style="font-family:'JetBrains Mono',monospace;color:#c7ccd6;"></tbody>
         </table>
         </div>
-        <div style="padding:14px 22px;border-top:1px solid #15171e;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;">
-          <span style="font-size:12.5px;color:#6b7280;" id="trade-count">—</span>
-          <div style="display:flex;align-items:center;gap:16px;">
-            <button type="button" id="trade-toggle" style="display:none;font-family:'JetBrains Mono',monospace;font-size:12px;color:#E8B23A;background:none;border:1px solid rgba(232,178,58,.35);border-radius:8px;padding:6px 12px;cursor:pointer;">Show all</button>
+        <div style="padding:14px 22px;border-top:1px solid #15171e;display:flex;flex-direction:column;gap:12px;">
+          <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;">
+            <span style="font-size:12.5px;color:#6b7280;" id="trade-count">—</span>
             <span style="font-family:'JetBrains Mono',monospace;font-size:12px;color:#5a606b;">Full log regenerates from live fills</span>
           </div>
+          <div id="trade-pager" style="display:none;justify-content:center;align-items:center;gap:6px;flex-wrap:wrap;"></div>
         </div>
       </div>
     </section>
@@ -478,7 +478,7 @@
 
   var GREEN = "#34D399", RED = "#F87171";
   var PERF_VIEWS = [], PERF_ACTIVE = 0; // performance-section view switcher
-  var TRADE_PAGE = 8, TRADES_EXPANDED = false; // recent-trades table: default rows + expand toggle
+  var TRADE_PAGE = 10, TRADE_PAGE_IDX = 0; // recent-trades table: rows per page + current page index
 
   function abs(n) { return Math.abs(n); }
   function money0(n) { return "$" + Math.round(abs(n)).toLocaleString("en-US"); }
@@ -695,27 +695,66 @@
     var mEl = document.getElementById("eq-months");
     if (mEl) mEl.innerHTML = months.map(function (m) { return "<span>" + m + "</span>"; }).join("");
 
-    // Recent trades for this view, newest first. Collapsed to TRADE_PAGE rows by
-    // default; the toggle expands to the full log so no trade is ever unreachable.
+    // Recent trades for this view, newest first, paged TRADE_PAGE rows per page.
     var rows = view.tradeRows || [];
-    var shown = TRADES_EXPANDED ? rows : rows.slice(0, TRADE_PAGE);
+    var pageCount = Math.max(1, Math.ceil(rows.length / TRADE_PAGE));
+    if (TRADE_PAGE_IDX >= pageCount) TRADE_PAGE_IDX = pageCount - 1;
+    if (TRADE_PAGE_IDX < 0) TRADE_PAGE_IDX = 0;
+    var start = TRADE_PAGE_IDX * TRADE_PAGE;
+    var shown = rows.slice(start, start + TRADE_PAGE);
     var tbody = document.getElementById("wk-trades");
     if (tbody) tbody.innerHTML = shown.map(function (r) { return tradeRow(r.t, r.symbol, r.strategy); }).join("");
-    set("trade-count", "Showing " + shown.length + " of " + s.trades + " logged trade" + (s.trades === 1 ? "" : "s"));
 
-    var toggle = document.getElementById("trade-toggle");
-    if (toggle) {
-      if (rows.length > TRADE_PAGE) {
-        toggle.style.display = "";
-        toggle.textContent = TRADES_EXPANDED ? "Show fewer" : ("Show all " + rows.length);
-        toggle.onclick = function () {
-          TRADES_EXPANDED = !TRADES_EXPANDED;
-          renderPerf(PERF_VIEWS[PERF_ACTIVE]);
-        };
-      } else {
-        toggle.style.display = "none";
-      }
+    if (pageCount > 1) {
+      set("trade-count", "Showing " + (start + 1) + "–" + (start + shown.length) + " of " + rows.length + " logged trades");
+    } else {
+      set("trade-count", "Showing " + shown.length + " of " + s.trades + " logged trade" + (s.trades === 1 ? "" : "s"));
     }
+    renderPager(pageCount);
+  }
+
+  // ---- Recent-trades pagination -----------------------------------------
+  function pagerBtn(label, page, disabled, active) {
+    var base = "font-family:'JetBrains Mono',monospace;font-size:12px;border-radius:8px;padding:6px 11px;min-width:34px;text-align:center;";
+    if (disabled) return '<button type="button" disabled style="' + base + 'color:#3a3f49;background:none;border:1px solid #1b1e27;cursor:default;">' + label + '</button>';
+    if (active) return '<button type="button" data-pg="' + page + '" aria-current="page" style="' + base + 'color:#0c0d12;background:#E8B23A;border:1px solid #E8B23A;font-weight:600;cursor:pointer;">' + label + '</button>';
+    return '<button type="button" data-pg="' + page + '" style="' + base + 'color:#c7ccd6;background:none;border:1px solid #2a2e39;cursor:pointer;">' + label + '</button>';
+  }
+
+  // Compact page window: first, last, current ±1, with … for gaps.
+  function pageWindow(cur, total) {
+    if (total <= 7) { var a = []; for (var i = 0; i < total; i++) a.push(i); return a; }
+    var keep = {}; keep[0] = keep[total - 1] = keep[cur] = 1;
+    if (cur - 1 > 0) keep[cur - 1] = 1;
+    if (cur + 1 < total - 1) keep[cur + 1] = 1;
+    var keys = Object.keys(keep).map(Number).sort(function (x, y) { return x - y; });
+    var out = [], prev = -1;
+    keys.forEach(function (k) { if (k - prev > 1) out.push("…"); out.push(k); prev = k; });
+    return out;
+  }
+
+  function renderPager(pageCount) {
+    var pager = document.getElementById("trade-pager");
+    if (!pager) return;
+    if (pageCount <= 1) { pager.style.display = "none"; pager.innerHTML = ""; return; }
+    pager.style.display = "flex";
+    var cur = TRADE_PAGE_IDX;
+    var html = pagerBtn("‹ Prev", cur - 1, cur === 0, false);
+    pageWindow(cur, pageCount).forEach(function (it) {
+      html += it === "…"
+        ? '<span style="color:#5a606b;padding:0 2px;">…</span>'
+        : pagerBtn(String(it + 1), it, false, it === cur);
+    });
+    html += pagerBtn("Next ›", cur + 1, cur === pageCount - 1, false);
+    pager.innerHTML = html;
+    Array.prototype.forEach.call(pager.querySelectorAll("button[data-pg]"), function (b) {
+      b.onclick = function () {
+        var p = +b.getAttribute("data-pg");
+        if (p === TRADE_PAGE_IDX) return;
+        TRADE_PAGE_IDX = p;
+        renderPerf(PERF_VIEWS[PERF_ACTIVE]);
+      };
+    });
   }
 
   // One compact card in the "By strategy" comparison strip.
@@ -757,6 +796,7 @@
         var idx = +btn.getAttribute("data-idx");
         if (idx === PERF_ACTIVE) return;
         PERF_ACTIVE = idx;
+        TRADE_PAGE_IDX = 0; // new strategy view starts on page 1
         renderPerf(PERF_VIEWS[idx]);
         renderBystrat();
       });
