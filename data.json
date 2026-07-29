@@ -1,5 +1,5 @@
 {
-  "generated": "2026-07-29T19:00:02.428Z",
+  "generated": "2026-07-29T20:00:03.864Z",
   "portfolio": {
     "stats": {
       "trades": 14,
@@ -8,8 +8,8 @@
       "winRate": 21.4,
       "totalPnl": -605.96,
       "daysLive": 36,
-      "monthsLive": 1.19,
-      "profitPerMonth": -507.38,
+      "monthsLive": 1.2,
+      "profitPerMonth": -506.8,
       "avgTrade": -43.28,
       "avgWin": 462.83,
       "avgLoss": -181.31,
@@ -131,8 +131,8 @@
         "winRate": 50,
         "totalPnl": 922.48,
         "daysLive": 36,
-        "monthsLive": 1.19,
-        "profitPerMonth": 772.41,
+        "monthsLive": 1.2,
+        "profitPerMonth": 771.52,
         "avgTrade": 461.24,
         "avgWin": 926.24,
         "avgLoss": -3.76,
