@@ -1,5 +1,5 @@
 {
-  "generated": "2026-08-01T01:00:02.083Z",
+  "generated": "2026-08-03T13:00:02.734Z",
   "portfolio": {
     "stats": {
       "trades": 14,
@@ -7,9 +7,9 @@
       "losses": 11,
       "winRate": 21.4,
       "totalPnl": -605.96,
-      "daysLive": 38,
-      "monthsLive": 1.27,
-      "profitPerMonth": -477.81,
+      "daysLive": 41,
+      "monthsLive": 1.35,
+      "profitPerMonth": -448.75,
       "avgTrade": -43.28,
       "avgWin": 462.83,
       "avgLoss": -181.31,
@@ -130,9 +130,9 @@
         "losses": 1,
         "winRate": 50,
         "totalPnl": 922.48,
-        "daysLive": 38,
-        "monthsLive": 1.27,
-        "profitPerMonth": 727.39,
+        "daysLive": 41,
+        "monthsLive": 1.35,
+        "profitPerMonth": 683.15,
         "avgTrade": 461.24,
         "avgWin": 926.24,
         "avgLoss": -3.76,
@@ -206,8 +206,8 @@
         "losses": 10,
         "winRate": 16.7,
         "totalPnl": -1528.44,
-        "daysLive": 25,
-        "monthsLive": 0.84,
+        "daysLive": 28,
+        "monthsLive": 0.92,
         "profitPerMonth": -1528.44,
         "avgTrade": -127.37,
         "avgWin": 231.12,
@@ -660,113 +660,6 @@
           {
             "label": "Avg ETD",
             "value": "$155.34"
-          }
-        ]
-      }
-    },
-    {
-      "id": "mbt",
-      "name": "MBT TrendPilot",
-      "type": "MBT",
-      "tf": "15min",
-      "style": "Trend breakout",
-      "status": "forward-test",
-      "description": "Long-only Donchian breakout on Micro Bitcoin futures, gated by a daily EMA trend filter and an ATR volatility floor, with an ATR trailing stop and a time-based exit.",
-      "backtest": {
-        "perContract": true,
-        "period": "2019 – 2026",
-        "profitPerMonth": 236.5,
-        "profitFactor": 1.5,
-        "winRate": 41.01,
-        "maxDrawdown": -1020.5,
-        "avgDrawdown": 273.58,
-        "netProfit": 11569,
-        "trades": 656,
-        "winLossRatio": 2.15,
-        "detail": [
-          {
-            "label": "Profit factor",
-            "value": "1.50"
-          },
-          {
-            "label": "Net profit",
-            "value": "$11,569.00"
-          },
-          {
-            "label": "Profit / month",
-            "value": "$236.50"
-          },
-          {
-            "label": "Win rate",
-            "value": "41.01%"
-          },
-          {
-            "label": "Total trades",
-            "value": "656"
-          },
-          {
-            "label": "Avg. trade",
-            "value": "$17.64"
-          },
-          {
-            "label": "Avg win / avg loss",
-            "value": "2.15"
-          },
-          {
-            "label": "Avg. winning trade",
-            "value": "$129.83"
-          },
-          {
-            "label": "Avg. losing trade",
-            "value": "-$60.51"
-          },
-          {
-            "label": "Max drawdown",
-            "value": "-$1,020.50"
-          },
-          {
-            "label": "Avg drawdown",
-            "value": "-$273.58"
-          },
-          {
-            "label": "Sharpe ratio",
-            "value": "0.45"
-          },
-          {
-            "label": "Sortino ratio",
-            "value": "1.84"
-          },
-          {
-            "label": "Max consec. winners",
-            "value": "13"
-          },
-          {
-            "label": "Max consec. losers",
-            "value": "9"
-          },
-          {
-            "label": "Largest win",
-            "value": "$1,400.00"
-          },
-          {
-            "label": "Largest loss",
-            "value": "-$227.00"
-          },
-          {
-            "label": "Avg trades / day",
-            "value": "0.64"
-          },
-          {
-            "label": "Avg MAE",
-            "value": "$51.68"
-          },
-          {
-            "label": "Avg MFE",
-            "value": "$116.22"
-          },
-          {
-            "label": "Avg ETD",
-            "value": "$98.59"
           }
         ]
       }
