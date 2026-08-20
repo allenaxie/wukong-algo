@@ -55,6 +55,11 @@ function parseCsv(file) {
       pnlPts: +c[col.pnlPts],
       pnl: +c[col.pnl],
       reason: col.reason >= 0 ? c[col.reason] : '',
+      // A row the ACCOUNT realised but the STRATEGY never signalled — e.g. the 2026-08-19 NT
+      // teardown that flipped CCORB long after its own exit had already filled. It is real money,
+      // so it belongs in net P&L and the equity curve; it is not a signal, so it must not move win
+      // rate, profit factor or the trade count. Marked in the CSV Reason with a NON-STRATEGY prefix.
+      nonStrategy: /^\s*NON-STRATEGY\b/i.test(col.reason >= 0 ? c[col.reason] : ''),
       _when: parseWhen(date, time),
     });
   }
@@ -67,11 +72,17 @@ const MS_PER_DAY = 86400000;
 const MS_PER_MONTH = 30.44 * MS_PER_DAY; // avg calendar month
 
 function computeStats(trades, now = Date.now()) {
-  const wins = trades.filter(t => t.pnl > 0);
-  const losses = trades.filter(t => t.pnl < 0);
+  // Two populations on purpose. Money stats (net P&L, equity, drawdown) run over EVERY fill the
+  // account took, so the headline reconciles to the real account. Signal-quality stats (win rate,
+  // profit factor, averages, trade count) run over strategy trades only — crediting the strategy
+  // for a platform artefact would overstate its edge to anyone reading the public page.
+  const signal = trades.filter(t => !t.nonStrategy);
+  const wins = signal.filter(t => t.pnl > 0);
+  const losses = signal.filter(t => t.pnl < 0);
   const grossProfit = wins.reduce((s, t) => s + t.pnl, 0);
   const grossLoss = Math.abs(losses.reduce((s, t) => s + t.pnl, 0));
-  const totalPnl = trades.reduce((s, t) => s + t.pnl, 0);
+  const totalPnl  = trades.reduce((s, t) => s + t.pnl, 0);   // account: every fill
+  const signalPnl = signal.reduce((s, t) => s + t.pnl, 0);   // strategy: signalled trades only
 
   // Equity curve + max drawdown over cumulative $ P&L.
   let cum = 0, peak = 0, maxDd = 0;
@@ -93,23 +104,23 @@ function computeStats(trades, now = Date.now()) {
 
   return {
     stats: {
-      trades: trades.length,
+      trades: signal.length,
       wins: wins.length,
       losses: losses.length,
-      winRate: trades.length ? round((wins.length / trades.length) * 100, 1) : 0,
+      winRate: signal.length ? round((wins.length / signal.length) * 100, 1) : 0,
       totalPnl: round(totalPnl),
       daysLive: trades.length ? Math.floor(elapsedMs / MS_PER_DAY) : 0,
       monthsLive: round(monthsElapsed),
       profitPerMonth: trades.length ? round(totalPnl / monthsDivisor) : 0,
-      avgTrade: trades.length ? round(totalPnl / trades.length) : 0,
+      avgTrade: signal.length ? round(signalPnl / signal.length) : 0,
       avgWin: wins.length ? round(grossProfit / wins.length) : 0,
       avgLoss: losses.length ? round(-grossLoss / losses.length) : 0,
       profitFactor: grossLoss > 0 ? round(grossProfit / grossLoss) : (grossProfit > 0 ? null : 0),
       grossProfit: round(grossProfit),
       grossLoss: round(grossLoss),
       maxDrawdown: round(maxDd),
-      bestTrade: trades.length ? round(Math.max(...trades.map(t => t.pnl))) : 0,
-      worstTrade: trades.length ? round(Math.min(...trades.map(t => t.pnl))) : 0,
+      bestTrade: signal.length ? round(Math.max(...signal.map(t => t.pnl))) : 0,
+      worstTrade: signal.length ? round(Math.min(...signal.map(t => t.pnl))) : 0,
       firstDate: trades.length ? trades[0].date : null,
       lastDate: trades.length ? trades[trades.length - 1].date : null,
     },
