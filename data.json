@@ -1,26 +1,26 @@
 {
-  "generated": "2026-08-25T14:00:03.151Z",
+  "generated": "2026-08-25T15:00:02.534Z",
   "portfolio": {
     "stats": {
-      "trades": 25,
+      "trades": 27,
       "wins": 7,
-      "losses": 18,
-      "winRate": 28,
-      "totalPnl": -295.9,
+      "losses": 20,
+      "winRate": 25.9,
+      "totalPnl": -757.54,
       "daysLive": 63,
-      "monthsLive": 2.07,
-      "profitPerMonth": -142.64,
-      "avgTrade": -21.82,
+      "monthsLive": 2.08,
+      "profitPerMonth": -364.94,
+      "avgTrade": -37.3,
       "avgWin": 391.3,
-      "avgLoss": -182.48,
-      "profitFactor": 0.83,
+      "avgLoss": -187.31,
+      "profitFactor": 0.73,
       "grossProfit": 2739.08,
-      "grossLoss": 3284.6,
+      "grossLoss": 3746.24,
       "maxDrawdown": 1869.32,
       "bestTrade": 926.24,
       "worstTrade": -731.88,
       "firstDate": "23 Jun 2026",
-      "lastDate": "21 Aug 2026"
+      "lastDate": "25 Aug 2026"
     },
     "equity": [
       {
@@ -184,6 +184,18 @@
         "date": "21 Aug 2026",
         "pnl": -469.38,
         "cum": -295.9
+      },
+      {
+        "i": 27,
+        "date": "25 Aug 2026",
+        "pnl": -459.76,
+        "cum": -755.66
+      },
+      {
+        "i": 28,
+        "date": "25 Aug 2026",
+        "pnl": -1.88,
+        "cum": -757.54
       }
     ]
   },
@@ -197,25 +209,25 @@
       "status": "live",
       "description": "The 9:40 ET candle sets the day's directional bias; entry on two-candle confirmation, one trade per day, stop at session extreme, target at nearest Asia/London level >= 2R.",
       "stats": {
-        "trades": 3,
+        "trades": 4,
         "wins": 2,
-        "losses": 1,
-        "winRate": 66.7,
-        "totalPnl": 1258.72,
+        "losses": 2,
+        "winRate": 50,
+        "totalPnl": 798.96,
         "daysLive": 63,
-        "monthsLive": 2.07,
-        "profitPerMonth": 606.78,
-        "avgTrade": 419.57,
+        "monthsLive": 2.08,
+        "profitPerMonth": 384.89,
+        "avgTrade": 199.74,
         "avgWin": 631.24,
-        "avgLoss": -3.76,
-        "profitFactor": 335.77,
+        "avgLoss": -231.76,
+        "profitFactor": 2.72,
         "grossProfit": 1262.48,
-        "grossLoss": 3.76,
-        "maxDrawdown": 3.76,
+        "grossLoss": 463.52,
+        "maxDrawdown": 459.76,
         "bestTrade": 926.24,
-        "worstTrade": -3.76,
+        "worstTrade": -459.76,
         "firstDate": "23 Jun 2026",
-        "lastDate": "18 Aug 2026"
+        "lastDate": "25 Aug 2026"
       },
       "equity": [
         {
@@ -241,6 +253,12 @@
           "date": "18 Aug 2026",
           "pnl": 336.24,
           "cum": 1258.72
+        },
+        {
+          "i": 4,
+          "date": "25 Aug 2026",
+          "pnl": -459.76,
+          "cum": 798.96
         }
       ],
       "trades": [
@@ -279,6 +297,18 @@
           "pnlPts": 85,
           "pnl": 336.24,
           "reason": "Time cutoff ⏰"
+        },
+        {
+          "tradeId": "20260825-095000-L",
+          "date": "25 Aug 2026",
+          "time": "09:50:00",
+          "side": "LONG",
+          "contracts": 2,
+          "entry": 29393.25,
+          "exit": 29279.25,
+          "pnlPts": -114,
+          "pnl": -459.76,
+          "reason": "Stop loss 🛑"
         }
       ]
     },
@@ -291,25 +321,25 @@
       "status": "live",
       "description": "Confirmed-close 5-minute opening-range breakout on MNQ. Structural stop at the opposite range extreme, breakeven shift at +0.5R, and winners ride a far target into the session close.",
       "stats": {
-        "trades": 22,
+        "trades": 23,
         "wins": 5,
-        "losses": 17,
-        "winRate": 22.7,
-        "totalPnl": -1554.62,
+        "losses": 18,
+        "winRate": 21.7,
+        "totalPnl": -1556.5,
         "daysLive": 50,
         "monthsLive": 1.65,
-        "profitPerMonth": -943.5,
-        "avgTrade": -82.01,
+        "profitPerMonth": -943.86,
+        "avgTrade": -78.53,
         "avgWin": 295.32,
-        "avgLoss": -192.99,
+        "avgLoss": -182.37,
         "profitFactor": 0.45,
         "grossProfit": 1476.6,
-        "grossLoss": 3280.84,
+        "grossLoss": 3282.72,
         "maxDrawdown": 1865.56,
         "bestTrade": 721.62,
         "worstTrade": -731.88,
         "firstDate": "06 Jul 2026",
-        "lastDate": "21 Aug 2026"
+        "lastDate": "25 Aug 2026"
       },
       "equity": [
         {
@@ -455,6 +485,12 @@
           "date": "21 Aug 2026",
           "pnl": -469.38,
           "cum": -1554.62
+        },
+        {
+          "i": 24,
+          "date": "25 Aug 2026",
+          "pnl": -1.88,
+          "cum": -1556.5
         }
       ],
       "trades": [
@@ -732,6 +768,18 @@
           "exit": 29485.5,
           "pnlPts": -233.75,
           "pnl": -469.38,
+          "reason": "Stop loss 🛑"
+        },
+        {
+          "tradeId": "20260825-100500-S",
+          "date": "25 Aug 2026",
+          "time": "10:05:00",
+          "side": "SHORT",
+          "contracts": 1,
+          "entry": 29261.75,
+          "exit": 29261.75,
+          "pnlPts": 0,
+          "pnl": -1.88,
           "reason": "Stop loss 🛑"
         }
       ]
