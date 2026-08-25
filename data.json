@@ -1,5 +1,5 @@
 {
-  "generated": "2026-08-25T05:17:46.982Z",
+  "generated": "2026-08-25T13:00:08.048Z",
   "portfolio": {
     "stats": {
       "trades": 25,
@@ -7,9 +7,9 @@
       "losses": 18,
       "winRate": 28,
       "totalPnl": -295.9,
-      "daysLive": 62,
-      "monthsLive": 2.06,
-      "profitPerMonth": -143.47,
+      "daysLive": 63,
+      "monthsLive": 2.07,
+      "profitPerMonth": -142.74,
       "avgTrade": -21.82,
       "avgWin": 391.3,
       "avgLoss": -182.48,
@@ -202,9 +202,9 @@
         "losses": 1,
         "winRate": 66.7,
         "totalPnl": 1258.72,
-        "daysLive": 62,
-        "monthsLive": 2.06,
-        "profitPerMonth": 610.28,
+        "daysLive": 63,
+        "monthsLive": 2.07,
+        "profitPerMonth": 607.18,
         "avgTrade": 419.57,
         "avgWin": 631.24,
         "avgLoss": -3.76,
@@ -296,9 +296,9 @@
         "losses": 17,
         "winRate": 22.7,
         "totalPnl": -1554.62,
-        "daysLive": 49,
-        "monthsLive": 1.64,
-        "profitPerMonth": -950.38,
+        "daysLive": 50,
+        "monthsLive": 1.65,
+        "profitPerMonth": -944.29,
         "avgTrade": -82.01,
         "avgWin": 295.32,
         "avgLoss": -192.99,
@@ -735,6 +735,45 @@
           "reason": "Stop loss 🛑"
         }
       ]
+    },
+    {
+      "id": "ccorbmgc",
+      "name": "CCORB Gold",
+      "type": "MGC",
+      "tf": "5min",
+      "style": "Opening-range breakout",
+      "status": "live",
+      "description": "Long-only opening-range breakout on Micro Gold. A conviction filter requires a real displacement candle on the break; winners ride an ATR trailing stop into the session close. The portfolio's first non-equity book, uncorrelated to the Nasdaq strategies.",
+      "stats": {
+        "trades": 0,
+        "wins": 0,
+        "losses": 0,
+        "winRate": 0,
+        "totalPnl": 0,
+        "daysLive": 0,
+        "monthsLive": 0,
+        "profitPerMonth": 0,
+        "avgTrade": 0,
+        "avgWin": 0,
+        "avgLoss": 0,
+        "profitFactor": 0,
+        "grossProfit": 0,
+        "grossLoss": 0,
+        "maxDrawdown": 0,
+        "bestTrade": 0,
+        "worstTrade": 0,
+        "firstDate": null,
+        "lastDate": null
+      },
+      "equity": [
+        {
+          "i": 0,
+          "date": null,
+          "pnl": 0,
+          "cum": 0
+        }
+      ],
+      "trades": []
     }
   ],
   "lineup": [
