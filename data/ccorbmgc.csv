@@ -1,1 +1,2 @@
 TradeId,Date,Time (ET),Strategy,Symbol,Side,Contracts,Entry,Exit,P&L (pts),P&L ($),Reason,ORRangePts
+20260825-102500-L,25 Aug 2026,10:25:00,CCORBMGC,MGC,LONG,4,4681.75,4716.50,34.75,1380.40,Stop 🛑,20.00
