@@ -1,5 +1,5 @@
 {
-  "generated": "2026-08-25T01:00:02.721Z",
+  "generated": "2026-08-25T05:17:46.982Z",
   "portfolio": {
     "stats": {
       "trades": 25,
@@ -9,7 +9,7 @@
       "totalPnl": -295.9,
       "daysLive": 62,
       "monthsLive": 2.06,
-      "profitPerMonth": -143.88,
+      "profitPerMonth": -143.47,
       "avgTrade": -21.82,
       "avgWin": 391.3,
       "avgLoss": -182.48,
@@ -204,7 +204,7 @@
         "totalPnl": 1258.72,
         "daysLive": 62,
         "monthsLive": 2.06,
-        "profitPerMonth": 612.03,
+        "profitPerMonth": 610.28,
         "avgTrade": 419.57,
         "avgWin": 631.24,
         "avgLoss": -3.76,
@@ -297,8 +297,8 @@
         "winRate": 22.7,
         "totalPnl": -1554.62,
         "daysLive": 49,
-        "monthsLive": 1.63,
-        "profitPerMonth": -953.8,
+        "monthsLive": 1.64,
+        "profitPerMonth": -950.38,
         "avgTrade": -82.01,
         "avgWin": 295.32,
         "avgLoss": -192.99,
@@ -958,7 +958,7 @@
       "type": "MGC",
       "tf": "5min",
       "style": "Opening-range breakout",
-      "status": "forward-test",
+      "status": "live",
       "description": "Long-only opening-range breakout on Micro Gold. A conviction filter requires a real displacement candle on the break; winners ride an ATR trailing stop into the session close. The portfolio's first non-equity book, uncorrelated to the Nasdaq strategies.",
       "backtest": {
         "perContract": true,

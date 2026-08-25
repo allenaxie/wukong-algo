@@ -17,6 +17,9 @@ Set-Location $repo
 $sources = @{
   "C:\Users\Administrator\Documents\NinjaTrader 8\Follow940Live\follow940-live-trades.csv" = "data\follow940.csv"
   "C:\Users\Administrator\Documents\NinjaTrader 8\CCORBStrategyActive\ccorb-active-trades.csv" = "data\ccorb.csv"
+  # CCORB-MGC went live 2026-08-25; its exporter ships in ACTIVE-1.9.1. The file does not exist
+  # until its first live fill, so the Test-Path branch below just warns until then.
+  "C:\Users\Administrator\Documents\NinjaTrader 8\CCORBStrategyMGCActive\ccorbmgc-active-trades.csv" = "data\ccorbmgc.csv"
 }
 foreach ($src in $sources.Keys) {
   if (Test-Path $src) {
