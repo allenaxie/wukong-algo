@@ -1,5 +1,5 @@
 {
-  "generated": "2026-08-26T10:40:20.615Z",
+  "generated": "2026-08-26T10:54:41.587Z",
   "portfolio": {
     "stats": {
       "trades": 28,
@@ -9,7 +9,7 @@
       "totalPnl": 622.86,
       "daysLive": 64,
       "monthsLive": 2.1,
-      "profitPerMonth": 296.21,
+      "profitPerMonth": 296.17,
       "avgTrade": 13.33,
       "avgWin": 514.93,
       "avgLoss": -187.31,
@@ -222,7 +222,7 @@
         "totalPnl": 798.96,
         "daysLive": 64,
         "monthsLive": 2.1,
-        "profitPerMonth": 379.96,
+        "profitPerMonth": 379.9,
         "avgTrade": 199.74,
         "avgWin": 631.24,
         "avgLoss": -231.76,
@@ -334,7 +334,7 @@
         "totalPnl": -1556.5,
         "daysLive": 51,
         "monthsLive": 1.68,
-        "profitPerMonth": -928.7,
+        "profitPerMonth": -928.52,
         "avgTrade": -78.53,
         "avgWin": 295.32,
         "avgLoss": -182.37,
@@ -1075,38 +1075,38 @@
       "backtest": {
         "perContract": true,
         "period": "2019 – 2026",
-        "profitPerMonth": 70.34,
-        "profitFactor": 1.53,
-        "winRate": 37.08,
-        "maxDrawdown": -641.8,
-        "avgDrawdown": 150.4,
-        "netProfit": 6425.4,
-        "trades": 534,
+        "profitPerMonth": 73.26,
+        "profitFactor": 1.57,
+        "winRate": 37.62,
+        "maxDrawdown": -573.4,
+        "avgDrawdown": 145.45,
+        "netProfit": 6691.6,
+        "trades": 521,
         "winLossRatio": 2.6,
         "detail": [
           {
             "label": "Profit factor",
-            "value": "1.53"
+            "value": "1.57"
           },
           {
             "label": "Net profit",
-            "value": "$6,425.40"
+            "value": "$6,691.60"
           },
           {
             "label": "Profit / month",
-            "value": "$70.34"
+            "value": "$73.26"
           },
           {
             "label": "Win rate",
-            "value": "37.08%"
+            "value": "37.62%"
           },
           {
             "label": "Total trades",
-            "value": "534"
+            "value": "521"
           },
           {
             "label": "Avg. trade",
-            "value": "$12.03"
+            "value": "$12.84"
           },
           {
             "label": "Avg win / avg loss",
@@ -1114,27 +1114,27 @@
           },
           {
             "label": "Avg. winning trade",
-            "value": "$93.51"
+            "value": "$94.34"
           },
           {
             "label": "Avg. losing trade",
-            "value": "-$35.98"
+            "value": "-$36.30"
           },
           {
             "label": "Max drawdown",
-            "value": "-$641.80"
+            "value": "-$573.40"
           },
           {
             "label": "Avg drawdown",
-            "value": "-$150.40"
+            "value": "-$145.45"
           },
           {
             "label": "Sharpe ratio",
-            "value": "0.36"
+            "value": "0.38"
           },
           {
             "label": "Sortino ratio",
-            "value": "0.73"
+            "value": "0.78"
           },
           {
             "label": "Max consec. winners",
@@ -1154,19 +1154,19 @@
           },
           {
             "label": "Avg trades / day",
-            "value": "0.28"
+            "value": "0.27"
           },
           {
             "label": "Avg MAE",
-            "value": "$44.92"
+            "value": "$45.03"
           },
           {
             "label": "Avg MFE",
-            "value": "$75.34"
+            "value": "$76.31"
           },
           {
             "label": "Avg ETD",
-            "value": "$63.30"
+            "value": "$63.47"
           }
         ]
       }
