@@ -162,39 +162,56 @@ function fmtCell(v, contracts) {
   return s;
 }
 
-// Average drawdown from a NinjaTrader trades export ("Cum. net profit" column).
+// Drawdown stats from a NinjaTrader trades export ("Cum. net profit" column).
 // NinjaTrader's summary reports Max. drawdown but not average drawdown, so we
 // derive it from the closed-trade equity curve. "Average drawdown" here = the
 // mean depth of each distinct peak-to-trough drawdown episode (a new equity high
-// starts a fresh episode). Returned normalized to ONE contract, matching every
-// other dollar figure on the site. Returns null if the file/column is missing.
-function avgDrawdownFromTrades(file, contracts) {
+// starts a fresh episode). Returns { avg, max } normalized to ONE contract,
+// matching every other dollar figure on the site — max is returned only so the
+// caller can cross-check it against the summary's Max. drawdown. Returns null if
+// the file/column is missing.
+//
+// NT exports the trade list in whatever order the grid was sorted in, and two of
+// our three books export newest-first. Walking that backwards inverts the equity
+// curve and produces an "average" drawdown larger than the max, so sort by trade
+// number ascending before walking.
+function drawdownFromTrades(file, contracts) {
   if (!file || !fs.existsSync(file)) return null;
   const raw = fs.readFileSync(file, 'utf8').replace(/^﻿/, '');
   const lines = raw.split(/\r?\n/).filter(l => l.trim() !== '');
   if (lines.length < 2) return null;
   const header = lines[0].split(',').map(h => h.trim());
-  const ci = header.findIndex(h => /^cum/i.test(h)); // "Cum. net profit"
+  const ci = header.findIndex(h => /^cum/i.test(h));          // "Cum. net profit"
+  const ti = header.findIndex(h => /^trade number/i.test(h)); // chronological key
   if (ci < 0) return null;
 
-  let peak = 0, epMax = 0;
-  const episodes = [];
+  const rows = [];
   for (let i = 1; i < lines.length; i++) {
     const cells = lines[i].split(',');
     if (cells.length <= ci) continue;
     const cum = numFromSummary(cells[ci]); // handles "$1,234.50" / "($1,234.50)"
     if (cum == null) continue;
+    const n = ti >= 0 ? numFromSummary(cells[ti]) : null;
+    rows.push({ n: n == null ? i : n, cum });
+  }
+  if (rows.length === 0) return null;
+  rows.sort((a, b) => a.n - b.n); // oldest trade first, whatever the export order
+
+  let peak = rows[0].cum, epMax = 0, maxDd = 0;
+  const episodes = [];
+  for (const { cum } of rows) {
     if (cum > peak) {                 // new equity high — close any open episode
       peak = cum;
       if (epMax > 0) { episodes.push(epMax); epMax = 0; }
     } else {
       epMax = Math.max(epMax, peak - cum);
+      maxDd = Math.max(maxDd, epMax);
     }
   }
   if (epMax > 0) episodes.push(epMax);
-  if (episodes.length === 0) return 0;
-  const mean = episodes.reduce((s, d) => s + d, 0) / episodes.length;
-  return round(mean / (contracts || 1));
+  const c = contracts || 1;
+  const mean = episodes.length ? episodes.reduce((s, d) => s + d, 0) / episodes.length : 0;
+  return { avg: round(mean / c), max: round(maxDd / c) };
 }
 
 function parseSummary(file) {
@@ -308,8 +325,18 @@ function main() {
       const btPath = path.resolve(ROOT, s.backtest);
       if (fs.existsSync(btPath)) {
         const btTradesPath = s.backtestTrades ? path.resolve(ROOT, s.backtestTrades) : null;
-        const avgDd = avgDrawdownFromTrades(btTradesPath, s.backtestContracts);
-        const backtest = buildBacktest(parseSummary(btPath), s.backtestContracts, avgDd);
+        const dd = drawdownFromTrades(btTradesPath, s.backtestContracts);
+        const summary = parseSummary(btPath);
+        const backtest = buildBacktest(summary, s.backtestContracts, dd ? dd.avg : null);
+        // The equity curve we walked must reproduce NT's own Max. drawdown. If it
+        // doesn't, the trades file and the summary are not the same run (or the
+        // curve is being walked out of order) and the derived Avg drawdown is junk.
+        if (dd && backtest.maxDrawdown != null) {
+          const ntMax = Math.abs(backtest.maxDrawdown);
+          if (Math.abs(dd.max - ntMax) > Math.max(1, ntMax * 0.02)) {
+            console.warn(`! ${s.id}: derived max DD $${dd.max} != summary max DD $${ntMax} — trades export and summary disagree`);
+          }
+        }
         lineup.push({
           id: s.id, name: s.name, type: s.type, tf: s.tf,
           style: s.style, status: s.status || 'backtest', description: s.description || '',
