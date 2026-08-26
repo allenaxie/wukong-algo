@@ -229,6 +229,13 @@
         <div id="wk-bystrat" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;"></div>
       </div>
 
+      <!-- daily P&L calendar (follows the same view switcher as the chart + log) -->
+      <div id="wk-cal-wrap" style="display:none;border:1px solid #1b1e27;border-radius:18px;background:linear-gradient(180deg,#111319,#0b0c11);margin-top:14px;padding:22px 22px 20px;position:relative;">
+        <div id="wk-cal-head"></div>
+        <div id="wk-cal-grid"></div>
+        <div id="wk-cal-tip" style="display:none;position:absolute;z-index:20;width:246px;border:1px solid #23262f;border-radius:12px;background:#111319;box-shadow:0 18px 40px -18px rgba(0,0,0,.9);padding:13px 14px;pointer-events:none;"></div>
+      </div>
+
       <!-- recent trades -->
       <div style="border:1px solid #1b1e27;border-radius:18px;background:linear-gradient(180deg,#111319,#0b0c11);margin-top:14px;overflow:hidden;">
         <div style="display:flex;justify-content:space-between;align-items:center;padding:20px 22px 14px;">
@@ -479,6 +486,7 @@
   var GREEN = "#34D399", RED = "#F87171";
   var PERF_VIEWS = [], PERF_ACTIVE = 0; // performance-section view switcher
   var TRADE_PAGE = 10, TRADE_PAGE_IDX = 0; // recent-trades table: rows per page + current page index
+  var CAL_Y = null, CAL_M = null; // calendar: selected year + month (null = the view's latest)
 
   function abs(n) { return Math.abs(n); }
   function money0(n) { return "$" + Math.round(abs(n)).toLocaleString("en-US"); }
@@ -659,6 +667,283 @@
     return flat.sort(function (a, b) { return b.key - a.key; });
   }
 
+  // ---- Daily P&L calendar -------------------------------------------------
+  // Aggregated from the view's own equity series, so the calendar and the curve
+  // above run over the same money population — every fill the account took. A
+  // day's trade count therefore matches the rows in the log below, which can
+  // exceed the "Total trades" tile by any NON-STRATEGY fill (build.js keeps
+  // those out of the signal-quality stats but in the P&L, on purpose).
+  var MONTH_ABBR = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+  var MONTH_FULL = ["January", "February", "March", "April", "May", "June",
+                    "July", "August", "September", "October", "November", "December"];
+  var MONTH_NUM = { Jan: 0, Feb: 1, Mar: 2, Apr: 3, May: 4, Jun: 5,
+                    Jul: 6, Aug: 7, Sep: 8, Oct: 9, Nov: 10, Dec: 11 };
+  var MONO = "font-family:'JetBrains Mono',monospace;";
+  var SG = "font-family:'Space Grotesk',sans-serif;";
+
+  function pad2(n) { return (n < 10 ? "0" : "") + n; }
+  function dayKey(y, m, d) { return y + "-" + pad2(m + 1) + "-" + pad2(d); }
+
+  // "23 Jun 2026" -> { y, m, d }
+  function parseDay(str) {
+    var p = String(str || "").trim().split(/\s+/);
+    if (p.length < 3) return null;
+    var m = MONTH_NUM[p[1]];
+    if (m === undefined) return null;
+    return { y: +p[2], m: m, d: +p[0] };
+  }
+
+  function dailyFrom(view) {
+    var map = {}, max = 0;
+    (view.equity || []).forEach(function (p) {
+      if (!p.date) return;
+      var q = parseDay(p.date);
+      if (!q) return;
+      var k = dayKey(q.y, q.m, q.d);
+      var e = map[k] || (map[k] = { pnl: 0, n: 0 });
+      e.pnl += p.pnl; e.n++;
+    });
+    var keys = Object.keys(map).sort();
+    keys.forEach(function (k) { max = Math.max(max, abs(map[k].pnl)); });
+    return { map: map, keys: keys, max: max || 1 };
+  }
+
+  // Every month of a year from its first live month to its last — gaps
+  // included, since a month the strategy sat out is a fact worth showing.
+  function calMonths(daily, year) {
+    var seen = {};
+    daily.keys.forEach(function (k) {
+      if (+k.slice(0, 4) === year) seen[+k.slice(5, 7) - 1] = 1;
+    });
+    var mm = Object.keys(seen).map(Number);
+    if (!mm.length) return [];
+    var out = [], lo = Math.min.apply(null, mm), hi = Math.max.apply(null, mm);
+    for (var m = lo; m <= hi; m++) out.push(m);
+    return out;
+  }
+  function calYears(daily) {
+    var seen = {};
+    daily.keys.forEach(function (k) { seen[+k.slice(0, 4)] = 1; });
+    return Object.keys(seen).map(Number).sort(function (a, b) { return a - b; });
+  }
+
+  // Three chips at a time with the selected month in the middle, clamped at
+  // both ends — so the earliest month sits first and the latest sits third.
+  function monthWindow(list, active) {
+    if (list.length <= 3) return list;
+    var i = list.indexOf(active);
+    var start = Math.max(0, Math.min(i - 1, list.length - 3));
+    return list.slice(start, start + 3);
+  }
+
+  function monthStats(daily, y, m) {
+    var net = 0, days = 0, trades = 0, best = null, worst = null;
+    Object.keys(daily.map).forEach(function (k) {
+      if (+k.slice(0, 4) !== y || +k.slice(5, 7) - 1 !== m) return;
+      var e = daily.map[k];
+      net += e.pnl; days++; trades += e.n;
+      if (best === null || e.pnl > best) best = e.pnl;
+      if (worst === null || e.pnl < worst) worst = e.pnl;
+    });
+    return { net: net, days: days, trades: trades, best: best, worst: worst };
+  }
+
+  // Tint depth ranks a day against the deepest day in the whole record, so
+  // months stay comparable to each other.
+  function calTint(pnl, max) {
+    var a = 0.05 + 0.13 * Math.min(1, abs(pnl) / max);
+    return (pnl >= 0 ? "rgba(52,211,153," : "rgba(248,113,113,") + a.toFixed(3) + ")";
+  }
+  function calEdge(pnl) { return pnl >= 0 ? "rgba(52,211,153,.24)" : "rgba(248,113,113,.24)"; }
+
+  function calArrow(glyph, year, on) {
+    var base = "width:26px;height:28px;border:none;background:none;" + MONO + "font-size:14px;line-height:1;";
+    if (!on) return '<button type="button" disabled style="' + base + 'color:#2f343d;cursor:default;">' + glyph + '</button>';
+    return '<button type="button" data-cal-y="' + year + '" style="' + base + 'color:#c7ccd6;cursor:pointer;">' + glyph + '</button>';
+  }
+
+  function calHead(daily, y, m) {
+    var years = calYears(daily);
+    var st = monthStats(daily, y, m);
+    var lab = MONO + "font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:#6b7280;margin-bottom:5px;";
+
+    var stepper = '<div style="display:flex;align-items:center;border:1px solid #1d2029;border-radius:10px;overflow:hidden;">' +
+      calArrow("‹", y - 1, years.indexOf(y - 1) >= 0) +
+      '<span style="' + SG + 'font-weight:700;font-size:13.5px;color:#E7E9EE;padding:0 4px;min-width:40px;text-align:center;">' + y + '</span>' +
+      calArrow("›", y + 1, years.indexOf(y + 1) >= 0) + '</div>';
+
+    var chips = '<div style="display:flex;align-items:center;gap:8px;">' +
+      monthWindow(calMonths(daily, y), m).map(function (mm) {
+        var ms = monthStats(daily, y, mm);
+        var on = mm === m;
+        var col = ms.days ? (ms.net < 0 ? RED : GREEN) : "#3a3f49";
+        return '<button type="button" data-cal-m="' + mm + '" style="display:flex;flex-direction:column;gap:3px;align-items:flex-start;padding:7px 12px;border-radius:10px;cursor:pointer;border:1px solid ' + (on ? "#E8B23A" : "#1d2029") + ';background:' + (on ? "rgba(232,178,58,.08)" : "none") + ';">' +
+          '<span style="' + MONO + 'font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:' + (on ? "#E8B23A" : "#6b7280") + ';">' + MONTH_ABBR[mm] + '</span>' +
+          '<span style="' + SG + 'font-weight:700;font-size:13px;color:' + col + ';">' + (ms.days ? signMoney0(ms.net) : "—") + '</span>' +
+        '</button>';
+      }).join("") + '</div>';
+
+    return '<div style="display:flex;align-items:flex-end;justify-content:space-between;gap:20px;flex-wrap:wrap;margin-bottom:18px;">' +
+      '<div style="display:flex;align-items:center;gap:14px;">' + stepper + chips +
+        '<div style="width:1px;height:34px;background:#1b1e27;"></div>' +
+        '<div><div style="' + SG + 'font-weight:700;font-size:19px;letter-spacing:-.01em;color:#fff;line-height:1.1;">' + MONTH_FULL[m] + " " + y + '</div>' +
+        '<div style="' + MONO + 'font-size:10.5px;color:#5a606b;margin-top:4px;">' + st.days + " trading day" + (st.days === 1 ? "" : "s") + " · " + st.trades + " trade" + (st.trades === 1 ? "" : "s") + '</div></div>' +
+      '</div>' +
+      '<div style="display:flex;align-items:flex-end;gap:26px;">' +
+        '<div style="text-align:right;"><div style="' + lab + '">Best / worst day</div>' +
+        '<div style="' + SG + 'font-weight:700;font-size:16px;color:#E7E9EE;">' +
+          '<span style="color:' + GREEN + ';">' + (st.days ? signMoney0(st.best) : "—") + '</span> <span style="color:#3a3f49;">/</span> ' +
+          '<span style="color:' + RED + ';">' + (st.days ? signMoney0(st.worst) : "—") + '</span></div></div>' +
+        '<div style="text-align:right;padding-left:26px;border-left:1px solid #1b1e27;"><div style="' + lab + '">' + MONTH_ABBR[m] + ' net</div>' +
+        '<div style="' + SG + 'font-weight:700;font-size:26px;line-height:1;color:' + (st.net < 0 ? RED : GREEN) + ';">' + signMoney0(st.net) + '</div></div>' +
+      '</div></div>';
+  }
+
+  function calCell(y, m, d, daily, todayKey) {
+    var k = dayKey(y, m, d);
+    var e = daily.map[k];
+    var box = "height:84px;border-radius:11px;padding:8px 10px;box-sizing:border-box;";
+    var num = '<span style="' + MONO + 'font-size:10.5px;color:';
+
+    if (e) {
+      return '<div data-cal-day="' + k + '" style="' + box + 'border:1px solid ' + calEdge(e.pnl) + ';background:' + calTint(e.pnl, daily.max) + ';display:flex;flex-direction:column;">' +
+        num + '#8b919d;">' + d + '</span>' +
+        '<span style="margin-top:auto;' + SG + 'font-weight:700;font-size:15.5px;line-height:1;color:' + (e.pnl < 0 ? RED : GREEN) + ';">' + signMoney0(e.pnl) + '</span>' +
+        '<span style="' + MONO + 'font-size:9.5px;color:#6b7280;margin-top:5px;">' + e.n + " trade" + (e.n === 1 ? "" : "s") + '</span></div>';
+    }
+    var wd = new Date(Date.UTC(y, m, d)).getUTCDay();
+    if (wd === 0 || wd === 6) {
+      return '<div style="' + box + 'border:1px solid #101218;background:rgba(255,255,255,.008);">' + num + '#2c313a;">' + d + '</span></div>';
+    }
+    // A session that has not happened yet says nothing at all.
+    if (k > todayKey) {
+      return '<div style="' + box + 'border:1px dashed #15171e;">' + num + '#3f444e;">' + d + '</span></div>';
+    }
+    return '<div style="' + box + 'border:1px solid #15171e;background:rgba(255,255,255,.012);display:flex;flex-direction:column;">' +
+      num + '#3f444e;">' + d + '</span>' +
+      '<span style="margin-top:auto;' + MONO + 'font-size:10px;color:#33383f;">no trade</span></div>';
+  }
+
+  function calGrid(daily, y, m) {
+    var now = new Date();
+    var todayKey = dayKey(now.getFullYear(), now.getMonth(), now.getDate());
+    var cols = "grid-template-columns:repeat(7,minmax(0,1fr)) 108px;";
+
+    var head = '<div style="display:grid;' + cols + 'gap:7px;margin-bottom:7px;">' +
+      ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"].map(function (l, i) {
+        return '<div style="' + MONO + 'font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:' + (i > 4 ? "#2c313a" : "#5a606b") + ';padding-left:2px;">' + l + '</div>';
+      }).join("") + '<div></div></div>';
+
+    var total = new Date(Date.UTC(y, m + 1, 0)).getUTCDate();
+    var lead = (new Date(Date.UTC(y, m, 1)).getUTCDay() + 6) % 7; // 0 = Monday
+    var slots = [], i, d;
+    for (i = 0; i < lead; i++) slots.push(0);
+    for (d = 1; d <= total; d++) slots.push(d);
+    while (slots.length % 7) slots.push(0);
+
+    var rows = "";
+    for (var w = 0; w < slots.length; w += 7) {
+      var week = slots.slice(w, w + 7);
+      var wnet = 0, wdays = 0;
+      week.forEach(function (dd) {
+        var e = dd && daily.map[dayKey(y, m, dd)];
+        if (e) { wnet += e.pnl; wdays++; }
+      });
+      rows += '<div style="display:grid;' + cols + 'gap:7px;">' +
+        week.map(function (dd) {
+          return dd ? calCell(y, m, dd, daily, todayKey)
+                    : '<div style="height:84px;border-radius:11px;border:1px solid transparent;"></div>';
+        }).join("") +
+        '<div style="height:84px;border-radius:11px;border:1px solid #16181f;background:rgba(255,255,255,.014);padding:10px;box-sizing:border-box;display:flex;flex-direction:column;justify-content:center;">' +
+          '<div style="' + MONO + 'font-size:9.5px;letter-spacing:.12em;text-transform:uppercase;color:#5a606b;margin-bottom:6px;">Week</div>' +
+          '<div style="' + SG + 'font-weight:700;font-size:15px;color:' + (wdays ? (wnet < 0 ? RED : GREEN) : "#3a3f49") + ';">' + (wdays ? signMoney0(wnet) : "—") + '</div>' +
+        '</div></div>';
+    }
+    return head + '<div style="display:flex;flex-direction:column;gap:7px;">' + rows + '</div>';
+  }
+
+  // Hover breakout. On the portfolio view a single day can aggregate several
+  // books at once, and this is where that stops being a mystery.
+  function calTip(view, key) {
+    var rows = (view.tradeRows || []).filter(function (r) {
+      var q = parseDay(r.t.date);
+      return q && dayKey(q.y, q.m, q.d) === key;
+    }).reverse(); // tradeRows are newest-first; a day reads chronologically
+    if (!rows.length) return "";
+    var net = rows.reduce(function (s, r) { return s + r.t.pnl; }, 0);
+    var when = new Date(Date.UTC(+key.slice(0, 4), +key.slice(5, 7) - 1, +key.slice(8, 10)));
+    var label = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"][when.getUTCDay()] + " " +
+                when.getUTCDate() + " " + MONTH_ABBR[when.getUTCMonth()];
+    return '<div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:10px;">' +
+        '<span style="' + SG + 'font-weight:700;font-size:14px;color:#fff;">' + label + '</span>' +
+        '<span style="' + SG + 'font-weight:700;font-size:15px;color:' + (net < 0 ? RED : GREEN) + ';">' + signMoney0(net) + '</span></div>' +
+      '<div style="display:flex;flex-direction:column;gap:7px;' + MONO + 'font-size:11px;">' +
+      rows.map(function (r) {
+        var side = r.t.side.charAt(0).toUpperCase() + r.t.side.slice(1).toLowerCase();
+        return '<div style="display:flex;justify-content:space-between;gap:12px;">' +
+          '<span style="color:#8b919d;">' + r.strategy + " · " + side + '</span>' +
+          '<span style="color:' + (r.t.pnl < 0 ? RED : GREEN) + ';">' + signMoney2(r.t.pnl) + '</span></div>';
+      }).join("") + '</div>';
+  }
+
+  function renderCalendar(view) {
+    var wrap = document.getElementById("wk-cal-wrap");
+    var headEl = document.getElementById("wk-cal-head");
+    var gridEl = document.getElementById("wk-cal-grid");
+    var tipEl = document.getElementById("wk-cal-tip");
+    if (!wrap || !headEl || !gridEl) return;
+
+    var daily = dailyFrom(view);
+    if (!daily.keys.length) { wrap.style.display = "none"; return; }
+    wrap.style.display = "block";
+
+    // Keep the month the visitor picked when the new view also has it; fall
+    // back to that view's most recent month otherwise.
+    var last = daily.keys[daily.keys.length - 1];
+    var years = calYears(daily);
+    if (CAL_Y === null || years.indexOf(CAL_Y) < 0) CAL_Y = +last.slice(0, 4);
+    var months = calMonths(daily, CAL_Y);
+    if (CAL_M === null || months.indexOf(CAL_M) < 0) {
+      CAL_M = (CAL_Y === +last.slice(0, 4)) ? +last.slice(5, 7) - 1 : months[months.length - 1];
+    }
+
+    headEl.innerHTML = calHead(daily, CAL_Y, CAL_M);
+    gridEl.innerHTML = calGrid(daily, CAL_Y, CAL_M);
+    if (tipEl) tipEl.style.display = "none";
+
+    Array.prototype.forEach.call(headEl.querySelectorAll("button[data-cal-m]"), function (b) {
+      b.onclick = function () {
+        var m = +b.getAttribute("data-cal-m");
+        if (m === CAL_M) return;
+        CAL_M = m;
+        renderCalendar(view);
+      };
+    });
+    Array.prototype.forEach.call(headEl.querySelectorAll("button[data-cal-y]"), function (b) {
+      b.onclick = function () {
+        CAL_Y = +b.getAttribute("data-cal-y");
+        CAL_M = null; // the year we land on picks its own most recent month
+        renderCalendar(view);
+      };
+    });
+
+    if (!tipEl) return;
+    Array.prototype.forEach.call(gridEl.querySelectorAll("div[data-cal-day]"), function (c) {
+      c.onmouseenter = function () {
+        var html = calTip(view, c.getAttribute("data-cal-day"));
+        if (!html) return;
+        tipEl.innerHTML = html;
+        tipEl.style.display = "block";
+        var cr = c.getBoundingClientRect(), wr = wrap.getBoundingClientRect();
+        var left = cr.right - wr.left + 8;
+        if (left + tipEl.offsetWidth > wr.width - 4) left = cr.left - wr.left - tipEl.offsetWidth - 8;
+        tipEl.style.left = Math.max(4, left) + "px";
+        tipEl.style.top = Math.max(4, Math.min(cr.top - wr.top - 4, wr.height - tipEl.offsetHeight - 4)) + "px";
+      };
+      c.onmouseleave = function () { tipEl.style.display = "none"; };
+    });
+  }
+
   // Render the Performance section (stat cards, equity curve, side stats,
   // recent-trades log) for a single view: { name, stats, equity, tradeRows }.
   function renderPerf(view) {
@@ -694,6 +979,8 @@
     var months = monthLabels(eq);
     var mEl = document.getElementById("eq-months");
     if (mEl) mEl.innerHTML = months.map(function (m) { return "<span>" + m + "</span>"; }).join("");
+
+    renderCalendar(view);
 
     // Recent trades for this view, newest first, paged TRADE_PAGE rows per page.
     var rows = view.tradeRows || [];
