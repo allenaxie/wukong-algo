@@ -1,26 +1,26 @@
 {
-  "generated": "2026-09-09T15:00:04.817Z",
+  "generated": "2026-09-09T16:00:04.050Z",
   "portfolio": {
     "stats": {
-      "trades": 39,
+      "trades": 40,
       "wins": 11,
-      "losses": 28,
-      "winRate": 28.2,
-      "totalPnl": -349.32,
+      "losses": 29,
+      "winRate": 27.5,
+      "totalPnl": -643.2,
       "daysLive": 78,
       "monthsLive": 2.57,
-      "profitPerMonth": -136,
-      "avgTrade": -15.36,
+      "profitPerMonth": -250.28,
+      "avgTrade": -22.32,
       "avgWin": 405.58,
-      "avgLoss": -180.72,
-      "profitFactor": 0.88,
+      "avgLoss": -184.63,
+      "profitFactor": 0.83,
       "grossProfit": 4461.34,
-      "grossLoss": 5060.28,
+      "grossLoss": 5354.16,
       "maxDrawdown": 1869.32,
       "bestTrade": 1380.4,
       "worstTrade": -731.88,
       "firstDate": "23 Jun 2026",
-      "lastDate": "08 Sep 2026"
+      "lastDate": "09 Sep 2026"
     },
     "equity": [
       {
@@ -268,6 +268,12 @@
         "date": "08 Sep 2026",
         "pnl": -128.38,
         "cum": -349.32
+      },
+      {
+        "i": 41,
+        "date": "09 Sep 2026",
+        "pnl": -293.88,
+        "cum": -643.2
       }
     ]
   },
@@ -288,7 +294,7 @@
         "totalPnl": 630.2,
         "daysLive": 78,
         "monthsLive": 2.57,
-        "profitPerMonth": 245.35,
+        "profitPerMonth": 245.22,
         "avgTrade": 105.03,
         "avgWin": 434.03,
         "avgLoss": -223.97,
@@ -429,25 +435,25 @@
       "status": "live",
       "description": "Confirmed-close 5-minute opening-range breakout on MNQ. Structural stop at the opposite range extreme, breakeven shift at +0.5R, and winners ride a far target into the session close.",
       "stats": {
-        "trades": 32,
+        "trades": 33,
         "wins": 7,
-        "losses": 25,
-        "winRate": 21.9,
-        "totalPnl": -2359.92,
+        "losses": 26,
+        "winRate": 21.2,
+        "totalPnl": -2653.8,
         "daysLive": 65,
         "monthsLive": 2.14,
-        "profitPerMonth": -1101.81,
-        "avgTrade": -81.55,
+        "profitPerMonth": -1238.23,
+        "avgTrade": -87.98,
         "avgWin": 254.12,
-        "avgLoss": -175.54,
-        "profitFactor": 0.41,
+        "avgLoss": -180.09,
+        "profitFactor": 0.38,
         "grossProfit": 1778.84,
-        "grossLoss": 4388.38,
-        "maxDrawdown": 2359.92,
+        "grossLoss": 4682.26,
+        "maxDrawdown": 2653.8,
         "bestTrade": 721.62,
         "worstTrade": -731.88,
         "firstDate": "06 Jul 2026",
-        "lastDate": "08 Sep 2026"
+        "lastDate": "09 Sep 2026"
       },
       "equity": [
         {
@@ -653,6 +659,12 @@
           "date": "08 Sep 2026",
           "pnl": -128.38,
           "cum": -2359.92
+        },
+        {
+          "i": 34,
+          "date": "09 Sep 2026",
+          "pnl": -293.88,
+          "cum": -2653.8
         }
       ],
       "trades": [
@@ -1051,6 +1063,18 @@
           "pnlPts": -63.25,
           "pnl": -128.38,
           "reason": "Force EOD ⏰"
+        },
+        {
+          "tradeId": "20260909-100000-L",
+          "date": "09 Sep 2026",
+          "time": "10:00:00",
+          "side": "LONG",
+          "contracts": 1,
+          "entry": 29561.25,
+          "exit": 29415.25,
+          "pnlPts": -146,
+          "pnl": -293.88,
+          "reason": "Stop loss 🛑"
         }
       ]
     },
