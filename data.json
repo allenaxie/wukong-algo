@@ -1,26 +1,26 @@
 {
-  "generated": "2026-09-17T14:00:03.672Z",
+  "generated": "2026-09-17T15:00:02.205Z",
   "portfolio": {
     "stats": {
-      "trades": 50,
+      "trades": 51,
       "wins": 13,
-      "losses": 37,
-      "winRate": 26,
-      "totalPnl": -2611.96,
+      "losses": 38,
+      "winRate": 25.5,
+      "totalPnl": -3294.16,
       "daysLive": 86,
       "monthsLive": 2.83,
-      "profitPerMonth": -922.95,
-      "avgTrade": -57.23,
+      "profitPerMonth": -1163.44,
+      "avgTrade": -69.49,
       "avgWin": 372.89,
-      "avgLoss": -208.36,
-      "profitFactor": 0.63,
+      "avgLoss": -220.83,
+      "profitFactor": 0.58,
       "grossProfit": 4847.58,
-      "grossLoss": 7709.16,
-      "maxDrawdown": 3750.44,
+      "grossLoss": 8391.36,
+      "maxDrawdown": 4220.4,
       "bestTrade": 1380.4,
       "worstTrade": -731.88,
       "firstDate": "23 Jun 2026",
-      "lastDate": "16 Sep 2026"
+      "lastDate": "17 Sep 2026"
     },
     "equity": [
       {
@@ -334,6 +334,12 @@
         "date": "16 Sep 2026",
         "pnl": -1.38,
         "cum": -2611.96
+      },
+      {
+        "i": 52,
+        "date": "17 Sep 2026",
+        "pnl": -682.2,
+        "cum": -3294.16
       }
     ]
   },
@@ -354,7 +360,7 @@
         "totalPnl": 180.94,
         "daysLive": 86,
         "monthsLive": 2.83,
-        "profitPerMonth": 63.94,
+        "profitPerMonth": 63.9,
         "avgTrade": 22.62,
         "avgWin": 434.03,
         "avgLoss": -224.23,
@@ -538,7 +544,7 @@
         "totalPnl": -2620.7,
         "daysLive": 73,
         "monthsLive": 2.4,
-        "profitPerMonth": -1090.46,
+        "profitPerMonth": -1089.84,
         "avgTrade": -75.53,
         "avgWin": 240.56,
         "avgLoss": -173.63,
@@ -1273,25 +1279,25 @@
       "status": "live",
       "description": "Long-only opening-range breakout on Micro Gold. A conviction filter requires a real displacement candle on the break; winners ride an ATR trailing stop into the session close. The portfolio's first non-equity book, uncorrelated to the Nasdaq strategies.",
       "stats": {
-        "trades": 4,
+        "trades": 5,
         "wins": 1,
-        "losses": 3,
-        "winRate": 25,
-        "totalPnl": -172.2,
+        "losses": 4,
+        "winRate": 20,
+        "totalPnl": -854.4,
         "daysLive": 23,
         "monthsLive": 0.76,
-        "profitPerMonth": -172.2,
-        "avgTrade": -43.05,
+        "profitPerMonth": -854.4,
+        "avgTrade": -170.88,
         "avgWin": 1380.4,
-        "avgLoss": -517.53,
-        "profitFactor": 0.89,
+        "avgLoss": -558.7,
+        "profitFactor": 0.62,
         "grossProfit": 1380.4,
-        "grossLoss": 1552.6,
-        "maxDrawdown": 1552.6,
+        "grossLoss": 2234.8,
+        "maxDrawdown": 2234.8,
         "bestTrade": 1380.4,
-        "worstTrade": -628.2,
+        "worstTrade": -682.2,
         "firstDate": "25 Aug 2026",
-        "lastDate": "15 Sep 2026"
+        "lastDate": "17 Sep 2026"
       },
       "equity": [
         {
@@ -1323,6 +1329,12 @@
           "date": "15 Sep 2026",
           "pnl": -427.2,
           "cum": -172.2
+        },
+        {
+          "i": 5,
+          "date": "17 Sep 2026",
+          "pnl": -682.2,
+          "cum": -854.4
         }
       ],
       "trades": [
@@ -1372,6 +1384,18 @@
           "exit": 4323.9,
           "pnlPts": -14,
           "pnl": -427.2,
+          "reason": "Stop 🛑"
+        },
+        {
+          "tradeId": "20260917-101000-L",
+          "date": "17 Sep 2026",
+          "time": "10:10:00",
+          "side": "LONG",
+          "contracts": 3,
+          "entry": 4418,
+          "exit": 4395.5,
+          "pnlPts": -22.5,
+          "pnl": -682.2,
           "reason": "Stop 🛑"
         }
       ]
