@@ -1,22 +1,22 @@
 {
-  "generated": "2026-09-18T18:00:03.393Z",
+  "generated": "2026-09-18T19:00:02.013Z",
   "portfolio": {
     "stats": {
-      "trades": 54,
+      "trades": 55,
       "wins": 15,
-      "losses": 39,
-      "winRate": 27.8,
-      "totalPnl": -3013.8,
+      "losses": 40,
+      "winRate": 27.3,
+      "totalPnl": -3118.68,
       "daysLive": 87,
       "monthsLive": 2.87,
-      "profitPerMonth": -1050.71,
-      "avgTrade": -60.43,
+      "profitPerMonth": -1086.76,
+      "avgTrade": -61.24,
       "avgWin": 341.95,
-      "avgLoss": -215.2,
-      "profitFactor": 0.61,
+      "avgLoss": -212.44,
+      "profitFactor": 0.6,
       "grossProfit": 5129.32,
-      "grossLoss": 8392.74,
-      "maxDrawdown": 3988.78,
+      "grossLoss": 8497.62,
+      "maxDrawdown": 4044.92,
       "bestTrade": 1380.4,
       "worstTrade": -731.88,
       "firstDate": "23 Jun 2026",
@@ -356,8 +356,14 @@
       {
         "i": 55,
         "date": "18 Sep 2026",
+        "pnl": -104.88,
+        "cum": -3117.3
+      },
+      {
+        "i": 56,
+        "date": "18 Sep 2026",
         "pnl": -1.38,
-        "cum": -3013.8
+        "cum": -3118.68
       }
     ]
   },
@@ -371,25 +377,25 @@
       "status": "live",
       "description": "The 9:40 ET candle sets the day's directional bias; entry on two-candle confirmation, one trade per day, stop at session extreme, target at nearest Asia/London level >= 2R.",
       "stats": {
-        "trades": 9,
+        "trades": 10,
         "wins": 4,
-        "losses": 5,
-        "winRate": 44.4,
-        "totalPnl": 412.56,
+        "losses": 6,
+        "winRate": 40,
+        "totalPnl": 307.68,
         "daysLive": 87,
         "monthsLive": 2.87,
-        "profitPerMonth": 143.83,
-        "avgTrade": 45.84,
+        "profitPerMonth": 107.22,
+        "avgTrade": 30.77,
         "avgWin": 383.43,
-        "avgLoss": -224.23,
-        "profitFactor": 1.37,
+        "avgLoss": -204.34,
+        "profitFactor": 1.25,
         "grossProfit": 1533.72,
-        "grossLoss": 1121.16,
+        "grossLoss": 1226.04,
         "maxDrawdown": 1077.78,
         "bestTrade": 926.24,
         "worstTrade": -459.76,
         "firstDate": "23 Jun 2026",
-        "lastDate": "17 Sep 2026"
+        "lastDate": "18 Sep 2026"
       },
       "equity": [
         {
@@ -451,6 +457,12 @@
           "date": "17 Sep 2026",
           "pnl": 231.62,
           "cum": 412.56
+        },
+        {
+          "i": 10,
+          "date": "18 Sep 2026",
+          "pnl": -104.88,
+          "cum": 307.68
         }
       ],
       "trades": [
@@ -561,6 +573,18 @@
           "pnlPts": 116.75,
           "pnl": 231.62,
           "reason": "Take profit ✅"
+        },
+        {
+          "tradeId": "20260918-095000-S",
+          "date": "18 Sep 2026",
+          "time": "09:50:00",
+          "side": "SHORT",
+          "contracts": 1,
+          "entry": 29793.75,
+          "exit": 29845.25,
+          "pnlPts": -51.5,
+          "pnl": -104.88,
+          "reason": "Stop loss 🛑"
         }
       ]
     },
@@ -580,7 +604,7 @@
         "totalPnl": -2571.96,
         "daysLive": 74,
         "monthsLive": 2.44,
-        "profitPerMonth": -1053.38,
+        "profitPerMonth": -1052.79,
         "avgTrade": -70.54,
         "avgWin": 221.52,
         "avgLoss": -167.89,
