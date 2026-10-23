@@ -29,6 +29,28 @@ foreach ($src in $sources.Keys) {
   }
 }
 
+# Paused strategies ("status": "paused" + "pausedOn" in strategies.config.json) keep running on a
+# NinjaTrader Sim account after pausedOn. Their live CSV has no account column, so a sim fill looks
+# exactly like a live one: keep only rows dated BEFORE pausedOn, so sim fills never reach data\ (or
+# the public repo). Date is column 2, "dd MMM yyyy". UTF-8 without BOM and LF endings are preserved
+# (the Reason column carries emoji; PowerShell 5.1's Get-/Set-Content would mangle them). An
+# unparseable date throws, and that stops the sync before anything is published.
+$utf8 = New-Object System.Text.UTF8Encoding($false)
+$inv  = [Globalization.CultureInfo]::InvariantCulture
+$config = [IO.File]::ReadAllText((Join-Path $repo 'strategies.config.json'), $utf8) | ConvertFrom-Json
+foreach ($s in $config.strategies) {
+  if ($s.status -ne 'paused' -or -not $s.pausedOn -or -not $s.csv) { continue }
+  $dst = Join-Path $repo (Join-Path 'data' $s.csv)
+  if (-not (Test-Path $dst)) { continue }
+  $cut   = [datetime]::ParseExact($s.pausedOn, 'yyyy-MM-dd', $inv)
+  $lines = [IO.File]::ReadAllLines($dst, $utf8)
+  $keep  = @($lines[0]) + @($lines | Select-Object -Skip 1 | Where-Object {
+    $_ -ne '' -and [datetime]::ParseExact(($_ -split ',')[1].Trim(), 'dd MMM yyyy', $inv) -lt $cut
+  })
+  [IO.File]::WriteAllText($dst, (($keep -join "`n") + "`n"), $utf8)
+  Write-Host ("Paused {0}: kept {1} of {2} rows dated before {3}" -f $s.id, ($keep.Count - 1), ($lines.Count - 1), $s.pausedOn)
+}
+
 # Rebuild first so backtest-summary changes (sourced from ../trading-strategies)
 # are reflected in data.json before we decide whether to publish.
 node build.js

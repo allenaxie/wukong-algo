@@ -296,16 +296,21 @@ function main() {
     if (s.csv) {
       const csvPath = path.join(DATA_DIR, s.csv);
       if (fs.existsSync(csvPath)) {
+        // A paused strategy trades on a Sim account from pausedOn (local midnight): its record ends there.
+        // sync.ps1 already drops later rows; this is the second guard, so a sim fill can never be shown
+        // as live. Its stats window ends at pausedOn too, so it neither decays nor keeps accruing months.
+        const pausedAt = s.status === 'paused' && s.pausedOn ? new Date(`${s.pausedOn}T00:00:00`).getTime() : null;
         // parse, dedup by tradeId, sort chronologically
         const seen = new Set();
         const trades = parseCsv(csvPath)
           .filter(t => (seen.has(t.tradeId) ? false : (seen.add(t.tradeId), true)))
+          .filter(t => pausedAt === null || t._when.getTime() < pausedAt)
           .sort((a, b) => a._when - b._when);
 
-        const { stats, equity } = computeStats(trades);
+        const { stats, equity } = computeStats(trades, pausedAt === null ? Date.now() : pausedAt);
         strategies.push({
           id: s.id, name: s.name, type: s.type, tf: s.tf,
-          style: s.style, status: s.status || 'live', description: s.description || '',
+          style: s.style, status: s.status || 'live', pausedOn: s.pausedOn || null, description: s.description || '',
           stats, equity,
           trades: trades.map(t => ({
             tradeId: t.tradeId, date: t.date, time: t.time, side: t.side,
@@ -339,7 +344,7 @@ function main() {
         }
         lineup.push({
           id: s.id, name: s.name, type: s.type, tf: s.tf,
-          style: s.style, status: s.status || 'backtest', description: s.description || '',
+          style: s.style, status: s.status || 'backtest', pausedOn: s.pausedOn || null, description: s.description || '',
           backtest,
         });
         console.log(`✓ backtest ${s.id}: $${backtest.profitPerMonth}/mo, PF ${backtest.profitFactor}`);

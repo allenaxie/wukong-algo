@@ -1,5 +1,5 @@
 {
-  "generated": "2026-10-23T01:00:01.671Z",
+  "generated": "2026-10-23T05:32:31.117Z",
   "portfolio": {
     "stats": {
       "trades": 78,
@@ -8,8 +8,8 @@
       "winRate": 28.2,
       "totalPnl": -2998.88,
       "daysLive": 121,
-      "monthsLive": 3.99,
-      "profitPerMonth": -750.68,
+      "monthsLive": 4,
+      "profitPerMonth": -749.51,
       "avgTrade": -41.65,
       "avgWin": 344.76,
       "avgLoss": -193.45,
@@ -512,7 +512,8 @@
       "type": "MNQ",
       "tf": "5min",
       "style": "Momentum / bias-follow",
-      "status": "live",
+      "status": "paused",
+      "pausedOn": "2026-10-23",
       "description": "The 9:40 ET candle sets the day's directional bias; entry on two-candle confirmation, one trade per day, stop at session extreme, target at nearest Asia/London level >= 2R.",
       "stats": {
         "trades": 13,
@@ -521,8 +522,8 @@
         "winRate": 30.8,
         "totalPnl": -211.46,
         "daysLive": 121,
-        "monthsLive": 3.99,
-        "profitPerMonth": -52.93,
+        "monthsLive": 4,
+        "profitPerMonth": -52.88,
         "avgTrade": -16.27,
         "avgWin": 383.43,
         "avgLoss": -193.91,
@@ -787,6 +788,7 @@
       "tf": "5min",
       "style": "Opening-range breakout",
       "status": "live",
+      "pausedOn": null,
       "description": "Confirmed-close 5-minute opening-range breakout on MNQ. Structural stop at the opposite range extreme, breakeven shift at +0.5R, and winners ride a far target into the session close.",
       "stats": {
         "trades": 57,
@@ -796,7 +798,7 @@
         "totalPnl": -1387.42,
         "daysLive": 108,
         "monthsLive": 3.57,
-        "profitPerMonth": -388.83,
+        "profitPerMonth": -388.16,
         "avgTrade": -28.72,
         "avgWin": 274.74,
         "avgLoss": -157.69,
@@ -1870,7 +1872,8 @@
       "type": "MGC",
       "tf": "5min",
       "style": "Opening-range breakout",
-      "status": "live",
+      "status": "paused",
+      "pausedOn": "2026-10-23",
       "description": "Long-only opening-range breakout on Micro Gold. A conviction filter requires a real displacement candle on the break; winners ride an ATR trailing stop into the session close. The portfolio's first non-equity book, uncorrelated to the Nasdaq strategies.",
       "stats": {
         "trades": 8,
@@ -1880,7 +1883,7 @@
         "totalPnl": -1400,
         "daysLive": 58,
         "monthsLive": 1.93,
-        "profitPerMonth": -727.14,
+        "profitPerMonth": -725.59,
         "avgTrade": -175,
         "avgWin": 1380.4,
         "avgLoss": -397.2,
@@ -2056,7 +2059,8 @@
       "type": "MNQ",
       "tf": "5min",
       "style": "Momentum / bias-follow",
-      "status": "live",
+      "status": "paused",
+      "pausedOn": "2026-10-23",
       "description": "The 9:40 ET candle sets the day's directional bias; entry on two-candle confirmation, one trade per day, stop at session extreme, target at nearest Asia/London level >= 2R.",
       "backtest": {
         "perContract": true,
@@ -2164,6 +2168,7 @@
       "tf": "5min",
       "style": "Opening-range breakout",
       "status": "live",
+      "pausedOn": null,
       "description": "Confirmed-close 5-minute opening-range breakout on MNQ. Structural stop at the opposite range extreme, breakeven shift at +0.5R, and winners ride a far target into the session close.",
       "backtest": {
         "perContract": true,
@@ -2270,7 +2275,8 @@
       "type": "MGC",
       "tf": "5min",
       "style": "Opening-range breakout",
-      "status": "live",
+      "status": "paused",
+      "pausedOn": "2026-10-23",
       "description": "Long-only opening-range breakout on Micro Gold. A conviction filter requires a real displacement candle on the break; winners ride an ATR trailing stop into the session close. The portfolio's first non-equity book, uncorrelated to the Nasdaq strategies.",
       "backtest": {
         "perContract": true,

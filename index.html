@@ -584,6 +584,7 @@
     var map = {
       "live":         { t: "Live",         c: GREEN,     bg: "rgba(52,211,153,.12)" },
       "forward-test": { t: "Forward test", c: "#E8B23A", bg: "rgba(232,178,58,.12)" },
+      "paused":       { t: "Paused · paper trading", c: "#8FB3E8", bg: "rgba(143,179,232,.12)" },
       "backtest":     { t: "Backtest",     c: "#9aa0ad", bg: "rgba(154,160,173,.12)" }
     };
     var v = map[status] || map["backtest"];
@@ -1126,7 +1127,7 @@
     };
     var stratViews = d.strategies.map(function (st) {
       return {
-        name: st.name || st.id, type: st.type,
+        name: (st.name || st.id) + (st.status === "paused" ? " · paused" : ""), type: st.type,
         stats: st.stats, equity: st.equity,
         tradeRows: tradeRowsFor([st]),
       };
