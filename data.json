@@ -1,5 +1,5 @@
 {
-  "generated": "2026-10-31T01:00:01.744Z",
+  "generated": "2026-11-02T07:45:21.812Z",
   "portfolio": {
     "stats": {
       "trades": 82,
@@ -7,9 +7,9 @@
       "losses": 59,
       "winRate": 28,
       "totalPnl": -3568.9,
-      "daysLive": 129,
-      "monthsLive": 4.26,
-      "profitPerMonth": -838.22,
+      "daysLive": 131,
+      "monthsLive": 4.33,
+      "profitPerMonth": -823.72,
       "avgTrade": -46.57,
       "avgWin": 336.51,
       "avgLoss": -195.9,
@@ -811,8 +811,8 @@
       "type": "MNQ",
       "tf": "5min",
       "style": "Opening-range breakout",
-      "status": "live",
-      "pausedOn": null,
+      "status": "paused",
+      "pausedOn": "2026-10-31",
       "description": "Confirmed-close 5-minute opening-range breakout on MNQ. Structural stop at the opposite range extreme, breakeven shift at +0.5R, and winners ride a far target into the session close.",
       "stats": {
         "trades": 61,
@@ -821,8 +821,8 @@
         "winRate": 29.5,
         "totalPnl": -1957.44,
         "daysLive": 116,
-        "monthsLive": 3.83,
-        "profitPerMonth": -510.95,
+        "monthsLive": 3.84,
+        "profitPerMonth": -510.41,
         "avgTrade": -36.18,
         "avgWin": 268.09,
         "avgLoss": -163.55,
@@ -2263,8 +2263,8 @@
       "type": "MNQ",
       "tf": "5min",
       "style": "Opening-range breakout",
-      "status": "live",
-      "pausedOn": null,
+      "status": "paused",
+      "pausedOn": "2026-10-31",
       "description": "Confirmed-close 5-minute opening-range breakout on MNQ. Structural stop at the opposite range extreme, breakeven shift at +0.5R, and winners ride a far target into the session close.",
       "backtest": {
         "perContract": true,
