@@ -1,5 +1,5 @@
 {
-  "generated": "2026-11-03T00:00:01.136Z",
+  "generated": "2026-11-03T01:00:03.974Z",
   "portfolio": {
     "stats": {
       "trades": 82,
@@ -8,8 +8,8 @@
       "winRate": 28,
       "totalPnl": -3568.9,
       "daysLive": 132,
-      "monthsLive": 4.35,
-      "profitPerMonth": -819.52,
+      "monthsLive": 4.36,
+      "profitPerMonth": -819.26,
       "avgTrade": -46.57,
       "avgWin": 336.51,
       "avgLoss": -195.9,
