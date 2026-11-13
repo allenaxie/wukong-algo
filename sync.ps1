@@ -31,6 +31,13 @@ $nmLive = @(Get-ChildItem $nmRoot -Directory -ErrorAction SilentlyContinue |
 if ($nmLive.Count -gt 1) { throw "NoiseMom: more than one real-account folder under $nmRoot; refusing to guess." }
 if ($nmLive.Count -eq 1) { $sources[(Join-Path $nmLive[0].FullName 'trades.csv')] = "data\noisemom.csv" }
 else { Write-Warning "NoiseMom: no real-account folder under $nmRoot yet" }
+# IBS Mean Reversion: same layout and same rule (IBSMeanRevActive\<account>\trades.csv; real account only).
+$ibsRoot = "C:\Users\Administrator\Documents\NinjaTrader 8\IBSMeanRevActive"
+$ibsLive = @(Get-ChildItem $ibsRoot -Directory -ErrorAction SilentlyContinue |
+  Where-Object { $_.Name -notmatch '^(Sim|Playback|Backtest)' })
+if ($ibsLive.Count -gt 1) { throw "IBSMeanRev: more than one real-account folder under $ibsRoot; refusing to guess." }
+if ($ibsLive.Count -eq 1) { $sources[(Join-Path $ibsLive[0].FullName 'trades.csv')] = "data\ibsmeanrev.csv" }
+else { Write-Warning "IBSMeanRev: no real-account folder under $ibsRoot yet" }
 
 foreach ($src in $sources.Keys) {
   if (Test-Path $src) {

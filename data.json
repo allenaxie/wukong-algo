@@ -1,5 +1,5 @@
 {
-  "generated": "2026-11-13T20:00:01.252Z",
+  "generated": "2026-11-13T20:28:34.797Z",
   "portfolio": {
     "stats": {
       "trades": 84,
@@ -9,7 +9,7 @@
       "totalPnl": -3352.16,
       "daysLive": 143,
       "monthsLive": 4.71,
-      "profitPerMonth": -711.59,
+      "profitPerMonth": -711.5,
       "avgTrade": -42.88,
       "avgWin": 334.25,
       "avgLoss": -193.73,
@@ -2342,6 +2342,114 @@
           {
             "label": "Avg ETD",
             "value": "$113.25"
+          }
+        ]
+      }
+    },
+    {
+      "id": "ibsmeanrev",
+      "name": "IBS Mean Reversion",
+      "type": "MNQ",
+      "tf": "1min",
+      "style": "Daily mean reversion",
+      "status": "forward-test",
+      "pausedOn": null,
+      "description": "Daily mean reversion on Micro Nasdaq, after published research on internal bar strength (IBS). When the cash session closes in the bottom fifth of its day's range, it buys at the 4:00 PM ET close and sells at the next day's close, holding while the signal repeats. Long only, holds overnight, no stop: its losses come in sharp sell-offs, and the rebounds after them are where it earns most.",
+      "backtest": {
+        "perContract": true,
+        "period": "2019 – 2026",
+        "profitPerMonth": 282.47,
+        "profitFactor": 1.59,
+        "winRate": 60.49,
+        "maxDrawdown": -4102.2,
+        "avgDrawdown": 864.82,
+        "netProfit": 25329.6,
+        "trades": 286,
+        "winLossRatio": 1.04,
+        "detail": [
+          {
+            "label": "Profit factor",
+            "value": "1.59"
+          },
+          {
+            "label": "Net profit",
+            "value": "$25,329.60"
+          },
+          {
+            "label": "Profit / month",
+            "value": "$282.47"
+          },
+          {
+            "label": "Win rate",
+            "value": "60.49%"
+          },
+          {
+            "label": "Total trades",
+            "value": "286"
+          },
+          {
+            "label": "Avg. trade",
+            "value": "$88.57"
+          },
+          {
+            "label": "Avg win / avg loss",
+            "value": "1.04"
+          },
+          {
+            "label": "Avg. winning trade",
+            "value": "$393.96"
+          },
+          {
+            "label": "Avg. losing trade",
+            "value": "-$378.99"
+          },
+          {
+            "label": "Max drawdown",
+            "value": "-$4,102.20"
+          },
+          {
+            "label": "Avg drawdown",
+            "value": "-$864.82"
+          },
+          {
+            "label": "Sharpe ratio",
+            "value": "0.28"
+          },
+          {
+            "label": "Sortino ratio",
+            "value": "0.63"
+          },
+          {
+            "label": "Max consec. winners",
+            "value": "11"
+          },
+          {
+            "label": "Max consec. losers",
+            "value": "4"
+          },
+          {
+            "label": "Largest win",
+            "value": "$4,035.60"
+          },
+          {
+            "label": "Largest loss",
+            "value": "-$2,607.40"
+          },
+          {
+            "label": "Avg trades / day",
+            "value": "0.15"
+          },
+          {
+            "label": "Avg MAE",
+            "value": "$423.21"
+          },
+          {
+            "label": "Avg MFE",
+            "value": "$398.97"
+          },
+          {
+            "label": "Avg ETD",
+            "value": "$310.40"
           }
         ]
       }

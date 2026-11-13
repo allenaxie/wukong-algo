@@ -14,6 +14,19 @@
       "description": "Noise-area momentum on Micro Nasdaq, after published research (Zarattini, Aziz & Barbon). Each day a band is drawn around the open from the average move at each time of day over the prior 14 sessions. At the half-hour checks it trades a close outside the band in that direction, exits when price falls back inside the band or across VWAP, keeps a wide catastrophic stop, and is flat by the close."
     },
     {
+      "id": "ibsmeanrev",
+      "name": "IBS Mean Reversion",
+      "type": "MNQ",
+      "tf": "1min",
+      "style": "Daily mean reversion",
+      "status": "forward-test",
+      "csv": "ibsmeanrev.csv",
+      "backtest": "../trading-strategies/research/IBSMeanRev/active/active_summary.csv",
+      "backtestTrades": "../trading-strategies/research/IBSMeanRev/active/trades.csv",
+      "backtestContracts": 1,
+      "description": "Daily mean reversion on Micro Nasdaq, after published research on internal bar strength (IBS). When the cash session closes in the bottom fifth of its day's range, it buys at the 4:00 PM ET close and sells at the next day's close, holding while the signal repeats. Long only, holds overnight, no stop: its losses come in sharp sell-offs, and the rebounds after them are where it earns most."
+    },
+    {
       "id": "follow940",
       "name": "Follow 9:40",
       "type": "MNQ",
