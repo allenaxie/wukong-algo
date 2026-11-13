@@ -1,6 +1,19 @@
 {
   "strategies": [
     {
+      "id": "noisemom",
+      "name": "NoiseMom",
+      "type": "MNQ",
+      "tf": "1min",
+      "style": "Intraday momentum",
+      "status": "live",
+      "csv": "noisemom.csv",
+      "backtest": "../trading-strategies/research/NoiseMom-MNQ/active/active_summary.csv",
+      "backtestTrades": "../trading-strategies/research/NoiseMom-MNQ/active/trades.csv",
+      "backtestContracts": 1,
+      "description": "Noise-area momentum on Micro Nasdaq, after published research (Zarattini, Aziz & Barbon). Each day a band is drawn around the open from the average move at each time of day over the prior 14 sessions. At the half-hour checks it trades a close outside the band in that direction, exits when price falls back inside the band or across VWAP, keeps a wide catastrophic stop, and is flat by the close."
+    },
+    {
       "id": "follow940",
       "name": "Follow 9:40",
       "type": "MNQ",

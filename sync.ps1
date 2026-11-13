@@ -21,6 +21,17 @@ $sources = @{
   # until its first live fill, so the Test-Path branch below just warns until then.
   "C:\Users\Administrator\Documents\NinjaTrader 8\CCORBStrategyMGCActive\ccorbmgc-active-trades.csv" = "data\ccorbmgc.csv"
 }
+# NoiseMom writes one trades.csv per NinjaTrader account (NoiseMomX1Active\<account>\trades.csv). Publish only the
+# real account's file: Sim*/Playback*/Backtest folders hold paper fills and must never reach data\. The account is
+# found here rather than named, so no account number is published. More than one real-account folder is ambiguous
+# and stops the sync.
+$nmRoot = "C:\Users\Administrator\Documents\NinjaTrader 8\NoiseMomX1Active"
+$nmLive = @(Get-ChildItem $nmRoot -Directory -ErrorAction SilentlyContinue |
+  Where-Object { $_.Name -notmatch '^(Sim|Playback|Backtest)' })
+if ($nmLive.Count -gt 1) { throw "NoiseMom: more than one real-account folder under $nmRoot; refusing to guess." }
+if ($nmLive.Count -eq 1) { $sources[(Join-Path $nmLive[0].FullName 'trades.csv')] = "data\noisemom.csv" }
+else { Write-Warning "NoiseMom: no real-account folder under $nmRoot yet" }
+
 foreach ($src in $sources.Keys) {
   if (Test-Path $src) {
     Copy-Item $src (Join-Path $repo $sources[$src]) -Force
