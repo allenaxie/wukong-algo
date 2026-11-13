@@ -1,20 +1,20 @@
 {
-  "generated": "2026-11-13T20:28:34.797Z",
+  "generated": "2026-11-13T21:00:01.742Z",
   "portfolio": {
     "stats": {
-      "trades": 84,
-      "wins": 24,
+      "trades": 85,
+      "wins": 25,
       "losses": 60,
-      "winRate": 28.6,
-      "totalPnl": -3352.16,
+      "winRate": 29.4,
+      "totalPnl": -3276.04,
       "daysLive": 143,
       "monthsLive": 4.71,
-      "profitPerMonth": -711.5,
-      "avgTrade": -42.88,
-      "avgWin": 334.25,
+      "profitPerMonth": -695.23,
+      "avgTrade": -41.48,
+      "avgWin": 323.92,
       "avgLoss": -193.73,
-      "profitFactor": 0.69,
-      "grossProfit": 8021.9,
+      "profitFactor": 0.7,
+      "grossProfit": 8098.02,
       "grossLoss": 11623.68,
       "maxDrawdown": 4942.76,
       "bestTrade": 1380.4,
@@ -538,6 +538,12 @@
         "date": "13 Nov 2026",
         "pnl": -65.38,
         "cum": -3352.16
+      },
+      {
+        "i": 86,
+        "date": "13 Nov 2026",
+        "pnl": 76.12,
+        "cum": -3276.04
       }
     ]
   },
@@ -552,19 +558,19 @@
       "pausedOn": null,
       "description": "Noise-area momentum on Micro Nasdaq, after published research (Zarattini, Aziz & Barbon). Each day a band is drawn around the open from the average move at each time of day over the prior 14 sessions. At the half-hour checks it trades a close outside the band in that direction, exits when price falls back inside the band or across VWAP, keeps a wide catastrophic stop, and is flat by the close.",
       "stats": {
-        "trades": 2,
-        "wins": 1,
+        "trades": 3,
+        "wins": 2,
         "losses": 1,
-        "winRate": 50,
-        "totalPnl": 216.74,
+        "winRate": 66.7,
+        "totalPnl": 292.86,
         "daysLive": 0,
-        "monthsLive": 0.01,
-        "profitPerMonth": 216.74,
-        "avgTrade": 108.37,
-        "avgWin": 282.12,
+        "monthsLive": 0.02,
+        "profitPerMonth": 292.86,
+        "avgTrade": 97.62,
+        "avgWin": 179.12,
         "avgLoss": -65.38,
-        "profitFactor": 4.32,
-        "grossProfit": 282.12,
+        "profitFactor": 5.48,
+        "grossProfit": 358.24,
         "grossLoss": 65.38,
         "maxDrawdown": 65.38,
         "bestTrade": 282.12,
@@ -590,6 +596,12 @@
           "date": "13 Nov 2026",
           "pnl": -65.38,
           "cum": 216.74
+        },
+        {
+          "i": 3,
+          "date": "13 Nov 2026",
+          "pnl": 76.12,
+          "cum": 292.86
         }
       ],
       "trades": [
@@ -615,6 +627,18 @@
           "exit": 28038.5,
           "pnlPts": -31.75,
           "pnl": -65.38,
+          "reason": "Band/VWAP trail"
+        },
+        {
+          "tradeId": "20261113-150000-S",
+          "date": "13 Nov 2026",
+          "time": "15:00:00",
+          "side": "SHORT",
+          "contracts": 1,
+          "entry": 28029.75,
+          "exit": 27990.75,
+          "pnlPts": 39,
+          "pnl": 76.12,
           "reason": "Band/VWAP trail"
         }
       ]
