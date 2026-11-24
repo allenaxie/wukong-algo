@@ -14,13 +14,9 @@ $env:Path += ";C:\Users\Administrator\tools\bin"   # gh on PATH for git auth
 Set-Location $repo
 
 # Map each strategy's live NinjaTrader CSV -> its file under data\.
-$sources = @{
-  "C:\Users\Administrator\Documents\NinjaTrader 8\Follow940Live\follow940-live-trades.csv" = "data\follow940.csv"
-  "C:\Users\Administrator\Documents\NinjaTrader 8\CCORBStrategyActive\ccorb-active-trades.csv" = "data\ccorb.csv"
-  # CCORB-MGC went live 2026-08-25; its exporter ships in ACTIVE-1.9.1. The file does not exist
-  # until its first live fill, so the Test-Path branch below just warns until then.
-  "C:\Users\Administrator\Documents\NinjaTrader 8\CCORBStrategyMGCActive\ccorbmgc-active-trades.csv" = "data\ccorbmgc.csv"
-}
+# Follow940, CCORB and CCORB-MGC were taken off the site 2026-11-24 (paper only since Oct 2026).
+# Do not map them back: their CSVs carry no account column, so Sim fills would be published as live.
+$sources = @{}
 # NoiseMom writes one trades.csv per NinjaTrader account (NoiseMomX1Active\<account>\trades.csv). Publish only the
 # real account's file: Sim*/Playback*/Backtest folders hold paper fills and must never reach data\. The account is
 # found here rather than named, so no account number is published. More than one real-account folder is ambiguous

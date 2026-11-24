@@ -25,48 +25,6 @@
       "backtestTrades": "../trading-strategies/research/IBSMeanRev/active/trades.csv",
       "backtestContracts": 1,
       "description": "Daily mean reversion on Micro Nasdaq, after published research on internal bar strength (IBS). When the cash session closes in the bottom fifth of its day's range, it buys at the 4:00 PM ET close and sells at the next day's close, holding while the signal repeats. Long only, holds overnight, no stop: its losses come in sharp sell-offs, and the rebounds after them are where it earns most."
-    },
-    {
-      "id": "follow940",
-      "name": "Follow 9:40",
-      "type": "MNQ",
-      "tf": "5min",
-      "style": "Momentum / bias-follow",
-      "status": "paused",
-      "pausedOn": "2026-10-23",
-      "csv": "follow940.csv",
-      "backtest": "../trading-strategies/research/Follow940/active/active_summary.csv",
-      "backtestTrades": "../trading-strategies/research/Follow940/active/trades.csv",
-      "backtestContracts": 1,
-      "description": "The 9:40 ET candle sets the day's directional bias; entry on two-candle confirmation, one trade per day, stop at session extreme, target at nearest Asia/London level >= 2R."
-    },
-    {
-      "id": "ccorb",
-      "name": "CCORB",
-      "type": "MNQ",
-      "tf": "5min",
-      "style": "Opening-range breakout",
-      "status": "paused",
-      "pausedOn": "2026-10-31",
-      "csv": "ccorb.csv",
-      "backtest": "../trading-strategies/research/CCORB/active/active_summary.csv",
-      "backtestTrades": "../trading-strategies/research/CCORB/active/trades.csv",
-      "backtestContracts": 1,
-      "description": "Confirmed-close 5-minute opening-range breakout on MNQ. Structural stop at the opposite range extreme, breakeven shift at +0.5R, and winners ride a far target into the session close."
-    },
-    {
-      "id": "ccorbmgc",
-      "name": "CCORB Gold",
-      "type": "MGC",
-      "tf": "5min",
-      "style": "Opening-range breakout",
-      "status": "paused",
-      "pausedOn": "2026-10-23",
-      "csv": "ccorbmgc.csv",
-      "backtest": "../trading-strategies/research/CCORB-MGC/active/active_summary.csv",
-      "backtestTrades": "../trading-strategies/research/CCORB-MGC/active/trades.csv",
-      "backtestContracts": 1,
-      "description": "Long-only opening-range breakout on Micro Gold. A conviction filter requires a real displacement candle on the break; winners ride an ATR trailing stop into the session close. The portfolio's first non-equity book, uncorrelated to the Nasdaq strategies."
     }
   ]
 }
